@@ -28,6 +28,10 @@ ZSH_THEME="" # disable theme with starship
 # How often to auto-update (in days).
 zstyle ':omz:update' frequency 15
 
+# eza's configuration
+zstyle ':omz:plugins:eza' 'icons' yes
+zstyle ':omz:plugins:eza' 'git-status' yes
+
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # You can set one of the optional three formats:
@@ -53,13 +57,12 @@ setopt INC_APPEND_HISTORY     # Write to history file immediately
 # Load plugins
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
-plugins=(git gh terraform brew rsync aws s-plugin zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git gh terraform brew rsync aws eza s-plugin zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
 # Must load before zsh-syntax-highlighting be loaded
 # source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting-catppuccin/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
-
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -88,7 +91,7 @@ export LANG=en_US.UTF-8
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-source ~/.zsh_profile
+# source ~/.zsh_profile
 
 # fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
@@ -108,6 +111,9 @@ alias tsm="~/.bin/tmux-session-manager.sh"
 eval "$(zoxide init zsh)"
 alias cd="z"
 alias cat="bat"
+alias rm="rm -i"
+alias mv="mv -i"
+export EZA_CONFIG_DIR="$HOME/.config/eza"
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
@@ -227,7 +233,6 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # starship. Disabled
 eval "$(starship init zsh)"
-# export STARSHIP_CONFIG=$HOME/.config/starship/starship.toml
 
 # # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
