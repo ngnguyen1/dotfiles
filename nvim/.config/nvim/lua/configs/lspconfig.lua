@@ -2,7 +2,7 @@
 require("nvchad.configs.lspconfig").defaults()
 
 -- Path to vue language server for the TS plugin (installed via Mason v2)
-local vue_language_server_path = vim.fn.stdpath("data")
+local vue_language_server_path = vim.fn.stdpath "data"
   .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 
 if not vim.uv.fs_stat(vue_language_server_path) then
@@ -31,6 +31,7 @@ local servers = {
     },
   },
   vue_ls = {},
+  eslint = {},
   lua_ls = {
     filetypes = { "lua" },
     root_dir = require("lspconfig.util").root_pattern(".git", "lua"),

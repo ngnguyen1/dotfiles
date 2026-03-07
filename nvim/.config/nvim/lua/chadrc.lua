@@ -39,7 +39,7 @@ M.nvdash = {
     "        (__)\\       )\\/\\  ",
     "              ||----w |      ",
     "              ||     ||      ",
-    "                             "
+    "                             ",
   },
 }
 
@@ -52,6 +52,7 @@ M.mason = {
     "rust-analyzer",
     "codelldb",
     "xmlformatter",
+    "eslint-lsp",
   },
 }
 
