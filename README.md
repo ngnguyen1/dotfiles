@@ -1,73 +1,69 @@
 # Dotfiles
 
-A minimal, reproducible setup for my development environment. Managed with [GNU Stow](https://www.gnu.org/software/stow/) for clean symlink-based installation.
+This repository contains the source of truth for my local development environment configuration.  
+Its goal is to provide a clean, reproducible, and version-controlled setup for shell, terminal, and editor preferences.
 
----
+Configurations are managed with [GNU Stow](https://www.gnu.org/software/stow/), which creates symlinks from this repository into `$HOME` and `~/.config`.
 
-## Contents
+## What This Project Covers
 
-- **Shell** — Zsh configuration (`.zshrc`)
-- **Terminal** — [Kitty](https://sw.kovidgoyal.net/kitty/) with themes and custom scripts
-- **Editor** — [Neovim](https://neovim.io/) with [NvChad](https://nvchad.com/)-based config (LSP, formatting, keymaps)
+- **Shell**: Zsh configuration via `.zshrc`
+- **Terminal**: [Kitty](https://sw.kovidgoyal.net/kitty/) themes and custom behavior
+- **Editor**: [Neovim](https://neovim.io/) configuration based on [NvChad](https://nvchad.com/) (LSP, formatting, keymaps)
 
----
+## Why This Exists
+
+- Keep all personal developer settings in one place
+- Rebuild a machine quickly with consistent tooling
+- Track configuration changes over time with Git
+- Reduce setup drift across environments
 
 ## Prerequisites
 
-- **macOS** (tested on this platform)
+- **macOS** (currently tested platform)
 - [Homebrew](https://brew.sh)
 - [Git](https://git-scm.com/)
-
----
+- [GNU Stow](https://www.gnu.org/software/stow/)
 
 ## Installation
 
-### 1. Install dependencies
-
-Install Homebrew if needed, then:
+### 1) Install required tools
 
 ```bash
 brew install git stow
 ```
 
-### 2. Clone and install
-
-Clone this repo into your home directory and run Stow to create symlinks:
+### 2) Clone and apply symlinks
 
 ```bash
 git clone git@github.com:ngnguyen1/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow .
+stow */
 ```
 
-This will link config files from `~/dotfiles` into your `$HOME` (and `~/.config` where applicable). Existing files are not overwritten; resolve any conflicts manually if needed.
+Stow links files from `~/dotfiles` into your home directory. If a target file already exists, Stow will not overwrite it; resolve conflicts before retrying.
 
-### 3. (Optional) Install applications
+### 3) Install optional applications
 
-- **Kitty**: `brew install kitty`
-- **Neovim**: `brew install neovim`
-
----
-
-## Structure
-
+```bash
+brew install kitty neovim
 ```
+
+## Repository Structure
+
+```text
 dotfiles/
 ├── .config/
-│   ├── kitty/          # Terminal config, themes, scripts
-│   └── nvim/           # Neovim / NvChad config
-├── .zshrc              # Zsh config
+│   ├── kitty/          # Kitty configuration
+│   └── nvim/           # Neovim/NvChad configuration
+├── .zshrc              # Zsh configuration
 └── README.md
 ```
 
----
+## Customization Workflow
 
-## Customization
-
-After installation, edit the cloned files in `~/dotfiles` and commit changes. Stow symlinks will point to the updated files automatically.
-
----
+Update files directly inside `~/dotfiles`, then commit your changes. Because your system uses symlinks, updates apply immediately without copying files.
 
 ## License
 
-See [LICENSE](LICENSE) in this repository.
+See [LICENSE](LICENSE).
