@@ -53,6 +53,7 @@ M.mason = {
     "codelldb",
     "xmlformatter",
     "eslint-lsp",
+    "js-debug-adapter",
   },
 }
 

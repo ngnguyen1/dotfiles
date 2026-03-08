@@ -154,6 +154,65 @@ return {
     "mfussenegger/nvim-dap",
     config = function()
       local dap, dapui = require "dap", require "dapui"
+      local js_debug_cmd = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter/js-debug-adapter"
+      local js_debug_adapter = {
+        type = "server",
+        host = "127.0.0.1",
+        port = 8123,
+        executable = {
+          command = js_debug_cmd,
+          args = { "8123" },
+        },
+      }
+
+      dap.adapters["pwa-node"] = js_debug_adapter
+      dap.adapters["node-terminal"] = js_debug_adapter
+      dap.adapters["pwa-chrome"] = js_debug_adapter
+      dap.adapters["pwa-msedge"] = js_debug_adapter
+
+      local function node_base()
+        return {
+          type = "pwa-node",
+          cwd = "${workspaceFolder}",
+          sourceMaps = true,
+          protocol = "inspector",
+          smartStep = true,
+          resolveSourceMapLocations = {
+            "${workspaceFolder}/**",
+            "!**/node_modules/**",
+          },
+          skipFiles = { "<node_internals>/**", "${workspaceFolder}/node_modules/**" },
+        }
+      end
+
+      local js_ts_configs = {
+        vim.tbl_extend("force", node_base(), {
+          request = "launch",
+          name = "Debug current file",
+          program = "${file}",
+          console = "integratedTerminal",
+        }),
+        vim.tbl_extend("force", node_base(), {
+          request = "attach",
+          name = "Attach 9229",
+          address = "127.0.0.1",
+          port = 9229,
+          restart = true,
+        }),
+        vim.tbl_extend("force", node_base(), {
+          request = "attach",
+          name = "Attach custom inspector port",
+          address = "127.0.0.1",
+          port = function()
+            return tonumber(vim.fn.input "Inspector port: ")
+          end,
+          restart = true,
+        }),
+      }
+      for _, language in ipairs { "javascript", "typescript", "javascriptreact", "typescriptreact" } do
+        dap.configurations[language] = js_ts_configs
+      end
+
       dap.listeners.before.attach.dapui_config = function()
         dapui.open()
       end
