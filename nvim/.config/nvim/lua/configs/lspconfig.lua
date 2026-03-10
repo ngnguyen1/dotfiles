@@ -32,6 +32,7 @@ local servers = {
   },
   vue_ls = {},
   eslint = {},
+  terraformls = {},
   lua_ls = {
     filetypes = { "lua" },
     root_dir = require("lspconfig.util").root_pattern(".git", "lua"),
