@@ -47,6 +47,7 @@ M.mason = {
   pkgs = {
     "typescript-language-server",
     "vue-language-server",
+    "terraform-ls",
     "prettierd",
     "lua-language-server",
     "rust-analyzer",
