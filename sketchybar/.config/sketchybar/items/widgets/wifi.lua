@@ -8,6 +8,24 @@ sbar.exec("killall network_load >/dev/null; $CONFIG_DIR/helpers/event_providers/
 
 local popup_width = 250
 
+local function to_kbps(rate)
+  local value, unit = rate:match("([%d%.]+)%s*([KMG]?B)ps")
+  if not value or not unit then
+    return "0.0 KB/s"
+  end
+
+  local numeric = tonumber(value) or 0
+  if unit == "B" then
+    numeric = numeric / 1024.0
+  elseif unit == "MB" then
+    numeric = numeric * 1024.0
+  elseif unit == "GB" then
+    numeric = numeric * 1024.0 * 1024.0
+  end
+
+  return string.format("%.1f KB/s", numeric)
+end
+
 local wifi_up = sbar.add("item", "widgets.wifi1", {
   position = "right",
   padding_left = -5,
@@ -27,7 +45,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
       size = 9.0,
     },
     color = colors.red,
-    string = "??? Bps",
+    string = "0.0 KB/s",
   },
   y_offset = 4,
 })
@@ -50,7 +68,7 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
       size = 9.0,
     },
     color = colors.blue,
-    string = "??? Bps",
+    string = "0.0 KB/s",
   },
   y_offset = -4,
 })
@@ -155,20 +173,18 @@ local router = sbar.add("item", {
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
 wifi_up:subscribe("network_update", function(env)
-  local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
-  local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
   wifi_up:set({
-    icon = { color = up_color },
+    icon = { color = colors.red },
     label = {
-      string = env.upload,
-      color = up_color
+      string = to_kbps(env.upload),
+      color = colors.red
     }
   })
   wifi_down:set({
-    icon = { color = down_color },
+    icon = { color = colors.blue },
     label = {
-      string = env.download,
-      color = down_color
+      string = to_kbps(env.download),
+      color = colors.blue
     }
   })
 end)
