@@ -59,7 +59,6 @@ return {
 
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
-
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -412,10 +411,11 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
+    event = { "BufReadPost", "BufNewFile" },
     init = function()
       -- Disable entire built-in ftplugin mappings to avoid conflicts.
       -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
-      vim.g.no_plugin_maps = true
+      -- vim.g.no_plugin_maps = true
 
       -- Or, disable per filetype (add as you like)
       -- vim.g.no_python_maps = true
@@ -425,8 +425,52 @@ return {
     end,
     config = function()
       -- Enter your config
-      -- require("nvim-treesitter-textobjects").setup {
-      -- }
+      require("nvim-treesitter-textobjects").setup {
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ["aa"] = "@parameter.outer",
+              ["ia"] = "@parameter.inner",
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              ["]m"] = "@function.outer",
+              ["]]"] = "@class.outer",
+            },
+            goto_next_end = {
+              ["]M"] = "@function.outer",
+              ["]["] = "@class.outer",
+            },
+            goto_previous_start = {
+              ["[m"] = "@function.outer",
+              ["[["] = "@class.outer",
+            },
+            goto_previous_end = {
+              ["[M"] = "@function.outer",
+              ["[]"] = "@class.outer",
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = {
+              ["<leader>a"] = "@parameter.inner",
+            },
+            swap_previous = {
+              ["<leader>A"] = "@parameter.inner",
+            },
+          },
+        },
+      }
     end,
   },
 }
