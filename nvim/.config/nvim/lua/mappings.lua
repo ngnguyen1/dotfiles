@@ -76,3 +76,47 @@ map("n", "[b", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 map("n", "<Leader>bb", buffer_switch.toggle, { desc = "Switch to last buffer" })
 map("n", "<Leader>bd", "<cmd>bdelete<cr>", { desc = "Delete current buffer" })
 
+-- -- Treesitter textobjects
+-- local function safe_select_textobject(capture, query_group)
+--   local ft = vim.bo.filetype
+--   local lang = vim.treesitter.language.get_lang(ft) or ft
+--   local has_parser = pcall(vim.treesitter.get_parser, 0, lang)
+--
+--   if not has_parser then
+--     if vim.fn.executable "tree-sitter" ~= 1 then
+--       vim.notify(
+--         "Missing 'tree-sitter' CLI. Install it (e.g. `brew install tree-sitter`) then run :TSUpdate",
+--         vim.log.levels.ERROR
+--       )
+--       return
+--     end
+--
+--     vim.notify(("Treesitter parser missing for '%s'. Installing..."):format(lang), vim.log.levels.WARN)
+--     pcall(vim.cmd, "TSInstallSync " .. lang)
+--     has_parser = pcall(vim.treesitter.get_parser, 0, lang)
+--   end
+--
+--   if not has_parser then
+--     vim.notify(("Could not create Treesitter parser for '%s'."):format(lang), vim.log.levels.ERROR)
+--     return
+--   end
+--
+--   require("nvim-treesitter-textobjects.select").select_textobject(capture, query_group)
+-- end
+--
+-- vim.keymap.set({ "x", "o" }, "am", function()
+--   safe_select_textobject("@function.outer", "textobjects")
+-- end)
+-- vim.keymap.set({ "x", "o" }, "im", function()
+--   safe_select_textobject("@function.inner", "textobjects")
+-- end)
+-- vim.keymap.set({ "x", "o" }, "ac", function()
+--   safe_select_textobject("@class.outer", "textobjects")
+-- end)
+-- vim.keymap.set({ "x", "o" }, "ic", function()
+--   safe_select_textobject("@class.inner", "textobjects")
+-- end)
+-- vim.keymap.set({ "x", "o" }, "as", function()
+--   safe_select_textobject("@local.scope", "locals")
+-- end)
+

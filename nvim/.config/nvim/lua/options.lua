@@ -6,7 +6,7 @@ require "nvchad.options"
 local opt = vim.opt
 
 -- to enable cursorline!
-opt.cursorlineopt ='both'
+opt.cursorlineopt = "both"
 
 -- nvchad's configuration is <>[]hl
 -- this option will Reset whichwrap to Neovim default (b,s only) backspaces
@@ -29,3 +29,9 @@ opt.inccommand = "nosplit"
 -- Performance
 opt.timeoutlen = 300
 opt.updatetime = 200
+
+-- -- Folding
+-- opt.foldcolumn = "1"
+-- opt.foldlevel = 99
+-- opt.foldlevelstart = 99
+-- opt.foldenable = true

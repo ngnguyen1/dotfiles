@@ -76,6 +76,45 @@ Notes:
 - Ensure `codelldb` is installed: `:MasonInstall codelldb`.
 - Build with debug symbols for best stepping (`cargo build`, `cargo test`).
 
+## Treesitter Textobjects
+
+This config enables [`nvim-treesitter-textobjects`](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) with a practical default set for day-to-day editing.
+
+### Selection (operator-pending / visual)
+
+- `am` - around function
+- `im` - inside function
+- `ac` - around class
+- `ic` - inside class
+- `as` - around scope (from query groups like `locals.scm`)
+
+Examples:
+
+- `vam` select a full function
+- `yim` yank function body
+- `vas` select current scope
+
+### Movement
+
+- `]m` / `[m` - next/previous function start
+- `]M` / `[M` - next/previous function end
+- `]]` / `[[` - next/previous class start
+- `][` / `[]` - next/previous class end
+- `]j` / `[j` - next/previous function inner start
+- `]J` / `[J` - next/previous function inner end
+- `]k` / `[k` - next/previous class inner start
+- `]K` / `[K` - next/previous class inner end
+
+### Swap arguments
+
+- `<leader>sa` - swap current argument with next
+- `<leader>sA` - swap current argument with previous
+
+Notes:
+
+- These mappings depend on Treesitter captures in each language parser; support can vary by language.
+- If something does not select/move, update parsers with `:TSUpdate`.
+
 # Credits
 
 1) Lazyvim starter https://github.com/LazyVim/starter as nvchad's starter was inspired by Lazyvim's . It made a lot of things easier!
