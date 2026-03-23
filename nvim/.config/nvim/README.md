@@ -1,120 +1,81 @@
-**This repo is supposed to be used as config by NvChad users!**
+# Neovim Configuration
 
-- The main nvchad repo (NvChad/NvChad) is used as a plugin by this repo.
-- So you just import its modules , like `require "nvchad.options" , require "nvchad.mappings"`
-- So you can delete the .git from this repo ( when you clone it locally ) or fork it :)
+A modern Neovim setup focused on speed, clean UI, and maintainable Lua modules.
 
-## Debugging Guide
+## Features
 
-### JavaScript / TypeScript
+- Lazy-loaded plugin architecture with `lazy.nvim`
+- Theme-driven statusline (arrow/round/block/none separators)
+- Centered startup dashboard with quick actions
+- LSP + completion + formatting + linting pipeline
+- Mason-based auto-install for language servers and tools
+- Well-structured `docs/` specifications for every subsystem
 
-This setup uses `nvim-dap` + `nvim-dap-ui` with the Mason `js-debug-adapter`.
+## Requirements
 
-#### Keymaps
+- Neovim `>= 0.11`
+- Git
+- A Nerd Font (for icons and separator glyphs)
+- Optional CLI tools used by formatters/linters:
+  - `stylua`, `prettier`, `black`, `isort`, `shfmt`
+  - `eslint_d`, `ruff`, `shellcheck`, `markdownlint`
 
-- `<leader>db` - Toggle breakpoint
-- `<leader>dd` - Set conditional breakpoint
-- `<leader>dc` - Start / continue debug session
-- `<leader>dj` - Step over
-- `<leader>dl` - Step into
-- `<leader>dk` - Step out
-- `<leader>dr` - Run last configuration
-- `<leader>de` - Terminate debug session
+## Installation
 
-#### Configurations
+1. Backup your current config:
 
-When you press `<leader>dc`, choose one:
+```bash
+mv ~/.config/nvim ~/.config/nvim.bak
+```
 
-- `Debug current file`
-- `Attach 9229`
-- `Attach custom inspector port`
+2. Clone this config:
 
-#### Professional flow
+```bash
+git clone <your-repo-url> ~/.config/nvim
+```
 
-1. Start service with inspector enabled:
+3. Start Neovim:
 
-   ```bash
-   NODE_OPTIONS='--inspect=9229' npm run dev
-   ```
+```bash
+nvim
+```
 
-2. Set breakpoints with `<leader>db`.
-3. Press `<leader>dc` and choose `Attach 9229` (or custom port).
-4. Use `<leader>dj` / `<leader>dl` / `<leader>dk` to step.
-5. Press `<leader>de` to stop; `<leader>dr` to rerun quickly.
+On first launch, plugins install automatically. LSP servers and tools are managed by Mason.
 
-Notes:
+## Project Structure
 
-- API/app port (for example `4800`) is not the debug port.
-- DAP attach uses Node inspector ports (`9229`, `9230`, ...).
+```text
+~/.config/nvim
+├── init.lua
+├── lua/
+│   ├── core/        # options, mappings, highlights, autocmds, integrations
+│   ├── configs/     # plugin runtime configs (lsp, cmp, conform, lint, ...)
+│   ├── plugins/     # lazy.nvim plugin specs
+│   ├── themes/      # palette + base16 + statusline style per theme
+│   └── ui/          # statusline and dashboard
+└── docs/            # detailed module specs
+```
 
-### Rust
+## Screenshots
 
-This setup uses `rustaceanvim` + Mason `codelldb`, integrated with the same DAP flow.
+Add your screenshots later:
 
-#### Keymaps
+- `assets/screenshots/dashboard.png`
+- `assets/screenshots/statusline-tokyonight.png`
+- `assets/screenshots/lsp-completion.png`
+- `assets/screenshots/telescope.png`
 
-- `<leader>db` - Toggle breakpoint
-- `<leader>dd` - Set conditional breakpoint
-- `<leader>dc` - Start / continue debug session
-- `<leader>dj` - Step over
-- `<leader>dl` - Step into
-- `<leader>dk` - Step out
-- `<leader>dr` - Run last configuration
-- `<leader>de` - Terminate debug session
-- `<leader>dt` - Show Rust testables (`:RustLsp testables`)
+## Keymaps
 
-#### Professional flow
+Keymaps are documented in [KEYMAP.md](./KEYMAP.md) for quick reference.
 
-1. Open project root (`Cargo.toml`).
-2. Set breakpoints with `<leader>db`.
-3. Use `<leader>dt` to pick testables or continue with `<leader>dc`.
-4. Step with `<leader>dj` / `<leader>dl` / `<leader>dk`.
-5. Stop with `<leader>de`.
+## Customization
 
-Notes:
+- User-facing settings: `lua/core/config.lua`
+- Theme palettes: `lua/themes/*.lua`
+- Statusline rendering: `lua/ui/statusline.lua`
+- Dashboard content/buttons: `lua/core/config.lua` (`M.dashboard`)
 
-- Ensure `codelldb` is installed: `:MasonInstall codelldb`.
-- Build with debug symbols for best stepping (`cargo build`, `cargo test`).
+## License
 
-## Treesitter Textobjects
-
-This config enables [`nvim-treesitter-textobjects`](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) with a practical default set for day-to-day editing.
-
-### Selection (operator-pending / visual)
-
-- `am` - around function
-- `im` - inside function
-- `ac` - around class
-- `ic` - inside class
-- `as` - around scope (from query groups like `locals.scm`)
-
-Examples:
-
-- `vam` select a full function
-- `yim` yank function body
-- `vas` select current scope
-
-### Movement
-
-- `]m` / `[m` - next/previous function start
-- `]M` / `[M` - next/previous function end
-- `]]` / `[[` - next/previous class start
-- `][` / `[]` - next/previous class end
-- `]j` / `[j` - next/previous function inner start
-- `]J` / `[J` - next/previous function inner end
-- `]k` / `[k` - next/previous class inner start
-- `]K` / `[K` - next/previous class inner end
-
-### Swap arguments
-
-- `<leader>sa` - swap current argument with next
-- `<leader>sA` - swap current argument with previous
-
-Notes:
-
-- These mappings depend on Treesitter captures in each language parser; support can vary by language.
-- If something does not select/move, update parsers with `:TSUpdate`.
-
-# Credits
-
-1) Lazyvim starter https://github.com/LazyVim/starter as nvchad's starter was inspired by Lazyvim's . It made a lot of things easier!
+This project is licensed under the MIT License. See [LICENSE](./LICENSE).

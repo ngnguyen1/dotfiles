@@ -1,21 +1,39 @@
-local options = {
+-- lua/configs/conform.lua
+
+require("conform").setup({
   formatters_by_ft = {
     lua = { "stylua" },
-    css = { "prettierd" },
-    html = { "prettierd" },
-    javascript = { "prettierd" },
-    typescript = { "prettierd" },
-    javascriptreact = { "prettierd" },
-    typescriptreact = { "prettierd" },
-    json = { "prettierd" },
-    xml = { "xmlformatter" },
+    javascript = { "prettier" },
+    javascriptreact = { "prettier" },
+    typescript = { "prettier" },
+    typescriptreact = { "prettier" },
+    html = { "prettier" },
+    css = { "prettier" },
+    scss = { "prettier" },
+    json = { "prettier" },
+    jsonc = { "prettier" },
+    yaml = { "prettier" },
+    markdown = { "prettier" },
+    graphql = { "prettier" },
+    python = { "isort", "black" },
+    rust = { "rustfmt" },
+    sh = { "shfmt" },
+    bash = { "shfmt" },
+    ["*"] = { "trim_whitespace" },
   },
 
   format_on_save = {
-    -- These options will be passed to conform.format()
-    timeout_ms = 500,
-    lsp_fallback = false,
+    lsp_fallback = true,
+    async = false,
+    timeout_ms = 1000,
   },
-}
 
-return options
+  formatters = {
+    shfmt = { prepend_args = { "-i", "2" } },
+    prettier = { prepend_args = { "--print-width", "100" } },
+  },
+})
+
+vim.keymap.set({ "n", "v" }, "<leader>lf", function()
+  require("conform").format({ lsp_fallback = true, async = false, timeout_ms = 2000 })
+end, { desc = "Format file or range" })

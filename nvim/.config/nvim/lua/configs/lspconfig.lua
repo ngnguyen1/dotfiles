@@ -1,60 +1,140 @@
--- Default on_attach and capabilities
-require("nvchad.configs.lspconfig").defaults()
+-- lua/configs/lspconfig.lua
 
--- Path to vue language server for the TS plugin (installed via Mason v2)
-local vue_language_server_path = vim.fn.stdpath "data"
-  .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-if not vim.uv.fs_stat(vue_language_server_path) then
-  vim.notify("vue-language-server not installed via Mason. Run :MasonInstall vue-language-server", vim.log.levels.WARN)
-  vue_language_server_path = ""
+local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+if ok_cmp then
+  capabilities = cmp_lsp.default_capabilities(capabilities)
 end
 
-local servers = {
-  ts_ls = {
-    init_options = {
-      plugins = {
-        {
-          name = "@vue/typescript-plugin",
-          location = vue_language_server_path,
-          languages = { "vue" },
-          configNamespace = "typescript",
-        },
-      },
-    },
-    filetypes = {
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact",
-      "vue",
-    },
-  },
-  vue_ls = {},
-  eslint = {},
-  terraformls = {},
-  lua_ls = {
-    filetypes = { "lua" },
-    root_dir = require("lspconfig.util").root_pattern(".git", "lua"),
-    settings = {
-      Lua = {
-        runtime = {
-          version = "LuaJIT", -- Use LuaJIT runtime
-        },
-        diagnostics = {
-          global = { "vim" },
-        },
-        telemetry = {
-          enable = false, -- disable telemetry
-        },
-      },
-    },
-  },
+capabilities.workspace = capabilities.workspace or {}
+capabilities.workspace.didChangeWatchedFiles = capabilities.workspace.didChangeWatchedFiles or {}
+capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+
+local on_attach = function(client, bufnr)
+  local map = function(keys, func, desc)
+    vim.keymap.set("n", keys, func, {
+      buffer = bufnr,
+      desc = "LSP: " .. desc,
+      silent = true,
+      noremap = true,
+    })
+  end
+
+  map("gd", vim.lsp.buf.definition, "Go to Definition")
+  map("gD", vim.lsp.buf.declaration, "Go to Declaration")
+  map("gi", vim.lsp.buf.implementation, "Go to Implementation")
+  map("gt", vim.lsp.buf.type_definition, "Go to Type Definition")
+  map("gr", "<cmd>Telescope lsp_references<cr>", "References")
+
+  map("K", vim.lsp.buf.hover, "Hover Docs")
+  map("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
+
+  map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+  map("<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+
+  map("<leader>wa", vim.lsp.buf.add_workspace_folder, "Add Workspace Folder")
+  map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove Workspace Folder")
+  map("<leader>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, "List Workspace Folders")
+
+  map("<leader>lf", function()
+    vim.lsp.buf.format({ async = true })
+  end, "Format Buffer")
+
+  if client.server_capabilities.documentHighlightProvider then
+    local group = vim.api.nvim_create_augroup("LspDocumentHighlight_" .. bufnr, { clear = true })
+    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+      buffer = bufnr,
+      group = group,
+      callback = vim.lsp.buf.document_highlight,
+    })
+    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+      buffer = bufnr,
+      group = group,
+      callback = vim.lsp.buf.clear_references,
+    })
+  end
+
+  client.server_capabilities.semanticTokensProvider = nil
+end
+
+local icons = require("core.config").lsp.icons
+local diagnostic_signs = {
+  [vim.diagnostic.severity.ERROR] = icons.Error,
+  [vim.diagnostic.severity.WARN] = icons.Warn,
+  [vim.diagnostic.severity.INFO] = icons.Info,
+  [vim.diagnostic.severity.HINT] = icons.Hint,
 }
 
-for name, opts in pairs(servers) do
-  vim.lsp.config(name, opts)
-  vim.lsp.enable(name)
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+    source = "if_many",
+  },
+  signs = { text = diagnostic_signs },
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    border = require("core.config").ui.border,
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+})
+
+local servers = {
+  "html",
+  "cssls",
+  "ts_ls",
+  "eslint",
+  "lua_ls",
+  "pyright",
+  "rust_analyzer",
+  "bashls",
+  "dockerls",
+  "yamlls",
+  "marksman",
+}
+
+for _, server in ipairs(servers) do
+  vim.lsp.config(server, {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  })
 end
 
--- read :h vim.lsp.config for changing options of lsp servers
+vim.lsp.config("lua_ls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      workspace = {
+        checkThirdParty = false,
+        library = {
+          vim.env.VIMRUNTIME,
+          "${3rd}/luv/library",
+        },
+      },
+      diagnostics = { globals = { "vim" } },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+vim.lsp.config("pyright", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    python = {
+      analysis = { typeCheckingMode = "basic" },
+    },
+  },
+})
+
+for _, server in ipairs(servers) do
+  vim.lsp.enable(server)
+end
