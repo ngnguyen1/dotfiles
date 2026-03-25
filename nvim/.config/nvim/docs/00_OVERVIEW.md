@@ -14,7 +14,7 @@ We borrow NvChad's _ideas_, not its code:
 | Compiled theme / highlight system | `lua/core/highlights.lua` — cached per theme  |
 | base46-style theme table format   | `lua/themes/<name>.lua` returns palette table |
 | Statusline with 4 styles          | `lua/ui/statusline.lua` — hand-rolled         |
-| Dashboard (custom cowsay)         | `lua/ui/dashboard.lua`                        |
+| Startup screen (default Neovim)   | built-in `:help intro` start screen           |
 | `chadrc`-style single config      | `lua/core/config.lua` — user's control panel  |
 | Per-integration lazy highlights   | `dofile(cache .. "integration")` pattern      |
 | Mason auto-install (LSP + tools)  | `lua/plugins/lsp.lua` with mason installers   |
@@ -25,7 +25,7 @@ We borrow NvChad's _ideas_, not its code:
 
 | Principle                    | Detail                                                      |
 | ---------------------------- | ----------------------------------------------------------- |
-| **Zero third-party UI deps** | Statusline, dashboard written in pure Lua                   |
+| **Zero third-party UI deps** | Statusline written in pure Lua (startup screen uses default) |
 | **Lazy loading**             | 90%+ of plugins lazy-loaded by event, cmd, ft, or keys      |
 | **Fast startup**             | Target < 80ms cold start                                    |
 | **Single config**            | All user preferences in `lua/core/config.lua`               |
@@ -66,7 +66,7 @@ We borrow NvChad's _ideas_, not its code:
 | `03_CONFIG.md`              | lua/core/config.lua — user control panel          |
 | `04_OPTIONS.md`             | lua/core/options.lua — vim.opt settings           |
 | `05_THEMING.md`             | Theme system: palettes, highlight compiler, cache |
-| `06_UI.md`                  | Statusline, dashboard, cheatsheet                 |
+| `06_UI.md`                  | Statusline and UI behavior                        |
 | `07_PLUGINS.md`             | All lazy.nvim plugin specs split by domain        |
 | `08_LSP.md`                 | LSP setup: lspconfig + mason + on_attach          |
 | `09_COMPLETION.md`          | nvim-cmp + LuaSnip pipeline                       |

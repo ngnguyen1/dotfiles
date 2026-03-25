@@ -113,10 +113,6 @@ require("core.highlights")   -- compile theme → apply highlights
 -- Mount hand-rolled UI modules
 require("ui.statusline").setup()
 
--- Show dashboard on startup (no file arg)
-if vim.fn.argc(-1) == 0 then
-  require("ui.dashboard").open()
-end
 ```
 
 ---

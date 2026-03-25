@@ -108,7 +108,7 @@ opt.mousemoveevent = true
 opt.iskeyword:append("-")
 opt.whichwrap:append("<>[]hl")
 opt.formatoptions:remove("cro")
-opt.shortmess:append("sI")
+opt.shortmess:append("s")
 opt.sessionoptions = {
   "buffers",
   "curdir",

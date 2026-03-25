@@ -111,13 +111,6 @@ map("n", "<leader>uz", function()
 end, { desc = "Toggle transparency" })
 
 -- ================================================================
--- DASHBOARD
--- ================================================================
-map("n", "<leader>;", function()
-  require("ui.dashboard").open()
-end, { desc = "Dashboard" })
-
--- ================================================================
 -- TERMINAL
 -- ================================================================
 -- Floating terminal (using built-in terminal + our own toggle)

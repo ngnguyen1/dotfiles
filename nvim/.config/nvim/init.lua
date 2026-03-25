@@ -101,8 +101,3 @@ require("core.mappings")
 require("core.highlights").setup()
 
 require("ui.statusline").setup()
-
--- Show dashboard on startup (no file arg)
-if vim.fn.argc(-1) == 0 then
-  require("ui.dashboard").open()
-end

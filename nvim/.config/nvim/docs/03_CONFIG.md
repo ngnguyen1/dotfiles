@@ -9,7 +9,6 @@
 `core/config.lua` is the **only file a user needs to touch** for:
 - Switching themes
 - Changing statusline style
-- Dashboard content
 - LSP diagnostic icons
 - Transparency
 - UI borders
@@ -54,35 +53,6 @@ M.statusline = {
     "mode", "file", "git", "diagnostics",
     "%=",                               -- right-align everything after this
     "lsp_name", "filetype", "fileprogress", "cursor",
-  },
-}
-
--- ================================================================
--- DASHBOARD
--- ================================================================
-M.dashboard = {
-  enabled = true,
-
-  -- Legacy static header (runtime dashboard now renders dynamic cowsay quotes)
-  header = {
-    "",
-    "  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
-    "  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
-    "  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
-    "  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
-    "  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
-    "  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
-    "",
-  },
-
-  -- { icon, label, key shortcut, vim command }
-  buttons = {
-    { "󰱼", "Find Files",   "ff", "Telescope find_files" },
-    { "󱋡", "Recent Files", "fo", "Telescope oldfiles" },
-    { "󰱽", "Find Word",    "fw", "Telescope live_grep" },
-    { "󰃀", "Bookmarks",    "bm", "Telescope marks" },
-    { "󰔎", "Themes",       "tt", "lua require('core.highlights').pick_theme()" },
-    { "󱁤", "Config",       "nc", "e $MYVIMRC" },
   },
 }
 

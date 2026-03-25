@@ -6,7 +6,7 @@ A modern Neovim setup focused on speed, clean UI, and maintainable Lua modules.
 
 - Lazy-loaded plugin architecture with `lazy.nvim`
 - Theme-driven statusline (arrow/round/block/none separators)
-- Centered startup dashboard with quick actions
+- Uses Neovim default start screen (no custom dashboard)
 - LSP + completion + formatting + linting pipeline
 - Mason-based auto-install for language servers and tools
 - Well-structured `docs/` specifications for every subsystem
@@ -52,7 +52,7 @@ On first launch, plugins install automatically. LSP servers and tools are manage
 │   ├── configs/     # plugin runtime configs (lsp, cmp, conform, lint, ...)
 │   ├── plugins/     # lazy.nvim plugin specs
 │   ├── themes/      # palette + base16 + statusline style per theme
-│   └── ui/          # statusline and dashboard
+│   └── ui/          # statusline
 └── docs/            # detailed module specs
 ```
 
@@ -60,7 +60,6 @@ On first launch, plugins install automatically. LSP servers and tools are manage
 
 Add your screenshots later:
 
-- `assets/screenshots/dashboard.png`
 - `assets/screenshots/statusline-tokyonight.png`
 - `assets/screenshots/lsp-completion.png`
 - `assets/screenshots/telescope.png`
@@ -74,7 +73,6 @@ Keymaps are documented in [KEYMAP.md](./KEYMAP.md) for quick reference.
 - User-facing settings: `lua/core/config.lua`
 - Theme palettes: `lua/themes/*.lua`
 - Statusline rendering: `lua/ui/statusline.lua`
-- Dashboard content/buttons: `lua/core/config.lua` (`M.dashboard`)
 
 ## License
 

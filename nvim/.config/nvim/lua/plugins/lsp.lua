@@ -26,6 +26,7 @@ return {
       require("mason-tool-installer").setup({
         ensure_installed = {
           "lua-language-server",
+          "astro-language-server",
           "html-lsp",
           "css-lsp",
           "typescript-language-server",

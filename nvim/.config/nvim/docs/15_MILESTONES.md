@@ -45,20 +45,17 @@ gcc                 → toggles comment
 ---
 
 ## Phase 3 — UI Modules (Day 2)
-**Goal:** Custom statusline and dashboard working.
+**Goal:** Custom statusline working with Neovim default startup screen.
 
 - [ ] `lua/ui/statusline.lua` — full module with mode, file, git, diagnostics, lsp, fileprogress, cursor
-- [ ] `lua/ui/dashboard.lua` — startup screen
 - [ ] `lua/core/integrations/statusline.lua` — themed statusline highlights
-- [ ] `lua/core/integrations/dashboard.lua` — themed dashboard highlights
 - [ ] Add `require("ui.statusline").setup()` etc. to `init.lua` post-setup block
 
 **Validation:**
 ```
-nvim              → dashboard shows on startup
+nvim              → default Neovim intro screen shows on startup
 :e somefile       → statusline shows filename + mode
 :vsplit           → statusline stays stable across windows
-<leader>;         → opens dashboard manually
 ```
 
 ---

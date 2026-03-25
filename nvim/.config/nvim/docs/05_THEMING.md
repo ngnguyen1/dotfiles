@@ -597,7 +597,6 @@ end
 - `gitsigns.lua`
 - `treesitter.lua`
 - `blankline.lua`
-- `dashboard.lua`
 - `statusline.lua`
 
 ---

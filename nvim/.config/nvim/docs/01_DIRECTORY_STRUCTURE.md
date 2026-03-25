@@ -31,7 +31,6 @@
     │
     ├── ui/                           ── Hand-rolled UI modules (no plugin)
     │   ├── statusline.lua            ← Statusline renderer
-    │   ├── dashboard.lua             ← Startup dashboard
     │
     ├── plugins/                      ── lazy.nvim plugin specs (one file per domain)
     │   ├── init.lua                  ← Core plugins (autopairs, indent, gitsigns, which-key, surround)
@@ -71,8 +70,8 @@ return M
 ```
 
 ### `lua/ui/*.lua` — Pure Lua UI, no plugin deps
-Statusline, dashboard are implemented using only `vim.api`, `vim.fn`,
-and `vim.opt`. They read from `lua/core/config.lua` for their configuration.
+Statusline is implemented using only `vim.api`, `vim.fn`,
+and `vim.opt`.
 
 ### `lua/plugins/*.lua` — Must return a table
 ```lua

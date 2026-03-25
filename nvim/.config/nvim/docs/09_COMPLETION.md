@@ -32,7 +32,6 @@ local disabled_filetypes = {
   "TelescopePrompt",    -- Telescope search input  ← fixes your screenshot
   "TelescopeResults",   -- Telescope results pane
   "NvimTree",           -- File explorer
-  "dashboard",          -- Startup dashboard
   "lazy",               -- lazy.nvim UI
   "mason",              -- Mason UI
   "help",               -- Vim help pages

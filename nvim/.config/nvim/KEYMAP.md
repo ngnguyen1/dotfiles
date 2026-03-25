@@ -91,7 +91,6 @@ Leader key: `<Space>`
 | Key | Mode | Action |
 | --- | --- | --- |
 | `<leader>ut` / `<leader>up` / `<leader>uz` | `n` | Toggle theme / pick theme / toggle transparency |
-| `<leader>;` | `n` | Open dashboard |
 | `<A-i>` | `n,t` | Toggle floating terminal |
 | `<Esc>` | `t` | Exit terminal mode |
 | `<leader>th` / `<leader>tv` | `n` | Horizontal/vertical terminal |
