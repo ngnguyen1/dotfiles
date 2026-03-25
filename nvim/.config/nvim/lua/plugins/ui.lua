@@ -10,6 +10,22 @@ return {
   },
 
   {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown" },
+    cmd = { "RenderMarkdown" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      enabled = false,
+    },
+    keys = {
+      { "<leader>mp", "<cmd>RenderMarkdown toggle<cr>", desc = "Toggle Markdown Render" },
+    },
+  },
+
+  {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",

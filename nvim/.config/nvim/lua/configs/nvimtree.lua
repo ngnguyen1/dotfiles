@@ -42,7 +42,7 @@ require("nvim-tree").setup({
   },
 
   view = {
-    width = 30,
+    width = 34,
     side = "right",
     preserve_window_proportions = true,
   },

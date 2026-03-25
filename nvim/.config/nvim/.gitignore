@@ -1,4 +1,0 @@
-# Ignore lazy plugin cache directory
-.DS_Store
-
-# Don't ignore lazy-lock.json — commit it for reproducible installs
