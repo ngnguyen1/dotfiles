@@ -101,16 +101,14 @@ export LANG=en_US.UTF-8
 # ZSH_HIGHLIGHT_STYLES[path]=none
 # ZSH_HIGHLIGHT_STYLES[path_prefix]=none
 
-# Tmux 
+# Tmux
 export TMUX_CONF=~/.config/tmux/tmux.conf
 alias tmux="tmux -f $TMUX_CONF"
 alias a="attach"
 alias tns="~/.bin/tmux-sessionizer.sh"
 alias tsm="~/.bin/tmux-session-manager.sh"
 
-# Zoxide: similar to cd but smarter
-eval "$(zoxide init zsh)"
-alias cd="z"
+eval "$(zoxide init zsh --cmd cd)"
 alias cat="bat"
 alias rm="rm -i"
 alias mv="mv -i"
@@ -194,10 +192,10 @@ findin() {
 vv() {
   # Assumes all configs exist in directories named ~/.config/nvim-*
   local config=$(fd --max-depth 1 --glob 'nvim-*' ~/.config | fzf --prompt="Neovim Configs > " --height=50% --layout=reverse --border --exit-0)
- 
+
   # If I exit fzf without selecting a config, don't open Neovim
   [[ -z $config ]] && echo "No config selected" && return
- 
+
   # Open Neovim with the selected config
   NVIM_APPNAME=$(basename $config) nvim $@
 }

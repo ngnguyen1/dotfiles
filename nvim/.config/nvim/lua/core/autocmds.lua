@@ -46,10 +46,29 @@ autocmd("FileType", {
     "startuptime",
     "checkhealth",
     "trouble",
+    "OverseerForm",
+    "OverseerList",
+    "floggraph",
+    "fugitive",
+    "fugitiveblame",
+    "git",
+    "neotest-output",
+    "neotest-summary",
+    "spectre_panel",
+    "toggleterm",
+    "tsplayground",
+    "vim",
   },
   callback = function(e)
     vim.bo[e.buf].buflisted = false
-    vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = e.buf, silent = true })
+    vim.keymap.set("n", "q", function()
+      -- If this is the last window, quit nvim entirely; otherwise just close
+      if #vim.api.nvim_list_wins() == 1 then
+        vim.cmd("quit")
+      else
+        vim.cmd("close")
+      end
+    end, { buffer = e.buf, silent = true, noremap = true })
   end,
 })
 
