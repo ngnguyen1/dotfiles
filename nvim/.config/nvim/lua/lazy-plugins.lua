@@ -16,6 +16,7 @@ require('lazy').setup({
   require 'core.plugins.surround',
   require 'core.plugins.git',
   require 'core.plugins.lualine',
+  require 'core.plugins.which-key',
 
   -- Custom plugins
   require 'custom.plugins.blink-cmp',
