@@ -1,103 +1,24 @@
--- ================================================================
--- LEADERS — must be set before lazy.nvim loads any plugin
--- ================================================================
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
-require("core.compat")
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+-- Set <space> as the leader key
 
--- ================================================================
--- OPTIONS — load before plugins (affects plugin behavior)
--- ================================================================
-require("core.options")
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
--- ================================================================
--- BOOTSTRAP lazy.nvim
--- ================================================================
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- use Nerd font
+vim.g.have_nerd_font = true
 
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local repo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "--branch=stable",
-    repo,
-    lazypath,
-  })
-  if vim.v.shell_error ~= 0 then
-    vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "\nPress any key to exit...", "" },
-    }, true, {})
-    vim.fn.getchar()
-    os.exit(1)
-  end
-end
+-- [[ Setting options ]]
+require 'options'
 
-vim.opt.rtp:prepend(lazypath)
+-- [[ Basic Autocommands ]]
+require 'autocmds'
 
--- ================================================================
--- LAZY SETUP
--- ================================================================
-require("lazy").setup({
-  spec = {
-    -- Import lua/plugins/*.lua files
-    { import = "plugins" },
-  },
+-- [[ Basic keymaps ]]
+require 'keymaps'
 
-  defaults = {
-    lazy = true,
-    version = false,
-  },
+-- [[ install `lazy.nvim` as plugin manager ]]
+require 'lazy-bootstrap'
 
-  install = {
-    colorscheme = { "habamax" },
-  },
+-- [[ Configure and install plugin ]]
+require 'lazy-plugins'
 
-  checker = {
-    enabled = true,
-    notify = false,
-  },
-
-  change_detection = {
-    notify = false,
-  },
-
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        "gzip",
-        "matchit",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
-      },
-    },
-  },
-
-  ui = {
-    border = "rounded",
-    title = " lazy.nvim ",
-    icons = {
-      ft = "",
-      lazy = "󰂠 ",
-      loaded = "",
-      not_loaded = "",
-    },
-  },
-})
-
--- ================================================================
--- POST-PLUGIN SETUP
--- ================================================================
-require("core.autocmds")
-require("core.mappings")
-require("core.highlights").setup()
-
-require("ui.statusline").setup()
+-- vim: ts=2 sts=2 sw=2 et
