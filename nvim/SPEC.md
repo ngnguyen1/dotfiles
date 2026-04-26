@@ -239,12 +239,9 @@ Pinned plugin commits. **Should be checked in** (it is). Reproducibility comes f
 
 ## Issues / smells
 
-1. `vim.pumheight`, `vim.termguicolors`, `vim.splitkeep` typos — silent no-ops.
-2. `which-key.nvim` spec exists but isn't required; either delete the file or add it to `lazy-plugins.lua`.
-3. `treesitter.incremental_selection.node_incremental = 'grn'` collides conceptually with LSP rename; LSP attach overrides it buffer-locally, but document or rebind to avoid surprise.
-4. `lualine` extensions includes `neo-tree` while the file tree is `nvim-tree` — replace with `'nvim-tree'`.
-5. `stylua = {}` listed alongside `lua_ls` in the `servers` table inside `core/lsp.lua`. Stylua isn't an LSP server — it gets ensure-installed via mason-tool-installer (which is the actual intent), but the loop calls `vim.lsp.config('stylua', {})` and `vim.lsp.enable('stylua')` which is a no-op at best. Move stylua out of `servers` and ensure_install it separately, or use a dedicated `mason-tool-installer.ensure_installed` list.
-6. README at repo root says nvim is "based on NvChad" — code is custom. Update.
-7. `format_on_save` only covers `lua` + `python`; consider opt-out via `b:disable_autoformat` for project-by-project control.
-8. No diagnostic configuration (signs, virtual_text, severity_sort, float window). Defaults are noisy — consider `vim.diagnostic.config({...})`.
-9. No `mason-lspconfig` `ensure_installed` populated — if Mason hasn't installed `lua-language-server` interactively, LSP won't start. The pattern usually is `mason-lspconfig.ensure_installed = vim.tbl_keys(servers)`.
+2. `treesitter.incremental_selection.node_incremental = 'grn'` collides conceptually with LSP rename; LSP attach overrides it buffer-locally, but document or rebind to avoid surprise.
+4. `stylua = {}` listed alongside `lua_ls` in the `servers` table inside `core/lsp.lua`. Stylua isn't an LSP server — it gets ensure-installed via mason-tool-installer (which is the actual intent), but the loop calls `vim.lsp.config('stylua', {})` and `vim.lsp.enable('stylua')` which is a no-op at best. Move stylua out of `servers` and ensure_install it separately, or use a dedicated `mason-tool-installer.ensure_installed` list.
+5. README at repo root says nvim is "based on NvChad" — code is custom. Update.
+6. `format_on_save` only covers `lua` + `python`; consider opt-out via `b:disable_autoformat` for project-by-project control.
+7. No diagnostic configuration (signs, virtual_text, severity_sort, float window). Defaults are noisy — consider `vim.diagnostic.config({...})`.
+8. No `mason-lspconfig` `ensure_installed` populated — if Mason hasn't installed `lua-language-server` interactively, LSP won't start. The pattern usually is `mason-lspconfig.ensure_installed = vim.tbl_keys(servers)`.

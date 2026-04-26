@@ -48,7 +48,7 @@ return {
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
-          statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard', 'neo-tree' },
+          statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard', 'nvim-tree' },
         },
       },
 
@@ -136,7 +136,7 @@ return {
       },
 
       -- Auto-configure for known plugin windows
-      extensions = { 'neo-tree', 'lazy', 'fugitive', 'quickfix' },
+      extensions = { 'nvim-tree', 'lazy', 'fugitive', 'quickfix' },
     }
   end,
 }

@@ -14,7 +14,6 @@ vim.opt.relativenumber = true
 
 vim.opt.breakindent = true -- enable break indent
 
-
 vim.opt.mouse = 'a' -- enable mouse mode, can be useful for resizing splits
 
 -- show even with one match, do not preselect
@@ -33,7 +32,6 @@ vim.opt.smartcase = true
 
 -- keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
-
 
 vim.opt.updatetime = 250 -- decrease update time
 vim.opt.timeoutlen = 300 -- decrease mapped sequence wait time
@@ -72,10 +70,9 @@ vim.opt.conceallevel = 0
 
 vim.opt.wildmode = 'longest:full,full' -- command-line completion mode
 
-vim.pumheight = 13 -- sets the max number of items in the popup menu
-vim.termguicolors = true -- enables 24-bit RGB color in the terminal
-
-vim.splitkeep = 'screen' -- keeps the text on the screen steady when splitting
+vim.opt.pumheight = 13 -- sets the max number of items in the popup menu
+vim.opt.termguicolors = true -- enables 24-bit RGB color in the terminal
+vim.opt.splitkeep = 'screen' -- keeps the text on the screen steady when splitting
 
 -- use spaces for tabs
 vim.opt.tabstop = 2 -- Defines how many spaces a tab character represents
@@ -86,7 +83,7 @@ vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.expandtab = true -- convert typed tabs into spaces
 
-vim.o.grepprg = "rg --vimgrep"
-vim.o.grepformat = "%f:%l:%c:%m" -- filename:line:column:message
+vim.o.grepprg = 'rg --vimgrep'
+vim.o.grepformat = '%f:%l:%c:%m' -- filename:line:column:message
 
 -- vim: ts=2 sts=2 sw=2 et
