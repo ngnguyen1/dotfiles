@@ -21,6 +21,7 @@ return {
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>e', group = '[E]xplorer' },
+        { '<leader>w', group = '[W]indow' },
         { 'gr', group = 'LSP Actions', mode = { 'n' } },
       },
     },
