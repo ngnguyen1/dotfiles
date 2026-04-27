@@ -28,6 +28,19 @@ function M.setup()
       map('gW', tb.lsp_dynamic_workspace_symbols, 'Workspace Symbols')
       map('grt', tb.lsp_type_definitions, '[T]ype Definition')
 
+      -- <leader>c code group
+      map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+      map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
+      map('<leader>cd', vim.diagnostic.open_float, '[C]ode [D]iagnostic line')
+      map('<leader>cD', function() tb.diagnostics { bufnr = 0 } end, '[C]ode [D]iagnostic buffer')
+      map('<leader>ci', function()
+        vim.lsp.buf.code_action {
+          apply = true,
+          context = { only = { 'source.organizeImports' }, diagnostics = {} },
+        }
+      end, '[C]ode [I]mports')
+      map('<leader>cs', tb.lsp_document_symbols, '[C]ode [S]ymbols')
+
       local client = vim.lsp.get_client_by_id(event.data.client_id)
 
       -- document highlight

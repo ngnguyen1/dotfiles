@@ -8,22 +8,32 @@ return {
       {
         '<leader>ff',
         function() require('telescope.builtin').find_files() end,
-        desc = '[F]ind [F]iles',
+        desc = '[F]ile [F]ind',
+      },
+      {
+        '<leader>fr',
+        function() require('telescope.builtin').oldfiles() end,
+        desc = '[F]ile [R]ecent',
       },
       {
         '<leader>fg',
         function() require('telescope.builtin').live_grep() end,
-        desc = '[F]ind [G]rep',
+        desc = '[F]ile [G]rep',
       },
       {
         '<leader>fb',
         function() require('telescope.builtin').buffers() end,
-        desc = '[F]ind [B]uffers',
+        desc = '[F]ile [B]uffers',
       },
       {
-        '<leader>fh',
-        function() require('telescope.builtin').help_tags() end,
-        desc = '[F]ind [H]elp',
+        '<leader>fd',
+        function()
+          require('telescope.builtin').find_files {
+            cwd = vim.fn.expand '~/personal/dotfiles',
+            prompt_title = 'Dotfiles',
+          }
+        end,
+        desc = '[F]ile [D]otfiles',
       },
       {
         '<leader><leader>',

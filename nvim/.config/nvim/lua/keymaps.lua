@@ -8,6 +8,10 @@ map('n', ';', ':', { desc = 'cmd enter command mode' })
 -- clear highlights on search when pressing <Esc> in normal mode
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- buffer navigation
+map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
+map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev buffer' })
+
 --  See `:help wincmd` for a list of all window commands
 map('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 map('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })

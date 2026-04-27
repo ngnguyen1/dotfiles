@@ -15,13 +15,13 @@ return {
       },
 
       spec = {
-        { '<leader>c', group = '[C]ode', mode = 'n', 'v' },
+        { '<leader>c', group = '[C]ode', mode = { 'n', 'v' } },
+        { '<leader>f', group = '[F]ile' },
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { 'gr', group = 'LSP Actions', mode = { 'n' } },
-        { '<leader>f', group = '[F]ormat' },
         { '<leader>e', group = '[E]xplorer' },
+        { 'gr', group = 'LSP Actions', mode = { 'n' } },
       },
     },
   },
