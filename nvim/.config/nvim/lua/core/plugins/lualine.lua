@@ -56,8 +56,26 @@ return {
         -- ── A: Mode ────────────────────────────────────────────────────
         lualine_a = { 'mode' },
 
-        -- ── B: Git branch ──────────────────────────────────────────────
-        lualine_b = { 'branch' },
+        -- ── B: Git branch + macro recording + DAP ─────────────────────
+        lualine_b = {
+          -- DAP status (only rendered when dap is loaded and active)
+          {
+            function() return require('dap').status() end,
+            cond = function()
+              return package.loaded['dap'] and require('dap').status() ~= ''
+            end,
+            color = { fg = '#e0af68' },
+          },
+          'branch',
+          -- Macro recording indicator (empty string = hidden automatically)
+          {
+            function()
+              local reg = vim.fn.reg_recording()
+              if reg ~= '' then return '󰑋 @' .. reg end
+              return ''
+            end,
+          },
+        },
 
         -- ── C: Diagnostics + file info ─────────────────────────────────
         lualine_c = {
@@ -84,8 +102,27 @@ return {
           },
         },
 
-        -- ── X: Diff + encoding + filetype ──────────────────────────────
+        -- ── X: Diff + encoding + LSP + lazy updates + filetype ────────
         lualine_x = {
+          -- Lazy.nvim pending updates
+          {
+            require('lazy.status').updates,
+            cond = require('lazy.status').has_updates,
+            color = { fg = '#ff9e64' },
+          },
+          -- Active LSP clients for current buffer
+          {
+            function()
+              local clients = vim.lsp.get_clients({ bufnr = 0 })
+              if #clients == 0 then return '' end
+              local names = {}
+              for _, c in ipairs(clients) do
+                table.insert(names, c.name)
+              end
+              return ' ' .. table.concat(names, ', ')
+            end,
+            cond = function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end,
+          },
           -- Git diff hunks (reads from gitsigns if available)
           {
             'diff',
@@ -113,8 +150,9 @@ return {
           'filetype',
         },
 
-        -- ── Y: Progress + Location ─────────────────────────────────────
+        -- ── Y: Search count + Progress + Location ──────────────────────
         lualine_y = {
+          { 'searchcount', maxcount = 999, timeout = 500 },
           { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
           { 'location', padding = { left = 0, right = 1 } },
         },
