@@ -109,8 +109,6 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `core.plugins.lualine`
 - `custom.plugins.blink-cmp`
 
-❗ `core.plugins.which-key` is **not** in the require list — `which-key.nvim` is never loaded despite the spec file existing.
-
 Lazy options:
 - `checker = { enabled = false }` — no auto-update check.
 - `performance.rtp.disabled_plugins`: gzip, matchit, matchparen, netrwPlugin, tarPlugin, tohtml, tutor, zipPlugin.
@@ -202,7 +200,6 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 
 ### which-key.lua — `folke/which-key.nvim`
 - Spec: groups for `<leader>s`, `<leader>t`, `<leader>h`, `<leader>f`, `<leader>e`, and `gr`.
-- ⚠ Not registered in `lazy-plugins.lua` → currently dead code.
 
 ### blink-cmp.lua — `saghen/blink.cmp` (custom/)
 - Lazy: `InsertEnter`. Version `1.*`.
