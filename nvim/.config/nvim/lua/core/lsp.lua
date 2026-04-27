@@ -66,11 +66,35 @@ function M.setup()
   })
 
   -- =========================
+  -- DIAGNOSTICS
+  -- =========================
+  vim.diagnostic.config {
+    severity_sort = true,
+    update_in_insert = false,
+    underline = { severity = vim.diagnostic.severity.ERROR },
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = ' ',
+        [vim.diagnostic.severity.WARN] = ' ',
+        [vim.diagnostic.severity.INFO] = ' ',
+        [vim.diagnostic.severity.HINT] = ' ',
+      },
+    },
+    virtual_text = {
+      source = 'if_many',
+      spacing = 2,
+      prefix = '●',
+    },
+    float = {
+      border = 'rounded',
+      source = 'if_many',
+    },
+  }
+
+  -- =========================
   -- SERVERS CONFIG
   -- =========================
   local servers = {
-    stylua = {},
-
     lua_ls = {
       on_init = function(client)
         client.server_capabilities.documentFormattingProvider = false
@@ -105,13 +129,20 @@ function M.setup()
   -- =========================
   -- MASON INSTALL
   -- =========================
-  local ensure_installed = vim.tbl_keys(servers)
+  -- Non-LSP tools (formatters, linters) → mason-tool-installer
   require('mason-tool-installer').setup {
-    ensure_installed = ensure_installed,
+    ensure_installed = { 'stylua' },
+  }
+
+  -- LSP servers → mason-lspconfig (auto-installs on startup)
+  local server_names = vim.tbl_keys(servers)
+  require('mason-lspconfig').setup {
+    ensure_installed = server_names,
+    automatic_enable = false, -- we wire vim.lsp.enable manually below
   }
 
   -- =========================
-  -- NEW API (IMPORTANT)
+  -- NEW API (Neovim 0.11+)
   -- =========================
   for name, config in pairs(servers) do
     config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)

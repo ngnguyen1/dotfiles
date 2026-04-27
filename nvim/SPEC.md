@@ -1,6 +1,6 @@
 # nvim/ — Spec
 
-Personal Neovim configuration. Built from scratch (the README's NvChad reference is stale — current code is hand-rolled, not NvChad). Plugin manager: `lazy.nvim`. Completion: `blink.cmp`. LSP: `nvim-lspconfig` + `mason.nvim`.
+Personal Neovim configuration, hand-rolled. Plugin manager: `lazy.nvim`. Completion: `blink.cmp`. LSP: `nvim-lspconfig` + `mason.nvim` + `mason-lspconfig`. Formatter: `conform.nvim` + `mason-tool-installer`.
 
 ## Layout
 
@@ -30,7 +30,7 @@ nvim/
             │       ├── surround.lua       # surround text-object
             │       ├── git.lua            # gitsigns + fugitive + diffview
             │       ├── lualine.lua        # statusline
-            │       └── which-key.lua      # leader-key hints (NOT REGISTERED)
+            │       └── which-key.lua      # leader-key hints
             └── custom/
                 └── plugins/
                     └── blink-cmp.lua      # completion
@@ -66,14 +66,12 @@ nvim/
 | `cmdheight` | `0` | hide cmdline when idle |
 | `conceallevel` | `0` | no concealment |
 | `wildmode` | `'longest:full,full'` | bash-ish completion |
-| `pumheight` | `13` | (typo: `vim.pumheight` instead of `vim.opt.pumheight`/`vim.o.pumheight` — has no effect) |
-| `termguicolors` | `true` | (same typo: `vim.termguicolors`) |
-| `splitkeep` | `'screen'` | (same typo: `vim.splitkeep`) |
+| `pumheight` | `13` | max items in popup menu |
+| `termguicolors` | `true` | 24-bit RGB |
+| `splitkeep` | `'screen'` | keep text steady on split |
 | Indent | `tabstop=2`, `softtabstop=2`, `shiftwidth=2`, `shiftround`, `autoindent`, `smartindent`, `expandtab` | 2-space indent |
 | `grepprg` | `rg --vimgrep` | use ripgrep for `:grep` |
 | `grepformat` | `%f:%l:%c:%m` | match ripgrep output |
-
-⚠ Three options are misspelled (`vim.pumheight`, `vim.termguicolors`, `vim.splitkeep`). Should be `vim.opt.*` or `vim.o.*`. Currently they create global Lua variables and silently no-op.
 
 ## autocmds.lua
 
@@ -130,14 +128,17 @@ Lazy options:
     - Telescope-backed: `grr` references, `gri` impl, `grd` def, `gO` doc symbols, `gW` workspace symbols, `grt` type def.
     - `<leader>th` toggle inlay hints (when supported).
     - Document highlight under cursor (CursorHold), cleared on CursorMoved/LspDetach, with augroups `core-lsp-highlight` / `core-lsp-detach`.
-  - Servers configured: `stylua` (formatter only — installed via mason-tool-installer, not actually an LSP) and `lua_ls` (with project-local `.luarc.json` detection, runtime `LuaJIT`, library path includes nvim runtime + `${3rd}/luv/library` + `${3rd}/busted/library`, formatting disabled to defer to stylua via conform).
+  - Diagnostic config set via `vim.diagnostic.config`: severity-sorted, signs (error/warn/info/hint glyphs), virtual_text with `if_many` source + `●` prefix, rounded float border, no in-insert updates, underline only for ERROR.
+  - Servers configured: `lua_ls` only (with project-local `.luarc.json` detection, runtime `LuaJIT`, library path includes nvim runtime + `${3rd}/luv/library` + `${3rd}/busted/library`, formatting disabled to defer to stylua via conform).
   - **Uses Neovim 0.11+ API**: `vim.lsp.config(name, config)` + `vim.lsp.enable(name)`.
   - Capabilities augmented via `require('blink.cmp').get_lsp_capabilities`.
+  - Auto-install split: `mason-lspconfig.ensure_installed` covers LSP servers (`vim.tbl_keys(servers)`, `automatic_enable = false`); `mason-tool-installer.ensure_installed = { 'stylua' }` covers non-LSP tools.
 
 ### conform.lua — `stevearc/conform.nvim`
 - Lazy: `BufReadPre`/`BufNewFile`, cmd `ConformInfo`.
 - `<leader>f` → `format({ async = true })` (n+v).
 - Format-on-save: only `lua` and `python` (500 ms timeout). Other filetypes are explicit-only.
+- Opt-out: `vim.g.disable_autoformat` (global) and `vim.b.disable_autoformat` (buffer) short-circuit `format_on_save`. User commands `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable` (clear both).
 - `default_format_opts.lsp_format = 'fallback'` — LSP formats only if no formatter is configured.
 - `formatters_by_ft.lua = { 'stylua' }`.
 
@@ -154,7 +155,7 @@ Lazy options:
 - Dep: `nvim-treesitter-textobjects` on `branch = 'main'`.
 - `ensure_installed`: bash, c, diff, html, lua, luadoc, markdown, markdown_inline, query, vim, vimdoc.
 - `auto_install = true`. Highlight + indent enabled.
-- Incremental selection: `gnn` init, `grn`/`grc` extend, `grm` shrink. **`grn` clashes with the LSP rename keymap** (LSP wins on attach since it's buffer-local, but in non-LSP buffers treesitter takes it).
+- Incremental selection: `<C-space>` init + node extend, `<C-s>` scope extend, `<C-bs>` shrink. (Avoids prior `grn` clash with LSP rename.)
 - Textobjects:
   - select: `af`/`if` function, `ac`/`ic` class, `aa`/`ia` parameter (lookahead).
   - move: `]f`/`[f` function, `]c`/`[c` class.
@@ -196,7 +197,7 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 - `globalstatus = true`. Powerline separators.
 - Sections: A mode → B branch → C diagnostics + ft icon + filename(rel, with modified `●`/RO icons) → X diff (sourced from `vim.b.gitsigns_status_dict`) + encoding (only when not utf-8) + filetype → Y progress + location → Z `os.date('%R')` (clock).
 - Inactive: just relative filename + location.
-- Extensions: `neo-tree`, `lazy`, `fugitive`, `quickfix`. `neo-tree` listed but **neo-tree is not installed** (this config uses nvim-tree).
+- Extensions: `nvim-tree`, `lazy`, `fugitive`, `quickfix`.
 
 ### which-key.lua — `folke/which-key.nvim`
 - Spec: groups for `<leader>s`, `<leader>t`, `<leader>h`, `<leader>f`, `<leader>e`, and `gr`.
@@ -236,9 +237,4 @@ Pinned plugin commits. **Should be checked in** (it is). Reproducibility comes f
 
 ## Issues / smells
 
-2. `treesitter.incremental_selection.node_incremental = 'grn'` collides conceptually with LSP rename; LSP attach overrides it buffer-locally, but document or rebind to avoid surprise.
-4. `stylua = {}` listed alongside `lua_ls` in the `servers` table inside `core/lsp.lua`. Stylua isn't an LSP server — it gets ensure-installed via mason-tool-installer (which is the actual intent), but the loop calls `vim.lsp.config('stylua', {})` and `vim.lsp.enable('stylua')` which is a no-op at best. Move stylua out of `servers` and ensure_install it separately, or use a dedicated `mason-tool-installer.ensure_installed` list.
-5. README at repo root says nvim is "based on NvChad" — code is custom. Update.
-6. `format_on_save` only covers `lua` + `python`; consider opt-out via `b:disable_autoformat` for project-by-project control.
-7. No diagnostic configuration (signs, virtual_text, severity_sort, float window). Defaults are noisy — consider `vim.diagnostic.config({...})`.
-8. No `mason-lspconfig` `ensure_installed` populated — if Mason hasn't installed `lua-language-server` interactively, LSP won't start. The pattern usually is `mason-lspconfig.ensure_installed = vim.tbl_keys(servers)`.
+(None outstanding — prior issues all resolved.)

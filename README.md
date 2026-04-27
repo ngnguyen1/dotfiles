@@ -9,7 +9,7 @@ Configurations are managed with [GNU Stow](https://www.gnu.org/software/stow/), 
 
 - **Shell**: Zsh configuration via `.zshrc`
 - **Terminal**: [Kitty](https://sw.kovidgoyal.net/kitty/) themes and custom behavior
-- **Editor**: [Neovim](https://neovim.io/) configuration based on [NvChad](https://nvchad.com/) (LSP, formatting, keymaps)
+- **Editor**: [Neovim](https://neovim.io/) hand-rolled config — `lazy.nvim`, `blink.cmp`, `nvim-lspconfig` + `mason.nvim`, treesitter, telescope (LSP, formatting, keymaps)
 
 ## Why This Exists
 
@@ -55,7 +55,7 @@ brew install kitty neovim
 dotfiles/
 ├── .config/
 │   ├── kitty/          # Kitty configuration
-│   └── nvim/           # Neovim/NvChad configuration
+│   └── nvim/           # Neovim configuration (lazy.nvim, hand-rolled)
 ├── .zshrc              # Zsh configuration
 └── README.md
 ```
