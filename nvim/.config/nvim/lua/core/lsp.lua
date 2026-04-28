@@ -1,5 +1,10 @@
 local M = {}
 
+-- Extend these tables from language files before M.setup() fires.
+-- Language files are required in lazy-plugins.lua at startup, before any BufReadPre.
+M.servers = {}
+M.extra_tools = {} -- non-LSP mason tools (formatters, linters); stylua added in setup()
+
 function M.setup()
   -- =========================
   -- LSP ATTACH (keymaps, etc.)
@@ -107,7 +112,7 @@ function M.setup()
   -- =========================
   -- SERVERS CONFIG
   -- =========================
-  local servers = {
+  M.servers = vim.tbl_deep_extend('force', M.servers, {
     lua_ls = {
       on_init = function(client)
         client.server_capabilities.documentFormattingProvider = false
@@ -137,27 +142,26 @@ function M.setup()
         },
       },
     },
-  }
+  })
 
   -- =========================
   -- MASON INSTALL
   -- =========================
   -- Non-LSP tools (formatters, linters) → mason-tool-installer
   require('mason-tool-installer').setup {
-    ensure_installed = { 'stylua' },
+    ensure_installed = vim.list_extend({ 'stylua' }, M.extra_tools),
   }
 
   -- LSP servers → mason-lspconfig (auto-installs on startup)
-  local server_names = vim.tbl_keys(servers)
   require('mason-lspconfig').setup {
-    ensure_installed = server_names,
+    ensure_installed = vim.tbl_keys(M.servers),
     automatic_enable = false, -- we wire vim.lsp.enable manually below
   }
 
   -- =========================
   -- NEW API (Neovim 0.11+)
   -- =========================
-  for name, config in pairs(servers) do
+  for name, config in pairs(M.servers) do
     config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
 
     vim.lsp.config(name, config)

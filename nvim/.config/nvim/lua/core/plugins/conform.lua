@@ -26,10 +26,7 @@ return {
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then return end
 
-        local enabled = {
-          lua = true,
-          python = true,
-        }
+        local enabled = vim.tbl_extend('force', { lua = true, python = true }, vim.g.autoformat_filetypes or {})
 
         if enabled[vim.bo[bufnr].filetype] then return { timeout_ms = 500 } end
       end,
