@@ -21,6 +21,7 @@ require('lazy').setup({
 
   -- Custom plugins
   require 'custom.plugins.blink-cmp',
+  require 'custom.plugins.folding',
 }, { ---@diagnostic disable-line: missing-fields
   -- disable auto update check
   checker = { enabled = false },

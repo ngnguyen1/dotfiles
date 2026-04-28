@@ -33,7 +33,8 @@ nvim/
             │       └── which-key.lua      # leader-key hints
             └── custom/
                 └── plugins/
-                    └── blink-cmp.lua      # completion
+                    ├── blink-cmp.lua      # completion
+                    └── folding.lua        # treesitter/LSP folds + keymaps
 ```
 
 ## init.lua
@@ -106,6 +107,7 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `core.plugins.git`
 - `core.plugins.lualine`
 - `custom.plugins.blink-cmp`
+- `custom.plugins.folding`
 
 Lazy options:
 - `checker = { enabled = false }` — no auto-update check.
@@ -201,6 +203,16 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 
 ### which-key.lua — `folke/which-key.nvim`
 - Spec: groups for `<leader>s`, `<leader>t`, `<leader>h`, `<leader>f`, `<leader>e`, and `gr`.
+
+### folding.lua (custom/)
+No external plugin — pure Neovim 0.10+ built-ins.
+
+- **Fold method**: `expr` + `vim.treesitter.foldexpr()` by default.
+- **LSP upgrade**: `LspAttach` autocmd switches window to `vim.lsp.foldexpr()` when server advertises `textDocument/foldingRange`.
+- **Auto-fold imports**: `LspNotify` on `textDocument/didOpen` calls `vim.lsp.foldclose('imports', …)` via `pcall`.
+- **Python override**: `FileType python` → `foldmethod = indent` (treesitter folds unreliable for Python).
+- Options: `foldlevel = 99`, `foldlevelstart = 99` (open by default), `foldnestmax = 4`, `foldtext = ''` (transparent — preserves first-line syntax highlight), `fillchars += fold:·`.
+- Keymaps: `za/zo/zc` toggle/open/close, `zA/zO/zC` recursive, `zR/zM` all-open/all-close, `zr/zm` level step, `zx` recompute, `[z/]z` fold edges, `zj/zk` next/prev fold.
 
 ### blink-cmp.lua — `saghen/blink.cmp` (custom/)
 - Lazy: `InsertEnter`. Version `1.*`.

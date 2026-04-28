@@ -127,3 +127,18 @@
 | `<leader>gdH` | Branch history |
 | `<leader>gdt` | Toggle file panel |
 | `<leader>gdv` | Toggle diff view (smart open/close) |
+
+## Folding (`z`) — `custom/plugins/folding.lua`
+
+| Key | Action |
+|-----|--------|
+| `za` / `zA` | Toggle fold / recursive |
+| `zo` / `zO` | Open fold / recursive |
+| `zc` / `zC` | Close fold / recursive |
+| `zR` | Open all folds |
+| `zM` | Close all folds |
+| `zr` | Increase foldlevel |
+| `zm` | Decrease foldlevel |
+| `zx` | Recompute folds (fixes E490 after LSP attach / Telescope jump) |
+| `[z` / `]z` | Go to fold start / end |
+| `zj` / `zk` | Next / prev fold |
