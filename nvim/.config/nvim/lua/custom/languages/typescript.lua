@@ -47,7 +47,6 @@ lsp.servers.eslint = {
 -- prettierd: daemon wrapper, much faster than plain prettier on each save
 vim.list_extend(lsp.extra_tools, { 'prettierd' })
 
--- Opt these filetypes into format-on-save (prettierd via conform)
 vim.g.autoformat_filetypes = vim.tbl_extend('force', vim.g.autoformat_filetypes or {}, {
   javascript = true,
   javascriptreact = true,

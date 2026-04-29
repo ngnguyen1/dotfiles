@@ -5,9 +5,9 @@ return {
     'nvim-tree/nvim-tree.lua',
     cmd = { 'NvimTreeToggle', 'NvimTreeFindFile', 'NvimTreeRefresh', 'NvimTreeCollapse' },
     keys = {
-      { '<leader>ee', '<cmd>NvimTreeToggle<CR>',   desc = 'Explorer [E]xplorer toggle' },
+      { '<leader>ee', '<cmd>NvimTreeToggle<CR>', desc = 'Explorer [E]xplorer toggle' },
       { '<leader>ef', '<cmd>NvimTreeFindFile<CR>', desc = 'Explorer [F]ind file' },
-      { '<leader>er', '<cmd>NvimTreeRefresh<CR>',  desc = 'Explorer [R]efresh' },
+      { '<leader>er', '<cmd>NvimTreeRefresh<CR>', desc = 'Explorer [R]efresh' },
       { '<leader>ec', '<cmd>NvimTreeCollapse<CR>', desc = 'Explorer [C]ollapse' },
     },
     dependencies = {
@@ -19,6 +19,7 @@ return {
     end,
     opts = {
       view = {
+        side = 'right',
         width = 30,
       },
       renderer = {
