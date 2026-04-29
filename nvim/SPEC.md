@@ -32,6 +32,8 @@ nvim/
             │       ├── lualine.lua        # statusline
             │       └── which-key.lua      # leader-key hints
             └── custom/
+                ├── languages/
+                │   └── typescript.lua     # ts_ls, vue_ls, astro, tailwind, eslint, conform fts
                 └── plugins/
                     ├── blink-cmp.lua      # completion
                     └── folding.lua        # treesitter/LSP folds + keymaps
@@ -108,6 +110,7 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `core.plugins.lualine`
 - `custom.plugins.blink-cmp`
 - `custom.plugins.folding`
+- `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
 
 Lazy options:
 - `checker = { enabled = false }` — no auto-update check.
@@ -129,20 +132,32 @@ Lazy options:
     - `grn` rename, `gra` code action (n+x), `grD` declaration.
     - Telescope-backed: `grr` references, `gri` impl, `grd` def, `gO` doc symbols, `gW` workspace symbols, `grt` type def.
     - `<leader>th` toggle inlay hints (when supported).
-    - Document highlight under cursor (CursorHold), cleared on CursorMoved/LspDetach, with augroups `core-lsp-highlight` / `core-lsp-detach`.
+    - Document highlight under cursor (CursorHold), cleared on CursorMoved/LspDetach, with augroups `core-lsp-highlight` / `core-lsp-detach`. For **`vue`** buffers, **`ts_ls`** does not register document highlight (capability cleared so **`vue_ls`** owns it — avoids tsserver `-32603` “document should be opened first” on SFCs without `@vue/typescript-plugin`).
   - Diagnostic config set via `vim.diagnostic.config`: severity-sorted, signs (error/warn/info/hint glyphs), virtual_text with `if_many` source + `●` prefix, rounded float border, no in-insert updates, underline only for ERROR.
-  - Servers configured: `lua_ls` only (with project-local `.luarc.json` detection, runtime `LuaJIT`, library path includes nvim runtime + `${3rd}/luv/library` + `${3rd}/busted/library`, formatting disabled to defer to stylua via conform).
+  - Server table `core.lsp.servers`: extended before setup by `custom/languages/typescript.lua`. Base merge in `core/lsp.lua`: `lua_ls` (project-local `.luarc.json` detection, runtime `LuaJIT`, library path includes nvim runtime + `${3rd}/luv/library` + `${3rd}/busted/library`, formatting disabled for stylua/conform).
+  - Extended servers (see below): `ts_ls`, `vue_ls`, `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
   - **Uses Neovim 0.11+ API**: `vim.lsp.config(name, config)` + `vim.lsp.enable(name)`.
   - Capabilities augmented via `require('blink.cmp').get_lsp_capabilities`.
-  - Auto-install split: `mason-lspconfig.ensure_installed` covers LSP servers (`vim.tbl_keys(servers)`, `automatic_enable = false`); `mason-tool-installer.ensure_installed = { 'stylua' }` covers non-LSP tools.
+  - Auto-install: `mason-lspconfig.ensure_installed = vim.tbl_keys(M.servers)` (`automatic_enable = false`). Mason packages map nvim-lspconfig names (e.g. `vue_ls` → `vue-language-server`, `ts_ls` → `typescript-language-server`). `mason-tool-installer.ensure_installed = { 'stylua' }` plus `M.extra_tools` (e.g. `prettierd`).
+
+### custom/languages/typescript.lua — JS/TS/Vue/Astro toolchain
+- **`ts_ls`**: filetypes `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, **`vue`** — TypeScript language service also attaches to `.vue` buffers for hybrid mode.
+- **`vue_ls`**: filetypes `vue` — `@vue/language-server` (Vue 3). Upstream nvim-lspconfig wires hybrid mode: Vue LS coordinates SFCs and forwards TS-related traffic to `ts_ls`, `vtsls`, or `typescript-tools` on the **same buffer**. If TypeScript inside `.vue` is incomplete, consider **`vtsls` + `@vue/typescript-plugin`** per [Vue language-tools Neovim wiki](https://github.com/vuejs/language-tools/wiki/Neovim).
+- Also registers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`; adds `prettierd` to `mason-tool-installer`; extends `vim.g.autoformat_filetypes` and conform `formatters_by_ft` for web stacks.
+
+#### Vue LSP verification (local checklist)
+1. **Mason**: `:Mason` — ensure **`vue-language-server`** and **`typescript-language-server`** are installed (or reinstall/update after nvim-lspconfig renames).
+2. **Two clients on `.vue`**: `:LspInfo` with a `.vue` buffer open — expect **`vue_ls`** and **`ts_ls`** both attached (hybrid depends on both).
+3. **Project deps**: open Neovim from the **project root** (`package.json`). The app should list **`typescript`** in `dependencies` / `devDependencies` so `node_modules/typescript` resolves (avoids server init errors around TS resolution).
+4. **If TS-in-SFC still wrong after init succeeds**: evaluate switching `ts_ls` → **`vtsls`** and adding **`@vue/typescript-plugin`** to the project per the wiki (optional upgrade path).
 
 ### conform.lua — `stevearc/conform.nvim`
 - Lazy: `BufReadPre`/`BufNewFile`, cmd `ConformInfo`.
-- `<leader>f` → `format({ async = true })` (n+v).
-- Format-on-save: only `lua` and `python` (500 ms timeout). Other filetypes are explicit-only.
+- `<leader>cf` → `format({ async = true })` (n+v).
+- Format-on-save: always `lua` and `python`; additional filetypes come from `vim.g.autoformat_filetypes` (extended by `custom/languages/typescript.lua` for vue, astro, html, css, json, etc.) — 500 ms timeout when enabled.
 - Opt-out: `vim.g.disable_autoformat` (global) and `vim.b.disable_autoformat` (buffer) short-circuit `format_on_save`. User commands `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable` (clear both).
 - `default_format_opts.lsp_format = 'fallback'` — LSP formats only if no formatter is configured.
-- `formatters_by_ft.lua = { 'stylua' }`.
+- Base `formatters_by_ft`: `lua → stylua`. `custom/languages/typescript.lua` merges `prettierd` for vue, astro, html, css, json, etc.
 
 ### telescope.lua — `nvim-telescope/telescope.nvim`
 - Lazy on `:Telescope`, with eager keys.
@@ -246,7 +261,8 @@ Pinned plugin commits. **Should be checked in** (it is). Reproducibility comes f
 - `stylua` (auto-installed via mason-tool-installer).
 - A C compiler (for treesitter parser builds).
 - A Nerd Font.
+- **Vue/TS projects**: install **`typescript`** (and other tooling) in the **application repo** — Mason supplies editors’ language servers, not your app’s `node_modules`.
 
 ## Issues / smells
 
-(None outstanding — prior issues all resolved.)
+- Operational: Vue hybrid LSP needs **`vue_ls` + `ts_ls`** on the buffer and a local **`typescript`** package — see **Vue LSP verification** under `custom/languages/typescript.lua` in this spec.
