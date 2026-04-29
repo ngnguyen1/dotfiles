@@ -7,8 +7,10 @@ lsp.servers.ts_ls = {
   filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
 }
 
--- Vue 3 (Composition API) — vue_ls handles .vue SFCs.
--- vue_ls forwards TypeScript requests to ts_ls on the same buffer.
+-- Vue 3 — vue_ls (@vue/language-server) for .vue SFCs; nvim-lspconfig hybrid mode
+-- forwards TS requests to ts_ls (or vtsls / typescript-tools) on the same buffer.
+-- For fuller TypeScript-in-.vue support, upstream recommends vtsls with
+-- @vue/typescript-plugin instead of ts_ls alone; see vuejs/language-tools Neovim wiki.
 lsp.servers.vue_ls = {
   filetypes = { 'vue' },
 }

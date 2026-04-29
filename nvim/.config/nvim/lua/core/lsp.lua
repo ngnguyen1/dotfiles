@@ -48,6 +48,13 @@ function M.setup()
 
       local client = vim.lsp.get_client_by_id(event.data.client_id)
 
+      -- ts_ls + Vue SFC: tsserver returns "document should be opened first" for
+      -- textDocument/documentHighlight unless the project uses @vue/typescript-plugin (or vtsls).
+      -- Let vue_ls own highlights on .vue buffers.
+      if client and client.name == 'ts_ls' and vim.bo[event.buf].filetype == 'vue' then
+        client.server_capabilities.documentHighlightProvider = false
+      end
+
       -- document highlight
       if client and client:supports_method('textDocument/documentHighlight', event.buf) then
         local group = vim.api.nvim_create_augroup('core-lsp-highlight', { clear = false })
