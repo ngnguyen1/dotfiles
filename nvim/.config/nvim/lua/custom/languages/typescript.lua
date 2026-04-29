@@ -4,13 +4,12 @@
 local lsp = require 'core.lsp'
 
 lsp.servers.ts_ls = {
-  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
 }
 
--- Vue 3 (Composition API) — volar handles .vue SFCs
--- NOTE: For hybrid mode (ts_ls understands Vue imports), install @vue/typescript-plugin
--- in your project and add it to ts_ls.init_options.plugins. Not needed for most workflows.
-lsp.servers.volar = {
+-- Vue 3 (Composition API) — vue_ls handles .vue SFCs.
+-- vue_ls forwards TypeScript requests to ts_ls on the same buffer.
+lsp.servers.vue_ls = {
   filetypes = { 'vue' },
 }
 
