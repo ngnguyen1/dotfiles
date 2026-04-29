@@ -8,10 +8,31 @@
 # Add local ~/.bin to the PATH
 export PATH="$HOME/.bin:$HOME/Library/Python/3.9/bin:$PATH"
 
-# NVM
+# NVM — lazy load (saves ~200ms on every shell open)
+# nvm/node/npm/npx load on first use; .nvmrc respected via chpwd hook
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+_nvm_load() {
+  unfunction nvm node npm npx yarn pnpm 2>/dev/null
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+}
+
+nvm()  { _nvm_load; nvm  "$@"; }
+node() { _nvm_load; node "$@"; }
+npm()  { _nvm_load; npm  "$@"; }
+npx()  { _nvm_load; npx  "$@"; }
+yarn() { _nvm_load; yarn "$@"; }
+pnpm() { _nvm_load; pnpm "$@"; }
+
+# Auto-switch node version when entering a dir with .nvmrc
+_nvm_auto_use() {
+  [[ -f .nvmrc ]] || return
+  _nvm_load
+  nvm use --silent
+}
+autoload -U add-zsh-hook
+add-zsh-hook chpwd _nvm_auto_use
 
 export GSDK="$HOME/silabs/gsdk"
 
@@ -200,8 +221,8 @@ vv() {
   NVIM_APPNAME=$(basename $config) nvim $@
 }
 
-# Enable bash-style completion for ZSH
-autoload -U +X bashcompinit compinit && bashcompinit
+# Enable bash-style completion for ZSH (compinit already called by OMZ above)
+autoload -U +X bashcompinit && bashcompinit
 
 # Vault CLI autocompletion
 complete -o nospace -C /opt/homebrew/bin/vault vault
@@ -211,12 +232,20 @@ export CLOUDSWPASSWD="BxtW7I%hdAS4igpwVrM#"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/ngnguyen/.lmstudio/bin"
 
-# Initialize ZSH completion systemm
-compinit
-
+# pyenv — lazy load (saves ~50ms; PATH set eagerly so `python` resolves without loading pyenv)
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+
+_pyenv_load() {
+  unfunction pyenv python python3 pip pip3 2>/dev/null
+  eval "$(command pyenv init - zsh)"
+}
+
+pyenv()   { _pyenv_load; pyenv   "$@"; }
+python()  { _pyenv_load; python  "$@"; }
+python3() { _pyenv_load; python3 "$@"; }
+pip()     { _pyenv_load; pip     "$@"; }
+pip3()    { _pyenv_load; pip3    "$@"; }
 
 # Created by `pipx` on 2025-09-06 00:39:11
 export PATH="$PATH:/Users/ngnguyen/.local/bin"
