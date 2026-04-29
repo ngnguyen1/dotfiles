@@ -1,36 +1,74 @@
-# zsh/ — Spec
+# zsh/ - Spec
 
-Zsh configuration. Built on Oh My Zsh, prompt by Starship.
+Zsh configuration. Managed as a GNU Stow package. Built on Oh My Zsh, prompt by Starship.
 
 ## Layout
 
 ```
 zsh/
-└── .zshrc        # stowed to ~/.zshrc
+├── .zshrc                         # minimal loader, stowed to ~/.zshrc
+└── .config/zsh/
+    ├── exports.zsh                # PATH and environment
+    ├── history.zsh                # history settings and setopt flags
+    ├── omz.zsh                    # Oh My Zsh plugins/theme config
+    ├── langs.zsh                  # nvm and pyenv lazy loaders
+    ├── aliases.zsh                # aliases only
+    ├── functions.zsh              # shell functions only
+    ├── completions.zsh            # bashcompinit, fzf, zoxide, vault completion
+    ├── prompt.zsh                 # prompt init
+    └── local.zsh                  # optional untracked local secrets / machine config
 ```
 
-Stow target: `~/.zshrc`.
+Stow targets:
+
+- `~/.zshrc`
+- `~/.config/zsh/*.zsh`
+
+`local.zsh` is intentionally ignored by git and sourced last when present.
+
+## Load Order
+
+`.zshrc` loads files in this order:
+
+1. `exports.zsh`
+2. `history.zsh`
+3. `omz.zsh`
+4. `langs.zsh`
+5. `aliases.zsh`
+6. `functions.zsh`
+7. `completions.zsh`
+8. `prompt.zsh`
+9. `local.zsh` if readable
+
+Rationale:
+
+- Environment and PATH load first because later tools depend on them.
+- Oh My Zsh loads before aliases so user aliases override plugin aliases.
+- Oh My Zsh runs `compinit`; `completions.zsh` only adds bash completion and tool-specific hooks.
+- Prompt loads last to avoid slow prompt work before shell config is ready.
+- Local machine config loads last so it can override tracked defaults.
 
 ## Loaded frameworks / tools
 
 | Name | Role | Activation |
 |---|---|---|
-| Oh My Zsh | plugin/theme manager | `source $ZSH/oh-my-zsh.sh` |
-| Starship | prompt | `eval "$(starship init zsh)"` |
-| zoxide | smarter `cd` | `eval "$(zoxide init zsh --cmd cd)"` |
-| pyenv | Python version manager | `eval "$(pyenv init - zsh)"` |
-| nvm | Node version manager | `source $NVM_DIR/nvm.sh` |
-| fzf | fuzzy finder | `source <(fzf --zsh)` |
-| bat | `cat` replacement | aliased |
+| Oh My Zsh | plugin/theme manager | `source "$ZSH/oh-my-zsh.sh"` |
+| Starship | prompt | guarded `eval "$(starship init zsh)"` |
+| zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
+| pyenv | Python version manager | PATH eager, `pyenv init` lazy |
+| nvm | Node version manager | `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` |
+| fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
+| bat | `cat` replacement | alias only when `bat` exists |
 | eza | `ls` replacement | OMZ plugin |
-| fd | find replacement | used in env vars / aliases |
+| fd | find replacement | used by fzf aliases/functions |
 | lazygit | git TUI | aliased |
-| LM Studio CLI (`lms`) | local LLM CLI | PATH only |
+| Vault CLI | completion | guarded bash completion |
 
 ## Theme
 
-- `ZSH_THEME=""` — disabled. Starship handles the prompt instead.
-- Powerlevel10k references commented out (legacy).
+- `ZSH_THEME=""` disables OMZ themes.
+- Starship handles prompt in `prompt.zsh`.
+- Powerlevel10k is no longer configured in tracked files.
 
 ## Plugins (OMZ)
 
@@ -39,8 +77,9 @@ git gh terraform brew rsync aws eza s-plugin
 zsh-autosuggestions zsh-syntax-highlighting
 ```
 
-`eza` plugin styled via:
-```
+`eza` plugin styling:
+
+```zsh
 zstyle ':omz:plugins:eza' 'icons' yes
 zstyle ':omz:plugins:eza' 'git-status' yes
 ```
@@ -50,78 +89,111 @@ zstyle ':omz:plugins:eza' 'git-status' yes
 | Setting | Value |
 |---|---|
 | `HISTFILE` | `~/.zsh_history` |
-| `HISTSIZE` | 1,000,000 (in-memory) |
-| `SAVEHIST` | 1,000,000 (on disk) |
+| `HISTSIZE` | 1,000,000 |
+| `SAVEHIST` | 1,000,000 |
 | `HIST_STAMPS` | `mm.dd.yyyy` |
 
 Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND_NO_DUPS`, `SHARE_HISTORY`, `INC_APPEND_HISTORY`.
 
 ## Environment
 
-| Variable | Value | Purpose |
+| Variable | Value / source | Purpose |
 |---|---|---|
-| `PATH` | prepends: `~/.bin`, `~/Library/Python/3.9/bin`, `$PYENV_ROOT/bin`, `~/.lmstudio/bin`, `~/.local/bin`, `~/.bin/slt-cli`, `~/.antigravity/antigravity/bin`, `/opt/homebrew/opt/libpq/bin` | tool discovery |
+| `PATH` | de-duplicated `path=(...)` array | tool discovery |
 | `LANG` | `en_US.UTF-8` | locale |
-| `NVM_DIR` | `~/.nvm` | nvm root |
 | `GSDK` | `~/silabs/gsdk` | Silicon Labs SDK |
-| `ZSH` | `~/.oh-my-zsh` | OMZ root |
-| `EZA_CONFIG_DIR` | `~/.config/eza` | eza theme |
-| `TMUX_CONF` | `~/.config/tmux/tmux.conf` | tmux config (config not in this repo) |
-| `CONFIG_DIR` | `~/.config/lazygit` | misnamed export — lazygit reads `XDG_CONFIG_HOME`, not `CONFIG_DIR` |
+| `EZA_CONFIG_DIR` | `~/.config/eza` | eza config |
+| `TMUX_CONF` | `~/.config/tmux/tmux.conf` | tmux config path |
+| `CONFIG_DIR` | `~/.config/lazygit` | legacy lazygit-related export |
 | `GPG_TTY` | `$(tty)` | GPG signing |
-| `PYENV_ROOT` | `~/.pyenv` | pyenv root |
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` | fzf source |
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
-| `FZF_DEFAULT_OPTS` | full Catppuccin-Mocha palette (`bg+`, `bg`, `spinner`, `hl`, `fg`, `header`, `info`, `pointer`, `marker`, `prompt`, `hl+`, `selected-bg`) + layout `--height=40% --border=rounded --margin=5% --reverse --multi` | UI |
-| `CLOUDSWPASSWD` | **plaintext password** | ⚠ secret in version control — see Issues |
+| `FZF_DEFAULT_OPTS` | Catppuccin-Mocha colors plus layout flags | fzf UI |
+| `NVM_DIR` | `~/.nvm` | nvm root |
+| `PYENV_ROOT` | `~/.pyenv` | pyenv root |
+
+PATH entries in tracked config:
+
+```text
+~/.bin
+~/Library/Python/3.9/bin
+~/.lmstudio/bin
+~/.local/bin
+~/.bin/slt-cli
+~/.antigravity/antigravity/bin
+/opt/homebrew/opt/libpq/bin
+~/.pyenv/bin and ~/.pyenv/shims when ~/.pyenv/bin exists
+```
+
+Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 
 ## Aliases
 
 | Alias | Expansion | Notes |
 |---|---|---|
 | `tmux` | `tmux -f $TMUX_CONF` | force config path |
-| `a` | `attach` | tmux attach (depends on tmux config defining `attach`) |
+| `a` | `attach` | tmux attach helper |
 | `tns` | `~/.bin/tmux-sessionizer.sh` | external script |
 | `tsm` | `~/.bin/tmux-session-manager.sh` | external script |
-| `cat` | `bat` | safer in pipes than aliasing globally — known footgun |
+| `cat` | `bat` | only when `bat` exists |
 | `rm` | `rm -i` | interactive |
 | `mv` | `mv -i` | interactive |
 | `f` | `fzf` | |
 | `fman` | `compgen -c \| fzf \| xargs man` | fuzzy man pages |
 | `cdf` | `z $(fd -t d \| fzf)` | fuzzy zoxide cd |
-| `catf` | `cat $(fd -t f \| fzf)` | fuzzy view (resolves to `bat` via alias) |
+| `catf` | `cat $(fd -t f \| fzf)` | fuzzy file viewer |
 | `lg` | `lazygit` | |
-| `ftree`, `dtree`, `t`, `t3` | `tree …` variants | depth/dirs-only/colored |
+| `ftree`, `dtree`, `t`, `t3` | `tree ...` variants | depth/dirs-only/colored |
 
 ## Functions
 
 | Name | Behavior |
 |---|---|
-| `git_clean_merged` | checkout main, pull, delete branches merged into main except `main`/`stage`/`prod`/current. **No `set -e` — silent failures possible.** |
-| `killport <port>` | `lsof -ti tcp:$1 \| xargs kill -9` (force-kill listeners) |
-| `extract <archive>` | dispatches to `tar/unzip/unrar/...` based on extension |
+| `git_clean_merged` | checkout `main`, pull, delete local branches merged into `main` except current/`main`/`stage`/`prod` |
+| `killport <port>` | find TCP listener with `lsof` and `kill -9` it |
+| `extract <archive>` | extract common archive formats by extension |
 | `findin <word>` | `rg -n -w "$1" .` |
-| `vv` | fuzzy-pick a `~/.config/nvim-*` dir, launch nvim with `NVIM_APPNAME` set |
+| `vv` | fuzzy-pick `~/.config/nvim-*`, launch nvim with `NVIM_APPNAME` |
 
 ## Completion
 
-- `autoload -U +X bashcompinit compinit && bashcompinit` (bash-style completion enabled before `compinit`)
-- Hashicorp Vault: `complete -o nospace -C /opt/homebrew/bin/vault vault`
-- `compinit` called twice (once via OMZ implicitly through `oh-my-zsh.sh`, once explicitly at line 215). Second call is redundant and adds startup latency.
+- Oh My Zsh handles `compinit`.
+- `completions.zsh` enables `bashcompinit`.
+- Vault completion loads only when `vault` is available.
+- fzf shell integration loads only when `fzf` is available.
+- zoxide shell integration loads only when `zoxide` is available.
 
-## Keybindings
+## Local Overrides
 
-Default OMZ + fzf bindings (Ctrl-T file, Ctrl-R history, Alt-C cd). No custom `bindkey` lines.
+Use `~/.config/zsh/local.zsh` for:
 
-## Issues / smells
+- secrets
+- work-only exports
+- host-specific PATH entries
+- temporary aliases
 
-1. **Plaintext password committed**: `CLOUDSWPASSWD="…"`. **Rotate immediately** and remove from git history (BFG / `git filter-repo`). Move to `~/.zshrc.local`, a password manager, or `pass`.
-2. `STARSHIP_CONFIG` not exported despite the config living at `~/.config/starship/starship.toml`.
-3. Hard-coded paths from another machine: `/Users/ngnguyen/...` (mac) — won't survive a username change. Use `$HOME` consistently (mostly already done).
-4. `CONFIG_DIR=$HOME/.config/lazygit` does nothing for lazygit; lazygit reads `XDG_CONFIG_HOME` (or its own `--use-config-dir` flag). Drop or rename.
-5. Duplicate `compinit` calls.
-6. `ZSH_THEME=""` works but the documented way to disable is to comment out the line entirely or unset the variable.
-7. Macros in `extract()` don't sanitize filename quoting beyond `"$1"` — fine for normal use; flagged for awareness.
-8. No `.zshenv` separation — `PATH` mutations in `.zshrc` only run for interactive shells; non-interactive scripts won't see them.
-9. `nvm` sourced eagerly at startup → adds 100–500 ms. Consider lazy-load wrapper.
+Example:
+
+```zsh
+export CLOUDSWPASSWD='...'
+export PATH="$HOME/work/bin:$PATH"
+```
+
+Do not commit `local.zsh`.
+
+## Validation
+
+Recommended checks after edits:
+
+```sh
+zsh -n zsh/.zshrc zsh/.config/zsh/*.zsh
+stow -n -v zsh
+```
+
+Optional smoke tests:
+
+```sh
+zsh -i -c exit
+command -v zsh >/dev/null && zsh -i -c 'echo $ZSH_CONFIG_HOME'
+```
