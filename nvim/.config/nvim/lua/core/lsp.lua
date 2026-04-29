@@ -64,7 +64,10 @@ function M.setup()
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
           buffer = event.buf,
           group = group,
-          callback = vim.lsp.buf.document_highlight,
+          callback = function()
+            local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+            client:request('textDocument/documentHighlight', params, nil, event.buf)
+          end,
         })
 
         vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
