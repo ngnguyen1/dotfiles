@@ -38,12 +38,16 @@ function M.setup()
       map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
       map('<leader>cd', vim.diagnostic.open_float, '[C]ode [D]iagnostic line')
       map('<leader>cD', function() tb.diagnostics { bufnr = 0 } end, '[C]ode [D]iagnostic buffer')
-      map('<leader>ci', function()
-        vim.lsp.buf.code_action {
-          apply = true,
-          context = { only = { 'source.organizeImports' }, diagnostics = {} },
-        }
-      end, '[C]ode [I]mports')
+      map(
+        '<leader>ci',
+        function()
+          vim.lsp.buf.code_action {
+            apply = true,
+            context = { only = { 'source.organizeImports' }, diagnostics = {} },
+          }
+        end,
+        '[C]ode [I]mports'
+      )
       map('<leader>cs', tb.lsp_document_symbols, '[C]ode [S]ymbols')
 
       local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -51,12 +55,10 @@ function M.setup()
       -- ts_ls + Vue SFC: tsserver returns "document should be opened first" for
       -- textDocument/documentHighlight unless the project uses @vue/typescript-plugin (or vtsls).
       -- Let vue_ls own highlights on .vue buffers.
-      if client and client.name == 'ts_ls' and vim.bo[event.buf].filetype == 'vue' then
-        client.server_capabilities.documentHighlightProvider = false
-      end
+      local enable_document_highlight = not (client and client.name == 'ts_ls' and vim.bo[event.buf].filetype == 'vue')
 
       -- document highlight
-      if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+      if enable_document_highlight and client and client:supports_method('textDocument/documentHighlight', event.buf) then
         local group = vim.api.nvim_create_augroup('core-lsp-highlight', { clear = false })
 
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
