@@ -33,7 +33,7 @@ fi
 
 _pyenv_load() {
   unfunction pyenv python python3 pip pip3 2>/dev/null
-  command -v pyenv >/dev/null && eval "$(command pyenv init - zsh)"
+  command -v pyenv >/dev/null && eval "$(command pyenv init - --no-rehash zsh)"
 }
 
 pyenv()   { _pyenv_load; pyenv "$@"; }

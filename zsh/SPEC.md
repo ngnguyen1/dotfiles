@@ -55,7 +55,7 @@ Rationale:
 | Oh My Zsh | plugin/theme manager | `source "$ZSH/oh-my-zsh.sh"` |
 | Starship | prompt | guarded `eval "$(starship init zsh)"` |
 | zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
-| pyenv | Python version manager | PATH eager, `pyenv init` lazy |
+| pyenv | Python version manager | PATH eager, `pyenv init --no-rehash` lazy |
 | nvm | Node version manager | `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` |
 | fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
 | bat | `cat` replacement | alias only when `bat` exists |
