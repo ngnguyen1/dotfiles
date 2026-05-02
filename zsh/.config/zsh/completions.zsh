@@ -1,6 +1,4 @@
-# Completion setup. OMZ already runs compinit.
-
-autoload -U +X bashcompinit && bashcompinit
+# Completion setup. OMZ already runs compinit and bashcompinit.
 
 if command -v vault >/dev/null; then
   complete -o nospace -C "$(command -v vault)" vault

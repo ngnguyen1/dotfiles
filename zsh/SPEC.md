@@ -14,7 +14,7 @@ zsh/
     ├── langs.zsh                  # nvm and pyenv lazy loaders
     ├── aliases.zsh                # aliases only
     ├── functions.zsh              # shell functions only
-    ├── completions.zsh            # bashcompinit, fzf, zoxide, vault completion
+    ├── completions.zsh            # fzf, zoxide, vault completion
     ├── prompt.zsh                 # prompt init
     └── local.zsh                  # optional untracked local secrets / machine config
 ```
@@ -44,7 +44,7 @@ Rationale:
 
 - Environment and PATH load first because later tools depend on them.
 - Oh My Zsh loads before aliases so user aliases override plugin aliases.
-- Oh My Zsh runs `compinit`; `completions.zsh` only adds bash completion and tool-specific hooks.
+- Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` only adds tool-specific hooks.
 - Prompt loads last to avoid slow prompt work before shell config is ready.
 - Local machine config loads last so it can override tracked defaults.
 
@@ -83,6 +83,11 @@ zsh-autosuggestions zsh-syntax-highlighting
 zstyle ':omz:plugins:eza' 'icons' yes
 zstyle ':omz:plugins:eza' 'git-status' yes
 ```
+
+Startup behavior:
+
+- Oh My Zsh auto-update checks are disabled; update manually when needed.
+- `ZSH_COMPDUMP` is pinned to `${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}` to keep completion cache paths stable across host name changes.
 
 ## History
 
@@ -158,8 +163,7 @@ Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 
 ## Completion
 
-- Oh My Zsh handles `compinit`.
-- `completions.zsh` enables `bashcompinit`.
+- Oh My Zsh handles `compinit` and `bashcompinit`.
 - Vault completion loads only when `vault` is available.
 - fzf shell integration loads only when `fzf` is available.
 - zoxide shell integration loads only when `zoxide` is available.
