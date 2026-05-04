@@ -11,7 +11,7 @@ zsh/
     ├── exports.zsh                # PATH and environment
     ├── history.zsh                # history settings and setopt flags
     ├── omz.zsh                    # Oh My Zsh plugins/theme config
-    ├── langs.zsh                  # nvm and pyenv lazy loaders
+    ├── langs.zsh                  # nvm lazy loader
     ├── aliases.zsh                # aliases only
     ├── functions.zsh              # shell functions only
     ├── completions.zsh            # fzf, zoxide, vault completion
@@ -55,7 +55,7 @@ Rationale:
 | Oh My Zsh | plugin/theme manager | `source "$ZSH/oh-my-zsh.sh"` |
 | Starship | prompt | guarded `eval "$(starship init zsh)"` |
 | zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
-| pyenv | Python version manager | PATH eager, `pyenv init --no-rehash` lazy |
+| uv | Python packaging and script runner | binary from `~/.local/bin`; use `uv run ...` / `uvx ...` |
 | nvm | Node version manager | `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` |
 | fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
 | bat | `cat` replacement | alias only when `bat` exists |
@@ -116,7 +116,6 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
 | `FZF_DEFAULT_OPTS` | Catppuccin-Mocha colors plus layout flags | fzf UI |
 | `NVM_DIR` | `~/.nvm` | nvm root |
-| `PYENV_ROOT` | `~/.pyenv` | pyenv root |
 
 PATH entries in tracked config:
 
@@ -128,7 +127,6 @@ PATH entries in tracked config:
 ~/.bin/slt-cli
 ~/.antigravity/antigravity/bin
 /opt/homebrew/opt/libpq/bin
-~/.pyenv/bin and ~/.pyenv/shims when ~/.pyenv/bin exists
 ```
 
 Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.

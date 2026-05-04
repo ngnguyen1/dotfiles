@@ -334,7 +334,7 @@ Single file: `zsh/.zshrc` → stows to `~/.zshrc`.
 | Oh My Zsh | plugin manager | `source $ZSH/oh-my-zsh.sh` |
 | Starship | prompt | `eval "$(starship init zsh)"` |
 | zoxide | smarter cd | `eval "$(zoxide init zsh --cmd cd)"` |
-| pyenv | Python versions | `eval "$(pyenv init - zsh)"` |
+| uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
 | nvm | Node versions | `source $NVM_DIR/nvm.sh` (eager — adds ~100–500 ms startup) |
 | fzf | fuzzy finder | `source <(fzf --zsh)` |
 
@@ -351,7 +351,6 @@ eza plugin: `icons yes` + `git-status yes`.
 | `EZA_CONFIG_DIR` | `~/.config/eza` |
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` |
 | `FZF_DEFAULT_OPTS` | Catppuccin-Mocha palette + `--height=40% --border=rounded --margin=5% --reverse --multi` |
-| `PYENV_ROOT` | `~/.pyenv` |
 | `NVM_DIR` | `~/.nvm` |
 | `GPG_TTY` | `$(tty)` |
 | `GSDK` | `~/silabs/gsdk` (Silicon Labs SDK) |

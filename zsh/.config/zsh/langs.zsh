@@ -24,20 +24,3 @@ _nvm_auto_use() {
 
 autoload -U add-zsh-hook
 add-zsh-hook chpwd _nvm_auto_use
-
-# pyenv: PATH eager, init lazy.
-export PYENV_ROOT="$HOME/.pyenv"
-if [[ -d "$PYENV_ROOT/bin" ]]; then
-  path=("$PYENV_ROOT/bin" "$PYENV_ROOT/shims" $path)
-fi
-
-_pyenv_load() {
-  unfunction pyenv python python3 pip pip3 2>/dev/null
-  command -v pyenv >/dev/null && eval "$(command pyenv init - --no-rehash zsh)"
-}
-
-pyenv()   { _pyenv_load; pyenv "$@"; }
-python()  { _pyenv_load; python "$@"; }
-python3() { _pyenv_load; python3 "$@"; }
-pip()     { _pyenv_load; pip "$@"; }
-pip3()    { _pyenv_load; pip3 "$@"; }
