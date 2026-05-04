@@ -138,7 +138,8 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 - `mason-lspconfig.ensure_installed` = all keys of `core.lsp.servers` (populated from `core/lsp.lua` plus `custom/languages/*.lua` required before `setup()`), `automatic_enable = false`.
 - `mason-tool-installer.ensure_installed` = `{ 'stylua' }` plus `lsp.extra_tools` (e.g. `prettierd`).
 - `lua_ls` (merge in `core/lsp.lua`): formatting disabled (stylua handles it), LuaJIT runtime, detects `.luarc.json` to skip nvim-specific workspace setup.
-- JS/TS/Vue (see `custom/languages/typescript.lua`): `ts_ls` includes `vue` filetype; `vue_ls` (Mason: `vue-language-server`) works in hybrid mode with `ts_ls` on the same buffer. Other extended servers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
+- JS/TS/Vue (see `custom/languages/typescript.lua`): `vtsls` includes `vue` filetype and registers `@vue/typescript-plugin` + `@astrojs/ts-plugin` (Mason paths under `vue-language-server` / `astro-language-server`); `vue_ls` (Mason: `vue-language-server`) works in hybrid mode with `vtsls` on the same buffer. Other extended servers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
+- ESLint guard: config checks Neovim runtime `node` at startup and only enables `eslint` LSP when Node >= 18; otherwise it skips `eslint` and shows a warning (prevents `structuredClone is not defined` runtime failures).
 
 **Diagnostics config:**
 - `severity_sort = true`, `update_in_insert = false`.
@@ -153,7 +154,6 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 |---|---|---|
 | `grn` | n | Rename |
 | `gra` | n/x | Code action |
-| `grD` | n | Declaration |
 | `grr` | n | References (Telescope) |
 | `gri` | n | Implementation (Telescope) |
 | `grd` | n | Definition (Telescope) |
@@ -168,7 +168,7 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 | `<leader>cs` | n | Document symbols |
 | `<leader>th` | n | Toggle inlay hints (when supported) |
 
-Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspDetach`. On `.vue` buffers, only `vue_ls` provides highlight (`ts_ls` documentHighlight disabled — tsserver does not treat SFCs as opened TS docs without `@vue/typescript-plugin`). Augroups: `core-lsp-highlight`, `core-lsp-detach`, `core-lsp-attach`.
+Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspDetach`. Augroups: `core-lsp-highlight`, `core-lsp-detach`, `core-lsp-attach`.
 
 #### `conform.lua` — `stevearc/conform.nvim`
 - Event: `BufReadPre`, `BufNewFile`. Cmd: `ConformInfo`.
