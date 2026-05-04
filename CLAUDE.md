@@ -154,6 +154,8 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 |---|---|---|
 | `grn` | n | Rename |
 | `gra` | n/x | Code action |
+| `gD` | n | Source definition (vtsls command) |
+| `grf` | n | File references (vtsls command) |
 | `grr` | n | References (Telescope) |
 | `gri` | n | Implementation (Telescope) |
 | `grd` | n | Definition (Telescope) |

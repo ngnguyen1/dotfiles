@@ -43,14 +43,14 @@ map('n', 'J', 'mzJ`z', { desc = 'Join line keep cursor' })
 map('n', '<C-a>', 'gg<S-v>G', { desc = 'Select all' })
 
 -- window splits
-map('n', '<leader>wv', '<C-w>v',         { desc = 'Window split [V]ertical' })
-map('n', '<leader>wh', '<C-w>s',         { desc = 'Window split [H]orizontal' })
-map('n', '<leader>we', '<C-w>=',         { desc = 'Window [E]qual size' })
+map('n', '<leader>wv', '<C-w>v', { desc = 'Window split [V]ertical' })
+map('n', '<leader>wh', '<C-w>s', { desc = 'Window split [H]orizontal' })
+map('n', '<leader>we', '<C-w>=', { desc = 'Window [E]qual size' })
 map('n', '<leader>wx', '<cmd>close<CR>', { desc = 'Window close' })
 
 -- window resize
-map('n', '<leader>w+', '<cmd>resize +2<CR>',          { desc = 'Window height +' })
-map('n', '<leader>w-', '<cmd>resize -2<CR>',          { desc = 'Window height -' })
+map('n', '<leader>w+', '<cmd>resize +2<CR>', { desc = 'Window height +' })
+map('n', '<leader>w-', '<cmd>resize -2<CR>', { desc = 'Window height -' })
 map('n', '<leader>w>', '<cmd>vertical resize +2<CR>', { desc = 'Window width +' })
 map('n', '<leader>w<', '<cmd>vertical resize -2<CR>', { desc = 'Window width -' })
 

@@ -130,6 +130,7 @@ Lazy options:
 - `core.lsp.setup()`:
   - `LspAttach` autocmd defines buffer-local keymaps:
     - `grn` rename, `gra` code action (n+x).
+    - `gD` vtsls source-definition command, `grf` vtsls file-references command (direct `workspace/executeCommand`, no extra plugin).
     - Telescope-backed: `grr` references, `gri` impl, `grd` def, `gO` doc symbols, `gW` workspace symbols, `grt` type def.
     - `<leader>th` toggle inlay hints (when supported).
     - Document highlight under cursor (CursorHold), cleared on CursorMoved/LspDetach, with augroups `core-lsp-highlight` / `core-lsp-detach`.

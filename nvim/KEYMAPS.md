@@ -73,6 +73,8 @@
 |-----|--------|
 | `grn` | Rename |
 | `gra` | Code action |
+| `gD` | Source definition (vtsls command) |
+| `grf` | File references (vtsls command) |
 | `grr` | References |
 | `gri` | Implementation |
 | `grd` | Definition |
