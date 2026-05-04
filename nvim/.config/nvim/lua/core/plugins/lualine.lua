@@ -61,9 +61,7 @@ return {
           -- DAP status (only rendered when dap is loaded and active)
           {
             function() return require('dap').status() end,
-            cond = function()
-              return package.loaded['dap'] and require('dap').status() ~= ''
-            end,
+            cond = function() return package.loaded['dap'] and require('dap').status() ~= '' end,
             color = { fg = '#e0af68' },
           },
           'branch',
@@ -113,7 +111,7 @@ return {
           -- Active LSP clients for current buffer
           {
             function()
-              local clients = vim.lsp.get_clients({ bufnr = 0 })
+              local clients = vim.lsp.get_clients { bufnr = 0 }
               if #clients == 0 then return '' end
               local names = {}
               for _, c in ipairs(clients) do
@@ -121,7 +119,7 @@ return {
               end
               return ' ' .. table.concat(names, ', ')
             end,
-            cond = function() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 end,
+            cond = function() return #vim.lsp.get_clients { bufnr = 0 } > 0 end,
           },
           -- Git diff hunks (reads from gitsigns if available)
           {
@@ -157,10 +155,10 @@ return {
           { 'location', padding = { left = 0, right = 1 } },
         },
 
-        -- ── Z: Clock (optional — delete if you prefer minimal) ─────────
-        lualine_z = {
-          function() return ' ' .. os.date '%R' end,
-        },
+        -- -- ── Z: Clock (optional — delete if you prefer minimal) ─────────
+        -- lualine_z = {
+        --   function() return ' ' .. os.date '%R' end,
+        -- },
       },
 
       -- Show filename on inactive windows
