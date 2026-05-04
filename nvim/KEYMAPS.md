@@ -73,7 +73,6 @@
 |-----|--------|
 | `grn` | Rename |
 | `gra` | Code action |
-| `grD` | Declaration |
 | `grr` | References |
 | `gri` | Implementation |
 | `grd` | Definition |

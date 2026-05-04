@@ -22,7 +22,6 @@ function M.setup()
 
       map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
       map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-      map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
       local tb = require 'telescope.builtin'
 

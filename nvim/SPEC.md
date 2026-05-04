@@ -129,7 +129,7 @@ Lazy options:
 - Deps: `mason.nvim` (`cmd = 'Mason'`), `mason-lspconfig.nvim`, `mason-tool-installer.nvim`, `j-hui/fidget.nvim`.
 - `core.lsp.setup()`:
   - `LspAttach` autocmd defines buffer-local keymaps:
-    - `grn` rename, `gra` code action (n+x), `grD` declaration.
+    - `grn` rename, `gra` code action (n+x).
     - Telescope-backed: `grr` references, `gri` impl, `grd` def, `gO` doc symbols, `gW` workspace symbols, `grt` type def.
     - `<leader>th` toggle inlay hints (when supported).
     - Document highlight under cursor (CursorHold), cleared on CursorMoved/LspDetach, with augroups `core-lsp-highlight` / `core-lsp-detach`.
