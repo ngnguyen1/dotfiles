@@ -81,6 +81,22 @@
 | `grt` | Type definition |
 | `gO` | Document symbols |
 | `gW` | Workspace symbols |
+| `grx` | Code lens (Neovim 0.12 default; not overridden) |
+
+## Tree-sitter — `core/plugins/treesitter.lua`, `core/treesitter_incsel.lua`
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>v` | n | Start incremental node selection |
+| `<CR>` | x | Expand selection to parent TS node |
+| `<BS>` | x | Shrink selection (stack) |
+| `af` / `if` | o/x | Outer / inner function |
+| `ac` / `ic` | o/x | Outer / inner class |
+| `aa` / `ia` | o/x | Outer / inner parameter |
+| `]f` / `[f` | n/o/x | Next / previous function |
+| `]O` / `[O` | n/o/x | Next / previous class |
+| `<leader>a` | n | Swap parameter with next |
+| `<leader>A` | n | Swap parameter with previous |
 
 ## Toggle (`<leader>t`) — `core/lsp.lua`
 
@@ -129,7 +145,17 @@
 | `<leader>gdt` | Toggle file panel |
 | `<leader>gdv` | Toggle diff view (smart open/close) |
 
-## Folding (`z`) — `custom/plugins/folding.lua`
+## Git — which-key groups — `core/plugins/which-key.lua`
+
+| Prefix | Label |
+|--------|--------|
+| `<leader>g` | Git |
+| `<leader>gh` | Git hunk |
+| `<leader>gd` | Git diff (Diffview + gitsigns) |
+
+## Folding (`z`) — `custom/folding.lua`
+
+Native fold commands (no extra buffer-local remaps). Defaults: Tree-sitter `foldexpr`; LSP may replace with `vim.lsp.foldexpr()`; Python uses indent folds.
 
 | Key | Action |
 |-----|--------|
@@ -138,8 +164,7 @@
 | `zc` / `zC` | Close fold / recursive |
 | `zR` | Open all folds |
 | `zM` | Close all folds |
-| `zr` | Increase foldlevel |
-| `zm` | Decrease foldlevel |
+| `zr` / `zm` | Increase / decrease foldlevel |
 | `zx` | Recompute folds (fixes E490 after LSP attach / Telescope jump) |
 | `[z` / `]z` | Go to fold start / end |
-| `zj` / `zk` | Next / prev fold |
+| `zj` / `zk` | Next / previous fold |

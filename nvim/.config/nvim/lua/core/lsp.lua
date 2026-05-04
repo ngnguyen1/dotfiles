@@ -6,9 +6,13 @@ M.servers = {}
 M.extra_tools = {} -- non-LSP mason tools (formatters, linters); stylua added in setup()
 
 function M.setup()
+  -- Register ESLint only after Node probe (not during lazy-plugins require).
+  require('custom.languages.eslint').register(M)
+
   -- =========================
   -- LSP ATTACH (keymaps, etc.)
   -- =========================
+  -- Telescope-backed `gr*` / `<leader>c*` below intentionally override Neovim 0.12 default LSP maps.
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('core-lsp-attach', { clear = true }),
     callback = function(event)
@@ -20,7 +24,6 @@ function M.setup()
         })
       end
       local client = vim.lsp.get_client_by_id(event.data.client_id)
-      local tb = require 'telescope.builtin'
 
       map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
       map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
@@ -110,18 +113,18 @@ function M.setup()
         end, '[F]ile references (vtsls)')
       end
 
-      map('grr', tb.lsp_references, '[R]eferences')
-      map('gri', tb.lsp_implementations, '[I]mplementation')
-      map('grd', tb.lsp_definitions, '[D]efinition')
-      map('gO', tb.lsp_document_symbols, 'Document Symbols')
-      map('gW', tb.lsp_dynamic_workspace_symbols, 'Workspace Symbols')
-      map('grt', tb.lsp_type_definitions, '[T]ype Definition')
+      map('grr', function() require('telescope.builtin').lsp_references() end, '[R]eferences')
+      map('gri', function() require('telescope.builtin').lsp_implementations() end, '[I]mplementation')
+      map('grd', function() require('telescope.builtin').lsp_definitions() end, '[D]efinition')
+      map('gO', function() require('telescope.builtin').lsp_document_symbols() end, 'Document Symbols')
+      map('gW', function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, 'Workspace Symbols')
+      map('grt', function() require('telescope.builtin').lsp_type_definitions() end, '[T]ype Definition')
 
       -- <leader>c code group
       map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
       map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
       map('<leader>cd', vim.diagnostic.open_float, '[C]ode [D]iagnostic line')
-      map('<leader>cD', function() tb.diagnostics { bufnr = 0 } end, '[C]ode [D]iagnostic buffer')
+      map('<leader>cD', function() require('telescope.builtin').diagnostics { bufnr = 0 } end, '[C]ode [D]iagnostic buffer')
       map(
         '<leader>ci',
         function()
@@ -132,7 +135,7 @@ function M.setup()
         end,
         '[C]ode [I]mports'
       )
-      map('<leader>cs', tb.lsp_document_symbols, '[C]ode [S]ymbols')
+      map('<leader>cs', function() require('telescope.builtin').lsp_document_symbols() end, '[C]ode [S]ymbols')
 
       -- document highlight
       if client and client:supports_method('textDocument/documentHighlight', event.buf) then
@@ -239,6 +242,9 @@ function M.setup()
   -- Non-LSP tools (formatters, linters) → mason-tool-installer
   require('mason-tool-installer').setup {
     ensure_installed = vim.list_extend({ 'stylua' }, M.extra_tools),
+    run_on_start = false,
+    start_delay = 3000,
+    debounce_hours = 24,
   }
 
   -- LSP servers → mason-lspconfig (auto-installs on startup)

@@ -39,7 +39,7 @@ If a target file already exists stow will not overwrite it — resolve the confl
 ```
 leader / localleader = <Space>
 vim.g.have_nerd_font  = true
-require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-plugins'
+require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-plugins' → `require('custom.folding').setup()`
 ```
 
 ### `options.lua`
@@ -76,6 +76,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 - `TextYankPost` → `vim.hl.on_yank()`.
 - `InsertEnter` / `WinLeave`: hide `cursorline`; `InsertLeave` / `WinEnter`: restore it.
 - `FileType` ephemeral list (`fugitive`, `git`, `help`, `qf`, `lspinfo`, `man`, `toggleterm`, …): `buflisted = false`, `q` → close.
+- User commands `FormatDisable` / `FormatEnable` (and `FormatDisable!`) for conform autoformat opt-out (conform itself may load on first `BufWritePre`).
 
 ### `keymaps.lua`
 
@@ -102,7 +103,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 Plugin specs loaded (in order):
 
 ```
-NMAC427/guess-indent.nvim
+NMAC427/guess-indent.nvim (file-lazy: BufReadPre / BufNewFile)
 core.plugins.colorscheme
 core.plugins.lsp
 core.plugins.nvim-tree
@@ -116,8 +117,9 @@ core.plugins.lualine
 core.plugins.which-key
 core.plugins.ibl
 custom.plugins.blink-cmp
-custom.plugins.folding
 ```
+
+(`custom.folding` is not a lazy spec; it is `require`d from `init.lua` after `lazy-plugins`.)
 
 Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit matchparen netrwPlugin tarPlugin tohtml tutor zipPlugin`.
 
@@ -136,10 +138,10 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 - Uses **Neovim 0.11+ API**: `vim.lsp.config(name, cfg)` + `vim.lsp.enable(name)`.
 - Capabilities augmented via `require('blink.cmp').get_lsp_capabilities`.
 - `mason-lspconfig.ensure_installed` = all keys of `core.lsp.servers` (populated from `core/lsp.lua` plus `custom/languages/*.lua` required before `setup()`), `automatic_enable = false`.
-- `mason-tool-installer.ensure_installed` = `{ 'stylua' }` plus `lsp.extra_tools` (e.g. `prettierd`).
+- `mason-tool-installer.ensure_installed` = `{ 'stylua' }` plus `lsp.extra_tools` (e.g. `prettierd`); `run_on_start = false` (install via `:Mason` / on-demand).
 - `lua_ls` (merge in `core/lsp.lua`): formatting disabled (stylua handles it), LuaJIT runtime, detects `.luarc.json` to skip nvim-specific workspace setup.
 - JS/TS/Vue (see `custom/languages/typescript.lua`): `vtsls` includes `vue` filetype and registers `@vue/typescript-plugin` + `@astrojs/ts-plugin` (Mason paths under `vue-language-server` / `astro-language-server`); `vue_ls` (Mason: `vue-language-server`) works in hybrid mode with `vtsls` on the same buffer. Other extended servers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
-- ESLint guard: config checks Neovim runtime `node` at startup and only enables `eslint` LSP when Node >= 18; otherwise it skips `eslint` and shows a warning (prevents `structuredClone is not defined` runtime failures).
+- ESLint guard: `custom/languages/eslint.lua` runs inside `core.lsp.setup()` (not during lazy-plugins require); probes Neovim runtime `node` and only registers `eslint` when Node major >= 18; otherwise notifies once with fix guidance.
 
 **Diagnostics config:**
 - `severity_sort = true`, `update_in_insert = false`.
@@ -162,6 +164,7 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 | `gO` | n | Document symbols (Telescope) |
 | `gW` | n | Workspace symbols (Telescope) |
 | `grt` | n | Type definition (Telescope) |
+| `grx` | n | Code lens actions (Neovim 0.12 default; not remapped here) |
 | `<leader>ca` | n/x | Code action |
 | `<leader>cr` | n | Rename |
 | `<leader>cd` | n | Diagnostic float |
@@ -173,11 +176,11 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspDetach`. Augroups: `core-lsp-highlight`, `core-lsp-detach`, `core-lsp-attach`.
 
 #### `conform.lua` — `stevearc/conform.nvim`
-- Event: `BufReadPre`, `BufNewFile`. Cmd: `ConformInfo`.
+- Event: `BufWritePre` (keys/cmd load plugin earlier if needed). Cmd: `ConformInfo`.
 - `<leader>cf` → `format({ async = true })` (n/v).
 - Auto-format on save: always `lua` + `python`; additional filetypes enabled via `vim.g.autoformat_filetypes` (extended by `custom/languages/typescript.lua` for vue, astro, html, css, json, …) — 500 ms timeout when enabled.
 - Global opt-out: `vim.g.disable_autoformat`; buffer opt-out: `vim.b.disable_autoformat`.
-- User commands: `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable`.
+- User commands: `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable` — implemented in `autocmds.lua` so they exist before Conform lazy-loads.
 - `default_format_opts.lsp_format = 'fallback'`.
 - `formatters_by_ft`: base `lua → stylua`; `custom/languages/typescript.lua` adds `prettierd` for web stacks.
 
@@ -197,13 +200,12 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 | `<leader><leader>` | Buffers (quick) |
 
 #### `treesitter.lua` — `nvim-treesitter/nvim-treesitter`
-- `lazy = false`, `build = ':TSUpdate'`.
+- `lazy = false`, `build = ':TSUpdate'` (upstream: do not lazy-load this plugin).
 - Dep: `nvim-treesitter-textobjects` (`branch = 'main'`).
-- `ensure_installed`: bash, c, diff, html, lua, luadoc, markdown, markdown_inline, query, vim, vimdoc.
-- `auto_install = true`. Highlight + indent enabled.
-- Incremental selection: `<CR>` init + node extend, `<BS>` shrink, scope disabled.
+- **Main-branch setup**: `require('nvim-treesitter').setup { install_dir = … }`; baseline parsers requested via `install()`; highlighting via `vim.treesitter.start()` + **FileType** autocmd; indent via `indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"`.
+- **Incremental selection** (`core/treesitter_incsel.lua`): `<leader>v` init (normal), `<CR>` expand / `<BS>` shrink (visual) — avoids normal-mode `<CR>` hijack.
 - Textobject **select** (lookahead): `af/if` function, `ac/ic` class, `aa/ia` parameter.
-- Textobject **move**: `]f/[f` function, `]c/[c` class.
+- Textobject **move**: `]f/[f` function, `]O/[O` class (uppercase **O** avoids `]c` / `[c` diff motions).
 - Textobject **swap**: `<leader>a` next param, `<leader>A` prev param.
 
 #### `autopairs.lua` — `windwp/nvim-autopairs`
@@ -228,7 +230,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 #### `git.lua` — gitsigns + vim-fugitive + diffview.nvim
 Three plugins under `<leader>g`.
 
-**gitsigns** (`BufReadPre`/`BufNewFile`):
+**gitsigns** (`BufReadPost`/`BufNewFile`):
 - Signs: `▎` add/change/changedelete/untracked; `_` delete/topdelete. Staged variants enabled.
 - Blame off by default. Blame format: `<author>, <date> — <summary>`.
 - Keymaps: `]h/[h` hunks, `<leader>gh{s,r,S,R,u,p}` hunk ops, `<leader>g{b,B,d,D}` blame/diff, `ih` text object.
@@ -274,10 +276,10 @@ Sections:
 
 #### `which-key.lua` — `folke/which-key.nvim`
 - Event: `VimEnter`. `delay = 0`.
-- Groups: `<leader>c` Code, `<leader>f` File, `<leader>s` Search, `<leader>t` Toggle, `<leader>h` Git Hunk, `<leader>e` Explorer, `<leader>w` Window, `gr` LSP Actions.
+- Groups: `<leader>c` Code, `<leader>f` File, `<leader>t` Toggle, `<leader>g` Git, `<leader>gh` Git hunk, `<leader>gd` Git diff, `<leader>e` Explorer, `<leader>w` Window, `gr` LSP Actions.
 
 #### `ibl.lua` — `lukas-reineke/indent-blankline.nvim`
-- Event: `BufReadPre`. Main module: `ibl`.
+- Event: `BufReadPost` / `BufNewFile`. Main module: `ibl`.
 - Indent char: `│`. Scope enabled, start/end markers off.
 - Excluded filetypes: `help dashboard NvimTree Trouble lazy mason notify toggleterm lazyterm`.
 
@@ -290,22 +292,14 @@ Sections:
 - `fuzzy.implementation = 'lua'` — pure-Lua matcher, faster cold start, no binary.
 - `signature.enabled = true`.
 
-#### `folding.lua` (custom/) — no external plugin
+#### `folding` — `custom/folding.lua` (no external plugin)
+- Loaded after `lazy-plugins` from `init.lua`.
 - **Default**: `foldmethod=expr` + `vim.treesitter.foldexpr()`.
 - **LSP upgrade**: `LspAttach` → switches window to `vim.lsp.foldexpr()` when server advertises `textDocument/foldingRange`.
 - **Auto-fold imports**: `LspNotify` on `textDocument/didOpen` → `pcall(vim.lsp.foldclose, 'imports', …)`.
 - **Python override**: `FileType python` → `foldmethod=indent`.
 - Options: `foldlevel=99 foldlevelstart=99 foldnestmax=4 foldtext=''` `fillchars+=fold: `.
-
-| Key | Action |
-|---|---|
-| `za/zo/zc` | Toggle / open / close fold |
-| `zA/zO/zC` | Toggle / open / close recursive |
-| `zR/zM` | Open all / close all |
-| `zr/zm` | Increase / decrease foldlevel |
-| `zx` | Recompute folds (fixes E490 after LSP attach / Telescope jump) |
-| `[z/]z` | Fold start / end |
-| `zj/zk` | Next / prev fold |
+- Fold commands are **native** (`za`, `zo`, `zr`, …); see `:h fold-commands` and `nvim/KEYMAPS.md`.
 
 ### `.stylua.toml`
 

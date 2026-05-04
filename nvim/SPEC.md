@@ -19,6 +19,7 @@ nvim/
             ├── lazy-plugins.lua           # require all plugin specs
             ├── core/
             │   ├── lsp.lua                # LspAttach handler + servers
+            │   ├── treesitter_incsel.lua  # TS incremental selection keymaps
             │   └── plugins/
             │       ├── colorscheme.lua    # tokyonight
             │       ├── lsp.lua            # lspconfig + mason wiring
@@ -30,20 +31,22 @@ nvim/
             │       ├── surround.lua       # surround text-object
             │       ├── git.lua            # gitsigns + fugitive + diffview
             │       ├── lualine.lua        # statusline
-            │       └── which-key.lua      # leader-key hints
+            │       ├── which-key.lua      # leader-key hints
+            │       └── ibl.lua            # indent guides
             └── custom/
+                ├── folding.lua            # treesitter/LSP fold options (from init.lua)
                 ├── languages/
-                │   └── typescript.lua     # vtsls (+ Vue/Astro tsserver plugins), vue_ls, astro, tailwind, eslint, conform fts
+                │   ├── eslint.lua         # eslint LSP + Node version gate
+                │   └── typescript.lua     # vtsls, vue_ls, astro, web stack, conform fts
                 └── plugins/
-                    ├── blink-cmp.lua      # completion
-                    └── folding.lua        # treesitter/LSP folds + keymaps
+                    └── blink-cmp.lua      # completion
 ```
 
 ## init.lua
 
 1. Sets `<leader>` and `<localleader>` to space.
 2. `vim.g.have_nerd_font = true`.
-3. `require 'options'`, `'autocmds'`, `'keymaps'`, `'lazy-bootstrap'`, `'lazy-plugins'`.
+3. `require 'options'`, `'autocmds'`, `'keymaps'`, `'lazy-bootstrap'`, `'lazy-plugins'`, then `require('custom.folding').setup()`.
 
 ## options.lua
 
@@ -79,8 +82,10 @@ nvim/
 ## autocmds.lua
 
 - `TextYankPost` → `vim.hl.on_yank()` (highlight yanked region).
+- `BufReadPost` restore last cursor position (skip selected git/hex ft).
 - `InsertEnter`/`WinLeave` + `InsertLeave`/`WinEnter` pair: hides `cursorline` while typing or in inactive split, restores on exit.
 - `FileType` for ephemeral buffers (`OverseerForm`, `OverseerList`, `floggraph`, `fugitive`, `git`, `help`, `lspinfo`, `man`, `neotest-output`, `neotest-summary`, `qf`, `query`, `spectre_panel`, `startuptime`, `toggleterm`, `tsplayground`, `vim`): unset `buflisted`, map `q` to close.
+- User commands `FormatDisable` / `FormatDisable!` / `FormatEnable` for conform autoformat (always defined; Conform may lazy-load on `BufWritePre`).
 
 ## keymaps.lua
 
@@ -97,7 +102,7 @@ Clones `folke/lazy.nvim` (stable branch) into `stdpath('data')/lazy/lazy.nvim` i
 ## lazy-plugins.lua
 
 Calls `require('lazy').setup({...}, opts)`. Specs loaded:
-- `NMAC427/guess-indent.nvim`
+- `NMAC427/guess-indent.nvim` (`BufReadPre` / `BufNewFile`)
 - `core.plugins.colorscheme`
 - `core.plugins.lsp`
 - `core.plugins.nvim-tree`
@@ -108,9 +113,12 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `core.plugins.surround`
 - `core.plugins.git`
 - `core.plugins.lualine`
+- `core.plugins.which-key`
+- `core.plugins.ibl`
 - `custom.plugins.blink-cmp`
-- `custom.plugins.folding`
 - `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
+
+(`custom/folding.lua` is loaded from `init.lua`, not as a lazy plugin.)
 
 Lazy options:
 - `checker = { enabled = false }` — no auto-update check.
@@ -139,13 +147,13 @@ Lazy options:
   - Extended servers (see below): `vtsls`, `vue_ls`, `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
   - **Uses Neovim 0.11+ API**: `vim.lsp.config(name, config)` + `vim.lsp.enable(name)`.
   - Capabilities augmented via `require('blink.cmp').get_lsp_capabilities`.
-  - Auto-install: `mason-lspconfig.ensure_installed = vim.tbl_keys(M.servers)` (`automatic_enable = false`). Mason packages map nvim-lspconfig names (e.g. `vue_ls` → `vue-language-server`, `vtsls` → `vtsls`). `mason-tool-installer.ensure_installed = { 'stylua' }` plus `M.extra_tools` (e.g. `prettierd`).
+  - Auto-install: `mason-lspconfig.ensure_installed = vim.tbl_keys(M.servers)` (`automatic_enable = false`). Mason packages map nvim-lspconfig names (e.g. `vue_ls` → `vue-language-server`, `vtsls` → `vtsls`). `mason-tool-installer.ensure_installed = { 'stylua' }` plus `M.extra_tools` (e.g. `prettierd`); **`run_on_start = false`** so installs are manual / deferred (`:Mason`).
 
 ### custom/languages/typescript.lua — JS/TS/Vue/Astro toolchain
 - **`vtsls`**: filetypes `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, **`vue`** — VS Code–aligned TypeScript service. Registers `@vue/typescript-plugin` and `@astrojs/ts-plugin` via `settings.vtsls.tsserver.globalPlugins` (paths under Mason’s `vue-language-server` and `astro-language-server` packages) so `.vue` SFCs and `.astro` imports resolve from TS/JS buffers.
 - **`vue_ls`**: filetypes `vue` — `@vue/language-server` (Vue 3). Upstream nvim-lspconfig wires hybrid mode: Vue LS coordinates SFCs and forwards TS-related traffic to **`vtsls`** on the **same buffer** (see [Vue language-tools Neovim wiki](https://github.com/vuejs/language-tools/wiki/Neovim)).
-- Also registers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`; adds `prettierd` to `mason-tool-installer`; extends `vim.g.autoformat_filetypes` and conform `formatters_by_ft` for web stacks.
-- `eslint` has a startup guard: Neovim checks runtime `node` and only enables ESLint LSP when Node major version is >= 18. If older/missing, ESLint is skipped with a warning that includes detected path/version and fix guidance.
+- Also registers: `astro`, `html`, `cssls`, `tailwindcss`; adds `prettierd` to `mason-tool-installer`; extends `vim.g.autoformat_filetypes` and conform `formatters_by_ft` for web stacks.
+- **`eslint`**: registered from `custom/languages/eslint.lua` inside `core.lsp.setup()` — probes runtime `node` and only adds `eslint` to `M.servers` when Node major >= 18; otherwise one scheduled warning with fix guidance (same intent as previous guard, without synchronous `node -p` during lazy-plugins `require`).
 
 #### Vue LSP verification (local checklist)
 1. **Mason**: `:Mason` — ensure **`vtsls`**, **`vue-language-server`**, and **`astro-language-server`** are installed (Astro package supplies `@astrojs/ts-plugin` for vtsls).
@@ -154,31 +162,27 @@ Lazy options:
 4. **Astro from TS**: in a `.ts` buffer, confirm `import "./Foo.astro"` resolves after Mason packages are present.
 
 ### conform.lua — `stevearc/conform.nvim`
-- Lazy: `BufReadPre`/`BufNewFile`, cmd `ConformInfo`.
+- Lazy: `BufWritePre` (also loads via `cmd` / `<leader>cf` keys). Cmd `ConformInfo`.
 - `<leader>cf` → `format({ async = true })` (n+v).
 - Format-on-save: always `lua` and `python`; additional filetypes come from `vim.g.autoformat_filetypes` (extended by `custom/languages/typescript.lua` for vue, astro, html, css, json, etc.) — 500 ms timeout when enabled.
-- Opt-out: `vim.g.disable_autoformat` (global) and `vim.b.disable_autoformat` (buffer) short-circuit `format_on_save`. User commands `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable` (clear both).
+- Opt-out: `vim.g.disable_autoformat` (global) and `vim.b.disable_autoformat` (buffer) short-circuit `format_on_save`. User commands `:FormatDisable` / `:FormatDisable!` / `:FormatEnable` are defined in **`autocmds.lua`** (available before Conform loads).
 - `default_format_opts.lsp_format = 'fallback'` — LSP formats only if no formatter is configured.
 - Base `formatters_by_ft`: `lua → stylua`. `custom/languages/typescript.lua` merges `prettierd` for vue, astro, html, css, json, etc.
 
 ### telescope.lua — `nvim-telescope/telescope.nvim`
 - Lazy on `:Telescope`, with eager keys.
 - Deps: `plenary.nvim`, `telescope-fzf-native` (built with `make` if available), `telescope-ui-select`, `nvim-web-devicons` (gated on Nerd Font).
-- Keys: `<leader>ff` files, `<leader>fg` live grep, `<leader>fb` buffers, `<leader>fh` help, `<leader><leader>` buffers.
+- Keys: `<leader>ff` files, `<leader>fr` recent, `<leader>fg` live grep, `<leader>fb` buffers, `<leader>fd` dotfiles, `<leader><leader>` buffers.
 - Insert mode `<esc>` → close picker.
 - `ui-select` extension uses `dropdown` theme.
 - Loads `fzf` and `ui-select` extensions via `pcall`.
 
 ### treesitter.lua — `nvim-treesitter/nvim-treesitter`
-- `lazy = false`, `build = ':TSUpdate'`.
+- `lazy = false`, `build = ':TSUpdate'` (upstream README: do not lazy-load).
 - Dep: `nvim-treesitter-textobjects` on `branch = 'main'`.
-- `ensure_installed`: bash, c, diff, html, lua, luadoc, markdown, markdown_inline, query, vim, vimdoc.
-- `auto_install = true`. Highlight + indent enabled.
-- Incremental selection: `<C-space>` init + node extend, `<C-s>` scope extend, `<C-bs>` shrink. (Avoids prior `grn` clash with LSP rename.)
-- Textobjects:
-  - select: `af`/`if` function, `ac`/`ic` class, `aa`/`ia` parameter (lookahead).
-  - move: `]f`/`[f` function, `]c`/`[c` class.
-  - swap: `<leader>a` next param, `<leader>A` previous param.
+- **Main rewrite**: `setup { install_dir }` only; `install()` schedules baseline parsers; `FileType` autocmd runs `vim.treesitter.start()` + experimental TS `indentexpr` for listed filetypes.
+- Textobjects: explicit keymaps via `nvim-treesitter-textobjects` — select `af/if`, `ac/ic`, `aa/ia`; move `]f`/`[f`, **`]O`/`[O`** for class (not `]c`/`[c`); swap `<leader>a` / `<leader>A`.
+- Incremental selection: `core/treesitter_incsel.lua` — `<leader>v` (normal), `<CR>` / `<BS>` (visual).
 
 ### autopairs.lua — `windwp/nvim-autopairs`
 - Lazy: `InsertEnter`.
@@ -191,14 +195,14 @@ Lazy options:
 - Defaults (`ys`, `cs`, `ds`, etc.).
 
 ### nvim-tree.lua — `nvim-tree/nvim-tree.lua`
-- Lazy: cmd `NvimTreeToggle`/`NvimTreeFindFile`, key `<leader>e`.
+- Lazy on cmd + keys (`<leader>ee`, …).
 - Disables netrw via `vim.g.loaded_netrw{,Plugin}`.
 - `view.width = 30`, `renderer.group_empty = true`, `filters.dotfiles = false` (dotfiles shown).
 
 ### git.lua — `gitsigns.nvim` + `vim-fugitive` + `diffview.nvim`
 Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives at the bottom of the file.
 
-- **gitsigns** (`BufReadPre`/`BufNewFile`):
+- **gitsigns** (`BufReadPost`/`BufNewFile`):
   - Custom signs (`▎` for add/change/changedelete/untracked, `_` for delete/topdelete).
   - `signs_staged_enable = true`.
   - Blame off by default; `<leader>gb` toggles.
@@ -219,17 +223,20 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 - Extensions: `nvim-tree`, `lazy`, `fugitive`, `quickfix`.
 
 ### which-key.lua — `folke/which-key.nvim`
-- Spec: groups for `<leader>s`, `<leader>t`, `<leader>h`, `<leader>f`, `<leader>e`, and `gr`.
+- Spec: groups for `<leader>c`, `<leader>f`, `<leader>t`, `<leader>g`, `<leader>gh`, `<leader>gd`, `<leader>e`, `<leader>w`, and `gr`.
 
-### folding.lua (custom/)
-No external plugin — pure Neovim 0.10+ built-ins.
+### ibl.lua — `indent-blankline.nvim`
+- Lazy: `BufReadPost` / `BufNewFile`. Indent char `│`, scope guides enabled.
+
+### folding (`custom/folding.lua`)
+No external plugin — required from `init.lua` after `lazy-plugins`.
 
 - **Fold method**: `expr` + `vim.treesitter.foldexpr()` by default.
 - **LSP upgrade**: `LspAttach` autocmd switches window to `vim.lsp.foldexpr()` when server advertises `textDocument/foldingRange`.
 - **Auto-fold imports**: `LspNotify` on `textDocument/didOpen` calls `vim.lsp.foldclose('imports', …)` via `pcall`.
 - **Python override**: `FileType python` → `foldmethod = indent` (treesitter folds unreliable for Python).
 - Options: `foldlevel = 99`, `foldlevelstart = 99` (open by default), `foldnestmax = 4`, `foldtext = ''` (transparent — preserves first-line syntax highlight), `fillchars += fold:·`.
-- Keymaps: `za/zo/zc` toggle/open/close, `zA/zO/zC` recursive, `zR/zM` all-open/all-close, `zr/zm` level step, `zx` recompute, `[z/]z` fold edges, `zj/zk` next/prev fold.
+- No buffer-local fold **remaps** — native `z` commands only (see `nvim/KEYMAPS.md`).
 
 ### blink-cmp.lua — `saghen/blink.cmp` (custom/)
 - Lazy: `InsertEnter`. Version `1.*`.

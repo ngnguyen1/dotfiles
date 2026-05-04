@@ -21,4 +21,6 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugin ]]
 require 'lazy-plugins'
 
+require('custom.folding').setup()
+
 -- vim: ts=2 sts=2 sw=2 et

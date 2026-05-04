@@ -5,7 +5,7 @@
 require('lazy').setup({
   -- NOTE: Plugins can be added via a link or github org/name.
   -- To run setup automatically, use `opts = {}`
-  { 'NMAC427/guess-indent.nvim', opts = {} },
+  { 'NMAC427/guess-indent.nvim', event = { 'BufReadPre', 'BufNewFile' }, opts = {} },
   -- Core plugins
   require 'core.plugins.colorscheme',
   require 'core.plugins.lsp',
@@ -22,7 +22,6 @@ require('lazy').setup({
 
   -- Custom plugins
   require 'custom.plugins.blink-cmp',
-  require 'custom.plugins.folding',
   require 'custom.languages.typescript', -- Language support
 }, { ---@diagnostic disable-line: missing-fields
   -- disable auto update check
