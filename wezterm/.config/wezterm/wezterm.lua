@@ -40,6 +40,31 @@ config.keys = {
         mods = "OPT",
         action = wezterm.action({ SendString = "\x1bf" }),
     },
+    {
+        key = "&",
+        mods = "CMD",
+        action = wezterm.action.ActivateTab(0),
+    },
+    {
+        key = "[",
+        mods = "CMD",
+        action = wezterm.action.ActivateTab(1),
+    },
+    {
+        key = "{",
+        mods = "CMD",
+        action = wezterm.action.ActivateTab(2),
+    },
+    {
+        key = "}",
+        mods = "CMD",
+        action = wezterm.action.ActivateTab(3),
+    },
+    {
+        key = "(",
+        mods = "CMD",
+        action = wezterm.action.ActivateTab(4),
+    },
 }
 
 -- function to change color scheme based on appearance
