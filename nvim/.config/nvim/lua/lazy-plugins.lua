@@ -21,6 +21,7 @@ require('lazy').setup({
   require 'core.plugins.ibl',
 
   -- Custom plugins
+  require 'custom.plugins.ai',
   require 'custom.plugins.blink-cmp',
   require 'custom.languages.typescript', -- Language support
 }, { ---@diagnostic disable-line: missing-fields
