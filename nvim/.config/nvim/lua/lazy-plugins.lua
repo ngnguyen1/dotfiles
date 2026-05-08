@@ -23,7 +23,8 @@ require('lazy').setup({
   -- Custom plugins
   require 'custom.plugins.ai',
   require 'custom.plugins.blink-cmp',
-  require 'custom.languages.typescript', -- Language support
+  require 'custom.plugins.tmux-navigator',
+  require 'custom.languages.typescript',
 }, { ---@diagnostic disable-line: missing-fields
   -- disable auto update check
   checker = { enabled = false },
