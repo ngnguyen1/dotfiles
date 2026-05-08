@@ -55,25 +55,21 @@ state_file="/tmp/tmux-net-rate-${iface}-${mode}.state"
 now="$(date +%s)"
 
 if [[ ! -f "$state_file" ]]; then
-  printf "%s %s
-" "$now" "$curr" > "$state_file"
-  echo "0 B/s"
+  printf '%s %s\n' "$now" "$curr" > "$state_file"
+  printf '%s\n' "$(human_rate 0)"
   exit 0
 fi
 
 read -r prev_t prev_v < "$state_file" || { prev_t="$now"; prev_v="$curr"; }
-delta_t=$(( now - prev_t ))
-(( delta_t < 1 )) && delta_t=1
+delta_t=$((now - prev_t))
+((delta_t < 1)) && delta_t=1
 
-if (( curr >= prev_v )); then
-  delta_v=$(( curr - prev_v ))
+if ((curr >= prev_v)); then
+  delta_v=$((curr - prev_v))
 else
   delta_v=0
 fi
 
-rate=$(( delta_v / delta_t ))
-printf "%s %s
-" "$now" "$curr" > "$state_file"
-human_rate "$rate"
-echo
-echo
+rate=$((delta_v / delta_t))
+printf '%s %s\n' "$now" "$curr" > "$state_file"
+printf '%s\n' "$(human_rate "$rate")"
