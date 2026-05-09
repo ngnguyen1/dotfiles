@@ -19,25 +19,18 @@ plugins=(
   rsync
   aws
   eza
-  zsh-autosuggestions
-  zsh-syntax-highlighting
 )
 
 # Local OMZ overrides (machine-specific plugins/options).
 OMZ_LOCAL_CONFIG="${ZSH_CONFIG_HOME:-$HOME/.config/zsh}/omz.local.zsh"
 [[ -r "$OMZ_LOCAL_CONFIG" ]] && source "$OMZ_LOCAL_CONFIG"
 
-# Bridge Homebrew plugin installs into OMZ's expected plugin paths.
-if command -v brew >/dev/null; then
-  typeset _plugin_name _brew_dir _target_dir
-  for _plugin_name in zsh-autosuggestions zsh-syntax-highlighting; do
-    _brew_dir="/opt/homebrew/share/${_plugin_name}"
-    _target_dir="${ZSH_CUSTOM}/plugins/${_plugin_name}"
-    if [[ -d "$_brew_dir" && ! -e "$_target_dir" ]]; then
-      mkdir -p "${ZSH_CUSTOM}/plugins"
-      ln -s "$_brew_dir" "$_target_dir" 2>/dev/null
-    fi
-  done
-fi
-
 source "$ZSH/oh-my-zsh.sh"
+
+# Load Homebrew zsh plugins directly (outside OMZ plugin lookup).
+if command -v brew >/dev/null; then
+  typeset _brew_prefix
+  _brew_prefix="$(brew --prefix 2>/dev/null)"
+  [[ -r "${_brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${_brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [[ -r "${_brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${_brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi

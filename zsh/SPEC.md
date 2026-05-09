@@ -75,7 +75,6 @@ Rationale:
 
 ```
 git gh terraform brew rsync aws eza
-zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 Machine-specific OMZ plugins belong in ignored `~/.config/zsh/omz.local.zsh`.
@@ -98,6 +97,9 @@ Startup behavior:
 
 - Oh My Zsh auto-update checks are disabled; update manually when needed.
 - `ZSH_COMPDUMP` is pinned to `${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}` to keep completion cache paths stable across host name changes.
+- `zsh-autosuggestions` and `zsh-syntax-highlighting` load from Homebrew after OMZ:
+  `source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"` and
+  `source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"`.
 
 ## History
 
