@@ -16,7 +16,8 @@ zsh/
     ├── functions.zsh              # shell functions only
     ├── completions.zsh            # fzf, zoxide, vault completion
     ├── prompt.zsh                 # prompt init
-    └── local.zsh                  # optional untracked local secrets / machine config
+    ├── local.zsh                  # optional untracked local secrets / machine config
+    └── omz.local.zsh              # optional untracked OMZ plugin overrides
 ```
 
 Stow targets:
@@ -24,7 +25,7 @@ Stow targets:
 - `~/.zshrc`
 - `~/.config/zsh/*.zsh`
 
-`local.zsh` is intentionally ignored by git and sourced last when present.
+`local.zsh` and `omz.local.zsh` are intentionally ignored by git.
 
 ## Load Order
 
@@ -73,8 +74,17 @@ Rationale:
 ## Plugins (OMZ)
 
 ```
-git gh terraform brew rsync aws eza s-plugin
+git gh terraform brew rsync aws eza
 zsh-autosuggestions zsh-syntax-highlighting
+```
+
+Machine-specific OMZ plugins belong in ignored `~/.config/zsh/omz.local.zsh`.
+`omz.zsh` sources this file before `oh-my-zsh.sh`.
+
+Example:
+
+```zsh
+plugins+=(s-plugin)
 ```
 
 `eza` plugin styling:
