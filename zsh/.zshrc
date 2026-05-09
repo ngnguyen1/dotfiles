@@ -3,6 +3,7 @@
 ZSH_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
 source "$ZSH_CONFIG_HOME/exports.zsh"
+source "$ZSH_CONFIG_HOME/ssh-agent.zsh"
 source "$ZSH_CONFIG_HOME/history.zsh"
 source "$ZSH_CONFIG_HOME/omz.zsh"
 source "$ZSH_CONFIG_HOME/langs.zsh"

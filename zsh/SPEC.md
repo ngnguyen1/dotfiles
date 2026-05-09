@@ -9,6 +9,7 @@ zsh/
 ├── .zshrc                         # minimal loader, stowed to ~/.zshrc
 └── .config/zsh/
     ├── exports.zsh                # PATH and environment
+    ├── ssh-agent.zsh              # ssh-agent bootstrap and key load
     ├── history.zsh                # history settings and setopt flags
     ├── omz.zsh                    # Oh My Zsh plugins/theme config
     ├── langs.zsh                  # nvm lazy loader
@@ -32,18 +33,20 @@ Stow targets:
 `.zshrc` loads files in this order:
 
 1. `exports.zsh`
-2. `history.zsh`
-3. `omz.zsh`
-4. `langs.zsh`
-5. `aliases.zsh`
-6. `functions.zsh`
-7. `completions.zsh`
-8. `prompt.zsh`
-9. `local.zsh` if readable
+2. `ssh-agent.zsh`
+3. `history.zsh`
+4. `omz.zsh`
+5. `langs.zsh`
+6. `aliases.zsh`
+7. `functions.zsh`
+8. `completions.zsh`
+9. `prompt.zsh`
+10. `local.zsh` if readable
 
 Rationale:
 
 - Environment and PATH load first because later tools depend on them.
+- `ssh-agent` loads early so git/ssh flows in later startup already have auth socket.
 - Oh My Zsh loads before aliases so user aliases override plugin aliases.
 - Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` only adds tool-specific hooks.
 - Prompt loads last to avoid slow prompt work before shell config is ready.
@@ -64,6 +67,7 @@ Rationale:
 | fd | find replacement | used by fzf aliases/functions |
 | lazygit | git TUI | aliased |
 | Vault CLI | completion | guarded bash completion |
+| ssh-agent | SSH key agent | interactive shells keep valid existing agent env (including forwarding), else load cached env from `${XDG_CACHE_HOME:-~/.cache}/zsh/ssh-agent.env`, else start local `ssh-agent`; runs `ssh-add` for `~/.ssh/id_ed25519` or `~/.ssh/id_rsa` |
 
 ## Theme
 
