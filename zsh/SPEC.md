@@ -57,7 +57,7 @@ Rationale:
 | Starship | prompt | guarded `eval "$(starship init zsh)"` |
 | zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | binary from `~/.local/bin`; use `uv run ...` / `uvx ...` |
-| nvm | Node version manager | `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` |
+| nvm | Node version manager | Homebrew `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` (`brew --prefix nvm` when available, then `/opt/homebrew/opt/nvm`, then `/usr/local/opt/nvm`; fallback to `$NVM_DIR/nvm.sh`) |
 | fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
 | bat | `cat` replacement | alias only when `bat` exists |
 | eza | `ls` replacement | OMZ plugin |
@@ -127,7 +127,7 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
 | `FZF_DEFAULT_OPTS` | Catppuccin-Mocha colors plus layout flags | fzf UI |
-| `NVM_DIR` | `~/.nvm` | nvm root |
+| `NVM_DIR` | `~/.nvm` | nvm versions/data root |
 
 PATH entries in tracked config:
 
