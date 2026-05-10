@@ -2,3 +2,4 @@
 .DS_Store
 zsh/.config/zsh/local.zsh
 zsh/.config/zsh/omz.local.zsh
+tmux/.config/tmux/plugins/
