@@ -16,6 +16,7 @@ zsh/
     ├── aliases.zsh                # aliases only
     ├── functions.zsh              # shell functions only
     ├── completions.zsh            # fzf, zoxide, vault completion
+    ├── plugins.zsh                # Homebrew zsh-autosuggestions + zsh-syntax-highlighting
     ├── prompt.zsh                 # prompt init
     ├── local.zsh                  # optional untracked local secrets / machine config
     └── omz.local.zsh              # optional untracked OMZ plugin overrides
@@ -40,8 +41,9 @@ Stow targets:
 6. `aliases.zsh`
 7. `functions.zsh`
 8. `completions.zsh`
-9. `prompt.zsh`
-10. `local.zsh` if readable
+9. `plugins.zsh`
+10. `prompt.zsh`
+11. `local.zsh` if readable
 
 Rationale:
 
@@ -49,7 +51,8 @@ Rationale:
 - `ssh-agent` loads early so git/ssh flows in later startup already have auth socket.
 - Oh My Zsh loads before aliases so user aliases override plugin aliases.
 - Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` only adds tool-specific hooks.
-- Prompt loads last to avoid slow prompt work before shell config is ready.
+- `plugins.zsh` loads after `completions.zsh` so `zsh-syntax-highlighting` wraps fzf/zoxide widgets; no `brew --prefix` subshell (prefix is `/opt/homebrew` or `/usr/local` with a directory probe).
+- Prompt loads after zsh plugins to avoid slow prompt work before shell config is ready.
 - Local machine config loads last so it can override tracked defaults.
 
 ## Loaded frameworks / tools
@@ -68,6 +71,8 @@ Rationale:
 | lazygit | git TUI | aliased |
 | Vault CLI | completion | guarded bash completion |
 | ssh-agent | SSH key agent | interactive shells keep valid existing agent env (including forwarding), else load cached env from `${XDG_CACHE_HOME:-~/.cache}/zsh/ssh-agent.env`, else start local `ssh-agent`; runs `ssh-add` for `~/.ssh/id_ed25519` or `~/.ssh/id_rsa` |
+| zsh-autosuggestions | inline suggestions | `plugins.zsh` sources `<prefix>/share/zsh-autosuggestions/zsh-autosuggestions.zsh` (`<prefix>` = first of `/opt/homebrew`, `/usr/local`) |
+| zsh-syntax-highlighting | command-line highlighting | `plugins.zsh` sources `<prefix>/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` after fzf/zoxide |
 
 ## Theme
 
@@ -101,9 +106,10 @@ Startup behavior:
 
 - Oh My Zsh auto-update checks are disabled; update manually when needed.
 - `ZSH_COMPDUMP` is pinned to `${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}` to keep completion cache paths stable across host name changes.
-- `zsh-autosuggestions` and `zsh-syntax-highlighting` load from Homebrew after OMZ:
-  `source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"` and
-  `source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"`.
+
+### Homebrew zsh plugins (not OMZ)
+
+`zsh-autosuggestions` and `zsh-syntax-highlighting` are installed with Homebrew (`brew install zsh-autosuggestions zsh-syntax-highlighting`). They load from [plugins.zsh](.config/zsh/plugins.zsh), which picks the first existing prefix among `/opt/homebrew` and `/usr/local` (no `brew` invocation at startup).
 
 ## History
 
@@ -181,6 +187,7 @@ Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 - Vault completion loads only when `vault` is available.
 - fzf shell integration loads only when `fzf` is available.
 - zoxide shell integration loads only when `zoxide` is available.
+- `plugins.zsh` loads after the above so syntax highlighting wraps those integrations.
 
 ## Local Overrides
 

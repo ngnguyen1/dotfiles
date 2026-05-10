@@ -26,11 +26,3 @@ OMZ_LOCAL_CONFIG="${ZSH_CONFIG_HOME:-$HOME/.config/zsh}/omz.local.zsh"
 [[ -r "$OMZ_LOCAL_CONFIG" ]] && source "$OMZ_LOCAL_CONFIG"
 
 source "$ZSH/oh-my-zsh.sh"
-
-# Load Homebrew zsh plugins directly (outside OMZ plugin lookup).
-if command -v brew >/dev/null; then
-  typeset _brew_prefix
-  _brew_prefix="$(brew --prefix 2>/dev/null)"
-  [[ -r "${_brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "${_brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  [[ -r "${_brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "${_brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi

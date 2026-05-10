@@ -10,6 +10,7 @@ source "$ZSH_CONFIG_HOME/langs.zsh"
 source "$ZSH_CONFIG_HOME/aliases.zsh"
 source "$ZSH_CONFIG_HOME/functions.zsh"
 source "$ZSH_CONFIG_HOME/completions.zsh"
+source "$ZSH_CONFIG_HOME/plugins.zsh"
 source "$ZSH_CONFIG_HOME/prompt.zsh"
 
 [[ -r "$ZSH_CONFIG_HOME/local.zsh" ]] && source "$ZSH_CONFIG_HOME/local.zsh"

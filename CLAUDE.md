@@ -321,7 +321,7 @@ collapse_simple_statement = "Always"
 
 ## Zsh (`zsh/`)
 
-Single file: `zsh/.zshrc` → stows to `~/.zshrc`.
+Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/` (see `zsh/SPEC.md`).
 
 **Frameworks / tools loaded:**
 
@@ -333,8 +333,9 @@ Single file: `zsh/.zshrc` → stows to `~/.zshrc`.
 | uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
 | nvm | Node versions | `source $NVM_DIR/nvm.sh` (eager — adds ~100–500 ms startup) |
 | fzf | fuzzy finder | `source <(fzf --zsh)` |
+| zsh-autosuggestions / zsh-syntax-highlighting | Brew formulae | `plugins.zsh` sources share paths under `/opt/homebrew` or `/usr/local` (after fzf/zoxide; not OMZ custom plugins) |
 
-**OMZ plugins:** `git gh terraform brew rsync aws eza s-plugin zsh-autosuggestions zsh-syntax-highlighting`
+**OMZ plugins:** `git gh terraform brew rsync aws eza` (optional `s-plugin` etc. via ignored `omz.local.zsh`)
 
 eza plugin: `icons yes` + `git-status yes`.
 
