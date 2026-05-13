@@ -16,6 +16,8 @@ dotfiles/
 │   └── .config/nvim/                   # Neovim config (see §Neovim)
 ├── starship/
 │   └── .config/starship/starship.toml  # cross-shell prompt
+├── tmux/
+│   └── .config/tmux/tmux.conf          # TPM + catppuccin status (appearance-aware)
 ├── zsh/
 │   └── .zshrc                          # shell config
 └── README.md
@@ -127,10 +129,10 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 
 ### Plugin reference
 
-#### `colorscheme.lua` — `folke/tokyonight.nvim`
-- `priority = 1000`. Loaded before everything.
-- `comments.italic = false`.
-- Active variant: `tokyonight-night`.
+#### `colorscheme.lua` — `catppuccin/nvim`
+- `priority = 1000`. Lazy name `catppuccin`. Loaded before everything.
+- `no_italic = true`. Integrations for treesitter, LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline.
+- On macOS startup, reads `defaults read -g AppleInterfaceStyle`: **Dark** → `vim.o.background = 'dark'` and Catppuccin **mocha**; otherwise **light** → Catppuccin **latte**. Same rule as tmux Catppuccin flavor. After changing system appearance, reload with `:source $MYVIMRC` or restart Neovim.
 
 #### `lsp.lua` + `core/lsp.lua` — `neovim/nvim-lspconfig`
 - Event: `BufReadPre`, `BufNewFile`.
@@ -259,7 +261,7 @@ Three plugins under `<leader>g`.
 | `<leader>gdv` | Smart toggle (open if closed, close if open) |
 
 #### `lualine.lua` — `nvim-lualine/lualine.nvim`
-- Event: `VeryLazy`. `globalstatus = true`. Powerline separators.
+- Event: `VeryLazy`. `globalstatus = true`. `options.theme = 'catppuccin-nvim'` (from `catppuccin/nvim`; lualine has no builtin `catppuccin`). Powerline separators.
 - Init trick: empty statusline until loaded (no flicker).
 - Performance: `lualine_require.require = require` (bypass lualine's slow shim).
 - Disabled for: `dashboard alpha ministarter snacks_dashboard nvim-tree`.
@@ -362,6 +364,15 @@ eza plugin: `icons yes` + `git-status yes`.
 - `CONFIG_DIR` for lazygit does nothing; lazygit reads `XDG_CONFIG_HOME`.
 - Duplicate `compinit` calls (startup latency).
 - nvm sourced eagerly (slow startup).
+
+---
+
+## Tmux (`tmux/`)
+
+`tmux/.config/tmux/tmux.conf` → stows to `~/.config/tmux/tmux.conf`.
+
+- **Catppuccin flavor**: `if-shell` runs `defaults read -g AppleInterfaceStyle` before `run catppuccin.tmux` — **Dark** → `@catppuccin_flavor mocha` with matching CPU/RAM accent hexes; **light** (key missing or not Dark) → `latte` with Latte peach/mauve hexes.
+- **Reload**: `prefix` + `r` (`bind r source-file "$TMUX_CONF"`) reapplies config and picks up the current system appearance.
 
 ---
 
