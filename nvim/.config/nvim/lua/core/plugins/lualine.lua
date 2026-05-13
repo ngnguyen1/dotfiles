@@ -43,7 +43,7 @@ return {
 
     return {
       options = {
-        theme = 'auto', -- auto-detects your colorscheme
+        theme = 'catppuccin-nvim',
         globalstatus = true, -- single statusline at the bottom
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },

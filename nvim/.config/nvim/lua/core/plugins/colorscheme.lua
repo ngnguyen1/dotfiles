@@ -1,25 +1,40 @@
 ---@module 'lazy'
 ---@type LazySpec
 return {
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
     config = function()
+      local handle = io.popen('defaults read -g AppleInterfaceStyle 2>/dev/null', 'r')
+      local out = ''
+      if handle then
+        out = handle:read('*a') or ''
+        handle:close()
+      end
+      local flavour = out:match('Dark') and 'mocha' or 'latte'
+      if flavour == 'mocha' then
+        vim.o.background = 'dark'
+      else
+        vim.o.background = 'light'
+      end
+
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
+      require('catppuccin').setup {
+        flavour = flavour,
+        transparent_background = false,
+        no_italic = true,
+        integrations = {
+          treesitter = true,
+          native_lsp = { enabled = true },
+          telescope = true,
+          gitsigns = true,
+          nvimtree = true,
+          which_key = true,
+          indent_blankline = { enabled = true },
         },
       }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 }

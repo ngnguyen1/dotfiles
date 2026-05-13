@@ -21,7 +21,7 @@ nvim/
             │   ├── lsp.lua                # LspAttach handler + servers
             │   ├── treesitter_incsel.lua  # TS incremental selection keymaps
             │   └── plugins/
-            │       ├── colorscheme.lua    # tokyonight
+            │       ├── colorscheme.lua    # catppuccin
             │       ├── lsp.lua            # lspconfig + mason wiring
             │       ├── nvim-tree.lua      # file tree
             │       ├── conform.lua        # formatter
@@ -127,10 +127,11 @@ Lazy options:
 
 ## Plugins (per file)
 
-### colorscheme.lua — `folke/tokyonight.nvim`
-- `priority = 1000` (loaded first).
-- `comments = { italic = false }`.
-- Sets `tokyonight-night`.
+### colorscheme.lua — `catppuccin/nvim`
+- `priority = 1000` (loaded first). Lazy name `catppuccin`.
+- `no_italic = true` (non-italic comments, similar to prior Tokyo Night setup).
+- Integrations: treesitter, native LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline.
+- On macOS startup, reads `defaults read -g AppleInterfaceStyle`: **Dark** → `flavour = 'mocha'`, `vim.o.background = 'dark'`; otherwise **light** → `flavour = 'latte'`, `vim.o.background = 'light'`. Then `vim.cmd.colorscheme 'catppuccin'`. Matches tmux Catppuccin flavor switching.
 
 ### lsp.lua + core/lsp.lua — `neovim/nvim-lspconfig`
 - Lazy event: `BufReadPre`, `BufNewFile`.
@@ -214,6 +215,7 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
   - `enhanced_diff_hl`, `merge_tool.layout = 'diff3_mixed'`, file panel left @ 35 cols, diff buffers strip wrap/list/colorcolumn.
 
 ### lualine.lua — `nvim-lualine/lualine.nvim`
+- `options.theme = 'catppuccin-nvim'` (module from `catppuccin/nvim`; lualine’s own `lua/lualine/themes/` has no `catppuccin` name).
 - Lazy: `VeryLazy`.
 - Init trick: empty statusline until lualine loads (no flicker).
 - LazyVim trick: `lualine_require.require = require` (skip lualine's slow shim).
