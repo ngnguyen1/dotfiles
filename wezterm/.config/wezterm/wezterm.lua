@@ -22,62 +22,63 @@ config.macos_window_background_blur = 12
 config.audible_bell = "Disabled"
 
 config.window_padding = {
-    left = 18,
-    right = 15,
-    top = 20,
-    bottom = 5,
+	left = 18,
+	right = 15,
+	top = 20,
+	bottom = 5,
 }
 
 -- Key bindings
 config.keys = {
-    {
-        key = "LeftArrow",
-        mods = "OPT",
-        action = wezterm.action({ SendString = "\x1bb" }),
-    },
-    {
-        key = "RightArrow",
-        mods = "OPT",
-        action = wezterm.action({ SendString = "\x1bf" }),
-    },
-    {
-        key = "&",
-        mods = "CMD",
-        action = wezterm.action.ActivateTab(0),
-    },
-    {
-        key = "[",
-        mods = "CMD",
-        action = wezterm.action.ActivateTab(1),
-    },
-    {
-        key = "{",
-        mods = "CMD",
-        action = wezterm.action.ActivateTab(2),
-    },
-    {
-        key = "}",
-        mods = "CMD",
-        action = wezterm.action.ActivateTab(3),
-    },
-    {
-        key = "(",
-        mods = "CMD",
-        action = wezterm.action.ActivateTab(4),
-    },
+	{
+		key = "LeftArrow",
+		mods = "OPT",
+		action = wezterm.action({ SendString = "\x1bb" }),
+	},
+	{
+		key = "RightArrow",
+		mods = "OPT",
+		action = wezterm.action({ SendString = "\x1bf" }),
+	},
+	{
+		key = "&",
+		mods = "CMD",
+		action = wezterm.action.ActivateTab(0),
+	},
+	{
+		key = "[",
+		mods = "CMD",
+		action = wezterm.action.ActivateTab(1),
+	},
+	{
+		key = "{",
+		mods = "CMD",
+		action = wezterm.action.ActivateTab(2),
+	},
+	{
+		key = "}",
+		mods = "CMD",
+		action = wezterm.action.ActivateTab(3),
+	},
+	{
+		key = "(",
+		mods = "CMD",
+		action = wezterm.action.ActivateTab(4),
+	},
 }
 
 -- function to change color scheme based on appearance
 function scheme_for_appearance(appearance)
-    if appearance:find "Dark" then
-        return "Catppuccin Macchiato" -- or Macchiato, Frappe, Latte
-    else
-        return "Catppuccin Latte"
-    end
+	if appearance:find("Dark") then
+		return "Catppuccin Macchiato" -- or Macchiato, Frappe, Latte
+	else
+		return "Catppuccin Latte"
+	end
 end
 
 -- Add Custom Color Scheme: scheme_for_appearance(wezterm.gui.get_appearance())
-config.color_scheme = "Catppuccin Macchiato"
+config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
+-- config.color_scheme = "Catppuccin Macchiato"
 -- config.colors = {
 --     cursor_bg = "#9B96B5",
 --     cursor_fg = "#1a1a1e",
