@@ -41,15 +41,31 @@ elif command -v ssh-agent >/dev/null; then
   _ssh_agent_save_env
 fi
 
-if command -v ssh-add >/dev/null; then
-  ssh-add -l >/dev/null 2>&1
-  if [[ $? -eq 1 ]]; then
-    if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
-      ssh-add "$HOME/.ssh/id_ed25519" </dev/tty
-    elif [[ -f "$HOME/.ssh/id_rsa" ]]; then
-      ssh-add "$HOME/.ssh/id_rsa" </dev/tty
-    fi
-  fi
-fi
+# Lazy key add on first ssh/scp/sftp — avoids blocking shell startup (e.g. Cursor agent + passphrase prompts).
+_ssh_add_default_key() {
+  command -v ssh-add >/dev/null || return
+  ssh-add -l >/dev/null 2>&1 && return
+  local key
+  for key in "$HOME/.ssh/id_ed25519" "$HOME/.ssh/id_rsa"; do
+    [[ -f "$key" ]] || continue
+    ssh-add --apple-use-keychain "$key" 2>/dev/null || ssh-add "$key"
+    return
+  done
+}
+
+ssh() {
+  _ssh_add_default_key
+  command ssh "$@"
+}
+
+scp() {
+  _ssh_add_default_key
+  command scp "$@"
+}
+
+sftp() {
+  _ssh_add_default_key
+  command sftp "$@"
+}
 
 unset _SSH_AGENT_ENV_FILE

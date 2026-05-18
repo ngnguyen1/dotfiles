@@ -22,7 +22,8 @@ dotfiles/
 ├── tmux/
 │   └── .config/tmux/                   # tmux.conf + theme.conf (Catppuccin)
 ├── zsh/
-│   └── .zshrc                          # shell config
+│   ├── .zshrc                          # minimal loader → ~/.config/zsh/*.zsh
+│   └── .config/zsh/                    # exports, OMZ, completions, …; see zsh/SPEC.md
 └── README.md
 ```
 
@@ -339,13 +340,13 @@ Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/`
 | Starship | prompt | `eval "$(starship init zsh)"` |
 | zoxide | smarter cd | `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
-| nvm | Node versions | `source $NVM_DIR/nvm.sh` (eager — adds ~100–500 ms startup) |
+| nvm | Node versions | lazy on first `nvm`/`node`/`npm`/… via `langs.zsh` |
 | fzf | fuzzy finder | `source <(fzf --zsh)` |
 | zsh-autosuggestions / zsh-syntax-highlighting | Brew formulae | `plugins.zsh` sources share paths under `/opt/homebrew` or `/usr/local` (after fzf/zoxide; not OMZ custom plugins) |
 
 **OMZ plugins:** `git gh terraform brew rsync aws eza` (optional `s-plugin` etc. via ignored `omz.local.zsh`)
 
-eza plugin: `icons yes` + `git-status yes`.
+eza plugin: `icons yes` (no `git-status` on default `ls` — use `lsg` / `llg` for `eza --git`).
 
 **History:** `HISTSIZE=1000000`, `SAVEHIST=1000000`. Options: `EXTENDED_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_FIND_NO_DUPS SHARE_HISTORY INC_APPEND_HISTORY`.
 
@@ -357,19 +358,16 @@ eza plugin: `icons yes` + `git-status yes`.
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` |
 | `FZF_DEFAULT_OPTS` | Catppuccin-Mocha palette + `--height=40% --border=rounded --margin=5% --reverse --multi` |
 | `NVM_DIR` | `~/.nvm` |
-| `GPG_TTY` | `$(tty)` |
+| `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` |
+| `GPG_TTY` | `$(tty)` when stdin is a TTY |
 | `GSDK` | `~/silabs/gsdk` (Silicon Labs SDK) |
 
-**Key aliases:** `cat → bat`, `rm/mv → interactive`, `lg → lazygit`, `f → fzf`, `cdf` fuzzy zoxide cd, `catf` fuzzy bat view.
+**Key aliases:** `cat → bat`, `rm/mv → interactive`, `lg → lazygit`, `lsg`/`llg` → `eza` with `--git` (opt-in; default `ls` has no `--git`), `f → fzf`, `cdf` fuzzy zoxide cd, `catf` fuzzy bat view.
 
 **Functions:** `git_clean_merged` (prune merged branches), `killport <port>`, `extract <archive>`, `findin <word>` (rg wrapper), `vv` (fuzzy NVIM_APPNAME picker).
 
 **Known issues:**
-- `CLOUDSWPASSWD` plaintext password in version control — rotate + remove from history.
-- `STARSHIP_CONFIG` not exported (config at non-default path, won't load).
-- `CONFIG_DIR` for lazygit does nothing; lazygit reads `XDG_CONFIG_HOME`.
-- Duplicate `compinit` calls (startup latency).
-- nvm sourced eagerly (slow startup).
+- Secrets may have lived in ignored `local.zsh` — rotate anything exposed; use [zsh/.config/zsh/local.zsh.example](zsh/.config/zsh/local.zsh.example) as a template. Stale `~/.zcompdump*` in `$HOME` can cause `compdef` errors — one-time: `rm -f ~/.zcompdump*`.
 
 ---
 
@@ -428,7 +426,7 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 
 `starship/.config/starship/starship.toml` → stows to `~/.config/starship/starship.toml`.
 
-**Important:** Default lookup is `~/.config/starship.toml`. Must export `STARSHIP_CONFIG=$HOME/.config/starship/starship.toml` in `.zshrc` (currently missing).
+**Important:** Starship’s default path is `~/.config/starship.toml`; this repo stows to `~/.config/starship/starship.toml`. `STARSHIP_CONFIG` is set in `exports.zsh` so that file is used.
 
 - Palette: `catppuccin_mocha`.
 - `add_newline = false`. `command_timeout = 30000` (high — consider 500–1000 ms).

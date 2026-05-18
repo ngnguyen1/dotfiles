@@ -9,7 +9,6 @@ mkdir -p "${ZSH_COMPDUMP:h}"
 
 zstyle ':omz:update' mode disabled
 zstyle ':omz:plugins:eza' 'icons' yes
-zstyle ':omz:plugins:eza' 'git-status' yes
 
 plugins=(
   git

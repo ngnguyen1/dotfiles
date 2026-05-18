@@ -17,8 +17,8 @@ export LANG=en_US.UTF-8
 export GSDK="$HOME/silabs/gsdk"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 export TMUX_CONF="$HOME/.config/tmux/tmux.conf"
-export CONFIG_DIR="$HOME/.config/lazygit"
-export GPG_TTY="$(tty)"
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+[[ -t 0 ]] && export GPG_TTY="$(tty)"
 
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

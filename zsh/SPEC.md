@@ -18,7 +18,8 @@ zsh/
     ├── completions.zsh            # fzf, zoxide, vault completion
     ├── plugins.zsh                # Homebrew zsh-autosuggestions + zsh-syntax-highlighting
     ├── prompt.zsh                 # prompt init
-    ├── local.zsh                  # optional untracked local secrets / machine config
+    ├── local.zsh                  # optional untracked local secrets / machine config (gitignored)
+    ├── local.zsh.example          # tracked template for local.zsh
     └── omz.local.zsh              # optional untracked OMZ plugin overrides
 ```
 
@@ -27,7 +28,7 @@ Stow targets:
 - `~/.zshrc`
 - `~/.config/zsh/*.zsh`
 
-`local.zsh` and `omz.local.zsh` are intentionally ignored by git.
+`local.zsh` and `omz.local.zsh` are intentionally ignored by git. Copy `local.zsh.example` to `local.zsh` when bootstrapping a machine.
 
 ## Load Order
 
@@ -48,9 +49,9 @@ Stow targets:
 Rationale:
 
 - Environment and PATH load first because later tools depend on them.
-- `ssh-agent` loads early so git/ssh flows in later startup already have auth socket.
+- `ssh-agent` loads early so a valid `SSH_AUTH_SOCK` exists before git/ssh; keys are added lazily on first `ssh`/`scp`/`sftp` (see `ssh-agent.zsh`).
 - Oh My Zsh loads before aliases so user aliases override plugin aliases.
-- Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` only adds tool-specific hooks.
+- Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` adds tool-specific hooks and re-runs `compinit -C -d "$ZSH_COMPDUMP"` after `vault` so completion state stays tied to the XDG cache dump (avoids broken `~/.zcompdump*` / `compdef` errors).
 - `plugins.zsh` loads after `completions.zsh` so `zsh-syntax-highlighting` wraps fzf/zoxide widgets; no `brew --prefix` subshell (prefix is `/opt/homebrew` or `/usr/local` with a directory probe).
 - Prompt loads after zsh plugins to avoid slow prompt work before shell config is ready.
 - Local machine config loads last so it can override tracked defaults.
@@ -70,7 +71,7 @@ Rationale:
 | fd | find replacement | used by fzf aliases/functions |
 | lazygit | git TUI | aliased |
 | Vault CLI | completion | guarded bash completion |
-| ssh-agent | SSH key agent | interactive shells keep valid existing agent env (including forwarding), else load cached env from `${XDG_CACHE_HOME:-~/.cache}/zsh/ssh-agent.env`, else start local `ssh-agent`; runs `ssh-add` for `~/.ssh/id_ed25519` or `~/.ssh/id_rsa` |
+| ssh-agent | SSH key agent | interactive shells: reuse valid agent (including forwarding), else load `${XDG_CACHE_HOME:-~/.cache}/zsh/ssh-agent.env`, else start `ssh-agent`; `ssh`/`scp`/`sftp` wrappers call `ssh-add` on first use (`--apple-use-keychain` when supported) |
 | zsh-autosuggestions | inline suggestions | `plugins.zsh` sources `<prefix>/share/zsh-autosuggestions/zsh-autosuggestions.zsh` (`<prefix>` = first of `/opt/homebrew`, `/usr/local`) |
 | zsh-syntax-highlighting | command-line highlighting | `plugins.zsh` sources `<prefix>/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` after fzf/zoxide |
 
@@ -99,13 +100,14 @@ plugins+=(s-plugin)
 
 ```zsh
 zstyle ':omz:plugins:eza' 'icons' yes
-zstyle ':omz:plugins:eza' 'git-status' yes
 ```
+
+Use aliases `lsg` / `llg` in `aliases.zsh` for `eza --git` when you want git markers (default `ls` from the plugin has no `--git`, for speed in large repos).
 
 Startup behavior:
 
 - Oh My Zsh auto-update checks are disabled; update manually when needed.
-- `ZSH_COMPDUMP` is pinned to `${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}` to keep completion cache paths stable across host name changes.
+- `ZSH_COMPDUMP` is pinned to `${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}` to keep completion cache paths stable across host name changes. If you see `compdef` / invalid subscript errors, remove stale dumps in `$HOME`: `rm -f ~/.zcompdump*`.
 
 ### Homebrew zsh plugins (not OMZ)
 
@@ -131,8 +133,8 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `GSDK` | `~/silabs/gsdk` | Silicon Labs SDK |
 | `EZA_CONFIG_DIR` | `~/.config/eza` | eza config |
 | `TMUX_CONF` | `~/.config/tmux/tmux.conf` | tmux config path |
-| `CONFIG_DIR` | `~/.config/lazygit` | legacy lazygit-related export |
-| `GPG_TTY` | `$(tty)` | GPG signing |
+| `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` | Starship config (non-default path) |
+| `GPG_TTY` | `$(tty)` when stdin is a TTY | GPG signing |
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` | fzf source |
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
@@ -169,6 +171,8 @@ Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 | `cdf` | `z $(fd -t d \| fzf)` | fuzzy zoxide cd |
 | `catf` | `cat $(fd -t f \| fzf)` | fuzzy file viewer |
 | `lg` | `lazygit` | |
+| `lsg` | `eza --icons=auto --git` | opt-in; slow in huge git trees |
+| `llg` | `eza -l --icons=auto --git` | long listing + git |
 | `ftree`, `dtree`, `t`, `t3` | `tree ...` variants | depth/dirs-only/colored |
 
 ## Functions
@@ -183,7 +187,8 @@ Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 
 ## Completion
 
-- Oh My Zsh handles `compinit` and `bashcompinit`.
+- Oh My Zsh handles initial `compinit` and `bashcompinit`.
+- After `vault` bash completion (if installed), `completions.zsh` runs `compinit -C -d "$ZSH_COMPDUMP"` so the dump path stays under `${XDG_CACHE_HOME:-~/.cache}/zsh/` (avoids corrupt `~/.zcompdump*` from mixed completion init).
 - Vault completion loads only when `vault` is available.
 - fzf shell integration loads only when `fzf` is available.
 - zoxide shell integration loads only when `zoxide` is available.
@@ -198,14 +203,14 @@ Use `~/.config/zsh/local.zsh` for:
 - host-specific PATH entries
 - temporary aliases
 
-Example:
+Copy `local.zsh.example` to `local.zsh` and fill in values. Example:
 
 ```zsh
-export CLOUDSWPASSWD='...'
-export PATH="$HOME/work/bin:$PATH"
+# export CLOUDSWPASSWD='…'
+# export PATH="$HOME/work/bin:$PATH"
 ```
 
-Do not commit `local.zsh`.
+Do not commit `local.zsh` or real secrets.
 
 ## Validation
 

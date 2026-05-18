@@ -16,6 +16,10 @@ alias catf='cat $(fd -t f | fzf)'
 
 alias lg="lazygit"
 
+# Opt-in eza + git status (slow in large repos; default `ls` from OMZ eza has no --git).
+alias lsg='eza --icons=auto --git'
+alias llg='eza -l --icons=auto --git'
+
 alias ftree="tree . -L 3 -a -I '.git' --charset X"
 alias dtree="tree . -L 3 -a -d -I '.git' --charset X"
 alias t="tree -C -L 2"
