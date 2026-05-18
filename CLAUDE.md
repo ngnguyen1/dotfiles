@@ -16,8 +16,11 @@ dotfiles/
 │   └── .config/nvim/                   # Neovim config (see §Neovim)
 ├── starship/
 │   └── .config/starship/starship.toml  # cross-shell prompt
+├── theme-reload/
+│   ├── README.md                       # macOS light/dark → tmux + nvim hot reload
+│   └── .config/theme-reload/           # reload.sh, bootstrap, Swift listener source
 ├── tmux/
-│   └── .config/tmux/tmux.conf          # TPM + catppuccin status (appearance-aware)
+│   └── .config/tmux/                   # tmux.conf + theme.conf (Catppuccin)
 ├── zsh/
 │   └── .zshrc                          # shell config
 └── README.md
@@ -79,6 +82,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 - `InsertEnter` / `WinLeave`: hide `cursorline`; `InsertLeave` / `WinEnter`: restore it.
 - `FileType` ephemeral list (`fugitive`, `git`, `help`, `qf`, `lspinfo`, `man`, `toggleterm`, …): `buflisted = false`, `q` → close.
 - User commands `FormatDisable` / `FormatEnable` (and `FormatDisable!`) for conform autoformat opt-out (conform itself may load on first `BufWritePre`).
+- User command `ThemeReload` reapplies Catppuccin from macOS appearance (`lua/core/theme.lua`).
 
 ### `keymaps.lua`
 
@@ -99,6 +103,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 | `<leader>wv/wh/we/wx` | n | Split vertical/horizontal/equal/close |
 | `<leader>w+/-` | n | Window height +2/-2 |
 | `<leader>w>/<` | n | Window width +2/-2 |
+| `<leader>tT` | n | Reload Catppuccin from macOS appearance (`:ThemeReload`) |
 
 ### `lazy-plugins.lua`
 
@@ -132,7 +137,8 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 #### `colorscheme.lua` — `catppuccin/nvim`
 - `priority = 1000`. Lazy name `catppuccin`. Loaded before everything.
 - `no_italic = true`. Integrations for treesitter, LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline.
-- On macOS startup, reads `defaults read -g AppleInterfaceStyle`: **Dark** → `vim.o.background = 'dark'` and Catppuccin **mocha**; otherwise **light** → Catppuccin **latte**. Same rule as tmux Catppuccin flavor. After changing system appearance, reload with `:source $MYVIMRC` or restart Neovim.
+- Logic lives in `lua/core/theme.lua`: `detect()` reads `defaults read -g AppleInterfaceStyle`; `apply()` sets `background`, runs `catppuccin.setup`, and `:colorscheme catppuccin`. **Dark** → **mocha**; otherwise → **latte** (same rule as tmux `theme.conf`).
+- Live switch: `:ThemeReload` (user command in `autocmds.lua`), `<leader>tT`, or `~/.config/theme-reload/reload.sh` (iterates Neovim Unix sockets under `$TMPDIR`). After changing system appearance, the LaunchAgent in `theme-reload/` can run that script automatically (see `theme-reload/README.md`).
 
 #### `lsp.lua` + `core/lsp.lua` — `neovim/nvim-lspconfig`
 - Event: `BufReadPre`, `BufNewFile`.
@@ -369,10 +375,11 @@ eza plugin: `icons yes` + `git-status yes`.
 
 ## Tmux (`tmux/`)
 
-`tmux/.config/tmux/tmux.conf` → stows to `~/.config/tmux/tmux.conf`.
+`tmux/.config/tmux/tmux.conf` → stows to `~/.config/tmux/tmux.conf`. Catppuccin options and status layout live in `theme.conf` (sourced before TPM); `tmux-cpu` still runs after TPM.
 
-- **Catppuccin flavor**: `if-shell` runs `defaults read -g AppleInterfaceStyle` before `run catppuccin.tmux` — **Dark** → `@catppuccin_flavor mocha` with matching CPU/RAM accent hexes; **light** (key missing or not Dark) → `latte` with Latte peach/mauve hexes.
-- **Reload**: `prefix` + `r` (`bind r source-file "$TMUX_CONF"`) reapplies config and picks up the current system appearance.
+- **Catppuccin flavor**: `if-shell` in `theme.conf` runs `defaults read -g AppleInterfaceStyle` before `run catppuccin.tmux` — **Dark** → `@catppuccin_flavor mocha` with matching CPU/RAM accent hexes; **light** (key missing or not Dark) → `latte` with Latte peach/mauve hexes.
+- **Reload full config**: `prefix` + `r` (`bind r source-file "$TMUX_CONF"`) reapplies everything including TPM order.
+- **Hot theme reload**: `prefix` + `T` runs `~/.config/theme-reload/reload.sh` (re-sources `theme.conf`, re-runs `tmux-cpu` in-session, refreshes clients; see `theme-reload/README.md`).
 
 ---
 
