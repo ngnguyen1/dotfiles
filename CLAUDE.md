@@ -292,12 +292,12 @@ Sections:
 - Excluded filetypes: `help dashboard NvimTree Trouble lazy mason notify toggleterm lazyterm`.
 
 #### `blink-cmp.lua` — `saghen/blink.cmp` (custom/)
-- Event: `InsertEnter`. Version `1.*`.
-- Dep: `L3MON4D3/LuaSnip 2.*` (`make install_jsregexp`).
+- Event: `InsertEnter`. Version `2.*`.
+- Deps: `saghen/blink.lib`, `L3MON4D3/LuaSnip` (unversioned, with conditional `make install_jsregexp` build when available).
 - Keymap preset: `default` (`<C-y>` accept, `<C-n/p>` navigate, `<C-e>` hide, `<C-k>` signature).
 - Nerd-font variant: `mono`. `docs.auto_show = false`.
 - Sources: `lsp path snippets buffer`. `snippets.preset = 'luasnip'`.
-- `fuzzy.implementation = 'lua'` — pure-Lua matcher, faster cold start, no binary.
+- `fuzzy.implementation = 'prefer_rust'` — prefer native Rust matcher with Lua fallback; prebuilt binary auto-downloads on supported platforms.
 - `signature.enabled = true`.
 
 #### `folding` — `custom/folding.lua` (no external plugin)

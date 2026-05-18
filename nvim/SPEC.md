@@ -241,12 +241,12 @@ No external plugin — required from `init.lua` after `lazy-plugins`.
 - No buffer-local fold **remaps** — native `z` commands only (see `nvim/KEYMAPS.md`).
 
 ### blink-cmp.lua — `saghen/blink.cmp` (custom/)
-- Lazy: `InsertEnter`. Version `1.*`.
-- Dep: `LuaSnip 2.*` (`make install_jsregexp`).
+- Lazy: `InsertEnter`. Version `2.*`.
+- Deps: `saghen/blink.lib`, unpinned `LuaSnip` with conditional `make install_jsregexp` build when available.
 - Keymap preset: `default`. Nerd-font variant: `mono`. Docs `auto_show = false`.
 - Sources default: `lsp`, `path`, `snippets`, `buffer`.
 - `snippets.preset = 'luasnip'`.
-- `fuzzy.implementation = 'lua'` — pure-Lua matcher (no native binary, faster cold start).
+- `fuzzy.implementation = 'prefer_rust'` — prefer native Rust matcher with Lua fallback; prebuilt binary auto-downloads on supported platforms.
 - `signature.enabled = true`.
 
 ## .stylua.toml
