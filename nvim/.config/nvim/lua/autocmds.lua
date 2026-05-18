@@ -106,4 +106,8 @@ vim.api.nvim_create_user_command('FormatEnable', function()
   vim.g.disable_autoformat = false
 end, { desc = 'Re-enable autoformat-on-save' })
 
+vim.api.nvim_create_user_command('ThemeReload', function()
+  require('core.theme').apply()
+end, { desc = 'Reapply Catppuccin from macOS appearance' })
+
 -- vim: ts=2 sts=2 sw=2 et

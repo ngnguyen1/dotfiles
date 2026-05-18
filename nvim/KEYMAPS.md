@@ -98,11 +98,13 @@
 | `<leader>a` | n | Swap parameter with next |
 | `<leader>A` | n | Swap parameter with previous |
 
-## Toggle (`<leader>t`) — `core/lsp.lua`
+## Toggle (`<leader>t`) — `core/lsp.lua`, `keymaps.lua`, `autocmds.lua`
 
 | Key | Action |
 |-----|--------|
 | `<leader>th` | Toggle inlay hints (LSP buffer-local) |
+| `<leader>tT` | Reload Catppuccin / `:ThemeReload` |
+| `:ThemeReload` | Reapply theme from `defaults read AppleInterfaceStyle` |
 
 ## Git (`<leader>g`) — `core/plugins/git.lua`
 

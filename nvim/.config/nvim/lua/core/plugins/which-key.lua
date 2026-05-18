@@ -18,6 +18,7 @@ return {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'v' } },
         { '<leader>f', group = '[F]ile' },
         { '<leader>t', group = '[T]oggle' },
+        { '<leader>tT', desc = 'Reload theme (macOS)' },
         { '<leader>g', group = '[G]it' },
         { '<leader>gh', group = '[G]it [h]unk', mode = { 'n', 'v' } },
         { '<leader>gd', group = '[G]it [d]iff', mode = { 'n' } },

@@ -54,4 +54,6 @@ map('n', '<leader>w-', '<cmd>resize -2<CR>', { desc = 'Window height -' })
 map('n', '<leader>w>', '<cmd>vertical resize +2<CR>', { desc = 'Window width +' })
 map('n', '<leader>w<', '<cmd>vertical resize -2<CR>', { desc = 'Window width -' })
 
+map('n', '<leader>tT', '<cmd>ThemeReload<CR>', { desc = 'Reload UI theme (macOS appearance)' })
+
 -- vim: ts=2 sts=2 sw=2 et
