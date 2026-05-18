@@ -428,14 +428,12 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 
 **Important:** Starship’s default path is `~/.config/starship.toml`; this repo stows to `~/.config/starship/starship.toml`. `STARSHIP_CONFIG` is set in `exports.zsh` so that file is used.
 
-- Palette: `catppuccin_mocha`.
-- `add_newline = false`. `command_timeout = 30000` (high — consider 500–1000 ms).
-- Left prompt: `➜ $directory ${custom.giturl} $git_branch $git_state $git_status \n $character`
-- Right prompt: `$all`.
-- `[custom.giturl]`: runs `git ls-remote --get-url`, maps host to Nerd-Font remote icon.
-- Language modules: nodejs, c, rust, golang, php, java, kotlin, haskell, python, docker_context.
-- `character.success_symbol`: green `𝘹`. `error_symbol`: red `𝘹`. Vim-mode variants defined.
-- Known typo: `vimcmd_symbol = '[](bold fg:creen)'` — `creen` invalid color, should be `green`.
+- Preset: [Jetpack](https://starship.rs/presets/jetpack) (geometry/spaceship–style; uses the terminal palette; [JetBrains Mono](https://www.jetbrains.com/lp/mono/) recommended). Zsh supports the right prompt this preset uses.
+- `add_newline = false`. `command_timeout = 30000` (high — consider lowering if prompts feel slow).
+- **Left** `format`: `nix_shell` / `container` / `fill` / `git_metrics` (with newline), then `cmd_duration`, `hostname`, `localip`, `shlvl`, `shell`, `env_var`, `jobs`, `sudo`, `username`, `character` (`◎` / `○`, vim `■`).
+- **Right** `right_format`: `directory`, `${custom.giturl}`, VCS + `git_*`, language modules, cloud, `status`, `os`, `battery`, `time`.
+- `[custom.giturl]`: `git ls-remote --get-url`, Nerd-Font remote icon; `italic bright-blue` to match git styling.
+- Path substitutions under `[directory.substitutions]` (Documents, Downloads, `Developer`, …).
 
 ---
 

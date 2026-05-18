@@ -1,98 +1,150 @@
-command_timeout = 30000
-
+# Jetpack preset — https://starship.rs/presets/jetpack
+# version: 1.0.0
 "$schema" = 'https://starship.rs/config-schema.json'
 
-add_newline = false 
+command_timeout = 30000
 
-format = """
- ➜\
+add_newline = false
+continuation_prompt = "[▸▹ ](dimmed white)"
+
+format = """($nix_shell$container$fill$git_metrics\n)$cmd_duration\
+$hostname\
+$localip\
+$shlvl\
+$shell\
+$env_var\
+$jobs\
+$sudo\
+$username\
+$character"""
+
+right_format = """
+$singularity\
+$kubernetes\
 $directory\
 ${custom.giturl}\
+$vcsh\
+$fossil_branch\
 $git_branch\
+$git_commit\
 $git_state\
 $git_status\
-$line_break\
-$character
-"""
+$hg_branch\
+$pijul_channel\
+$docker_context\
+$package\
+$c\
+$cpp\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$fortran\
+$golang\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$maven\
+$nim\
+$nodejs\
+$bun\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$solidity\
+$swift\
+$terraform\
+$vlang\
+$vagrant\
+$xmake\
+$zig\
+$buf\
+$conda\
+$pixi\
+$meson\
+$spack\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$crystal\
+$status\
+$os\
+$battery\
+$time"""
 
-right_format = """$all"""
+[fill]
+symbol = ' '
 
-palette = "catppuccin_mocha"
+[character]
+format = "$symbol "
+success_symbol = "[◎](bold italic bright-yellow)"
+error_symbol = "[○](italic purple)"
+vimcmd_symbol = "[■](italic dimmed green)"
+# not supported in zsh
+vimcmd_replace_one_symbol = "◌"
+vimcmd_replace_symbol = "□"
+vimcmd_visual_symbol = "▼"
 
-[palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
-mauve = "#cba6f7"
-red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
-green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
-blue = "#89b4fa"
-lavender = "#b4befe"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
+[env_var.VIMSHELL]
+format = "[$env_value]($style)"
+style = 'green italic'
 
-[os.symbols]
-Windows = "󰍲"
-Ubuntu = "󰕈"
-SUSE = ""
-Raspbian = "󰐿"
-Mint = "󰣭"
-Macos = " "
-Manjaro = ""
-Linux = "󰌽"
-Gentoo = "󰣨"
-Fedora = "󰣛"
-Alpine = ""
-Amazon = ""
-Android = ""
-Arch = "󰣇"
-Artix = "󰣇"
-CentOS = ""
-Debian = "󰣚"
-Redhat = "󱄛"
-RedHatEnterprise = "󱄛"
+[sudo]
+format = "[$symbol]($style)"
+style = "bold italic bright-purple"
+symbol = "⋈┈"
+disabled = false
 
 [username]
-#show_always = true
-#style_user = "bg:surface0 fg:text"
-#style_root = "bg:surface0 fg:text"
-#format = '[ $user ]($style)'
+style_user = "bright-yellow bold italic"
+style_root = "purple bold italic"
+format = "[⭘ $user]($style) "
+disabled = false
+show_always = false
 
 [directory]
-style = "sapphire"
-format = "[ $path ]($style)"
-#truncation_length = 4
-#truncation_symbol = "…/"
+home_symbol = "⌂"
+truncation_length = 2
+truncation_symbol = "□ "
+read_only = " ◈"
+use_os_path_sep = true
+style = "italic blue"
+format = '[$path]($style)[$read_only]($read_only_style)'
+repo_root_style = 'bold blue'
+repo_root_format = '[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) [△](bold bright-blue)'
 
 [directory.substitutions]
 "Documents" = "󰈙 "
 "Downloads" = " "
-"Music" = "󰝚 "
+"Music" = " "
 "Pictures" = " "
 "Developer" = "󰲋 "
 
-[os]
-disabled = true
-#style = "bg:surface0 fg:text"
-
 [custom.giturl]
-# disabled = true
 description = "Display symbol for remote Git server"
 command = """
 GIT_REMOTE=$(command git ls-remote --get-url 2> /dev/null)
@@ -107,77 +159,207 @@ elif [[ "$GIT_REMOTE" =~ "git" ]]; then
 else
     GIT_REMOTE_SYMBOL=" "
 fi
-echo "$GIT_REMOTE_SYMBOL "
+echo "$GIT_REMOTE_SYMBOL"
 """
 when = 'git rev-parse --is-inside-work-tree 2> /dev/null'
-format = "at $output"
+style = "italic bright-blue"
+format = "[$output]($style)"
 
-[git_branch]
-symbol = "[](black) "
-# format =  ' [$symbol$branch(:$remote_branch)]($style)[]'
-style = "fg:lavender bg:black"
-format =  '  on [$symbol$branch]($style)[](black)'
+[cmd_duration]
+format = "[◄ $duration ](italic white)"
 
-[git_status]
-format = ' [($all_status$ahead_behind )]($style)'
+[jobs]
+format = "[$symbol$number]($style) "
+style = "white"
+symbol = "[▶](blue italic)"
 
-[nodejs]
-symbol = ""
-format = '[ $symbol( $version) ]($style)'
-
-[c]
-symbol = " "
-format = '[[ $symbol( $version) ]]($style)'
-
-[rust]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
-[golang]
-symbol = ""
-format = '[ $symbol( $version) ]($style)'
-detect_files = ["go.mod"]
-
-[php]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
-[java]
-symbol = " "
-format = '[[ $symbol( $version) ]]($style)'
-
-[kotlin]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
-[haskell]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
-[python]
-symbol = ""
-format = '[[ $symbol( $version) ]]($style)'
-
-
-[docker_context]
-symbol = ""
-format = '[ $symbol( $context) ]($style)'
-
+[localip]
+ssh_only = true
+format = " ◯[$localipv4](bold magenta)"
+disabled = false
 
 [time]
-disabled = true
-time_format = "%R"
-style = "bg:peach"
-format = '[[  $time ](fg:mantle bg:foam)]($style)'
-
-[line_break]
-disabled = true 
-
-[character]
 disabled = false
-success_symbol = '[𝘹](bold fg:green)'
-error_symbol = '[𝘹](bold fg:red)'
-vimcmd_symbol = '[](bold fg:creen)'
-vimcmd_replace_one_symbol = '[](bold fg:purple)'
-vimcmd_replace_symbol = '[](bold fg:purple)'
-vimcmd_visual_symbol = '[](bold fg:lavender)'
+format = "[ $time]($style)"
+time_format = "%R"
+utc_time_offset = "local"
+style = "italic dimmed white"
+
+[battery]
+format = "[ $percentage $symbol]($style)"
+full_symbol = "█"
+charging_symbol = "[↑](italic bold green)"
+discharging_symbol = "↓"
+unknown_symbol = "░"
+empty_symbol = "▃"
+
+[[battery.display]]
+threshold = 20
+style = "italic bold red"
+
+[[battery.display]]
+threshold = 60
+style = "italic dimmed bright-purple"
+
+[[battery.display]]
+threshold = 70
+style = "italic dimmed yellow"
+
+[git_branch]
+format = " [$branch(:$remote_branch)]($style)"
+symbol = "[△](bold italic bright-blue)"
+style = "italic bright-blue"
+truncation_symbol = "⋯"
+truncation_length = 11
+ignore_branches = ["main", "master"]
+only_attached = true
+
+[git_metrics]
+format = '([▴$added]($added_style))([▿$deleted]($deleted_style))'
+added_style = 'italic dimmed green'
+deleted_style = 'italic dimmed red'
+ignore_submodules = true
+disabled = false
+
+[git_status]
+style = "bold italic bright-blue"
+format = "([⎪$ahead_behind$staged$modified$untracked$renamed$deleted$conflicted$stashed⎥]($style))"
+conflicted = "[◪◦](italic bright-magenta)"
+ahead = "[▴│[${count}](bold white)│](italic green)"
+behind = "[▿│[${count}](bold white)│](italic red)"
+diverged = "[◇ ▴┤[${ahead_count}](regular white)│▿┤[${behind_count}](regular white)│](italic bright-magenta)"
+untracked = "[◌◦](italic bright-yellow)"
+stashed = "[◃◈](italic white)"
+modified = "[●◦](italic yellow)"
+staged = "[▪┤[$count](bold white)│](italic bright-cyan)"
+renamed = "[◎◦](italic bright-blue)"
+deleted = "[✕](italic red)"
+
+[deno]
+format = " [deno](italic) [∫ $version](green bold)"
+version_format = "${raw}"
+
+[lua]
+format = " [lua](italic) [${symbol}${version}]($style)"
+version_format = "${raw}"
+symbol = "⨀ "
+style = "bold bright-yellow"
+
+[nodejs]
+format = " [node](italic) [◫ ($version)](bold bright-green)"
+version_format = "${raw}"
+detect_files = ["package-lock.json", "yarn.lock"]
+detect_folders = ["node_modules"]
+detect_extensions = []
+
+[bun]
+format = " [bun](italic) [◫ ($version)](bold bright-green)"
+version_format = "${raw}"
+
+[python]
+format = " [py](italic) [${symbol}${version}]($style)"
+symbol = "[⌉](bold bright-blue)⌊ "
+version_format = "${raw}"
+style = "bold bright-yellow"
+
+[ruby]
+format = " [rb](italic) [${symbol}${version}]($style)"
+symbol = "◆ "
+version_format = "${raw}"
+style = "bold red"
+
+[rust]
+format = " [rs](italic) [$symbol$version]($style)"
+symbol = "⊃ "
+version_format = "${raw}"
+style = "bold red"
+
+[package]
+format = " [pkg](italic dimmed) [$symbol$version]($style)"
+version_format = "${raw}"
+symbol = "◨ "
+style = "dimmed yellow italic bold"
+
+[swift]
+format = " [sw](italic) [${symbol}${version}]($style)"
+symbol = "◁ "
+style = "bold bright-red"
+version_format = "${raw}"
+
+[aws]
+disabled = true
+format = " [aws](italic) [$symbol $profile $region]($style)"
+style = "bold blue"
+symbol = "▲ "
+
+[buf]
+symbol = "■ "
+format = " [buf](italic) [$symbol $version $buf_version]($style)"
+
+[c]
+symbol = "ℂ "
+format = " [$symbol($version(-$name))]($style)"
+
+[cpp]
+symbol = "ℂ "
+format = " [$symbol($version(-$name))]($style)"
+
+[conda]
+symbol = "◯ "
+format = " conda [$symbol$environment]($style)"
+
+[pixi]
+symbol = "■ "
+format = " pixi [$symbol$version ($environment )]($style)"
+
+[dart]
+symbol = "◁◅ "
+format = " dart [$symbol($version )]($style)"
+
+[docker_context]
+symbol = "◧ "
+format = " docker [$symbol$context]($style)"
+
+[elixir]
+symbol = "△ "
+format = " exs [$symbol $version OTP $otp_version ]($style)"
+
+[elm]
+symbol = "◩ "
+format = " elm [$symbol($version )]($style)"
+
+[golang]
+symbol = "∩ "
+format = " go [$symbol($version )]($style)"
+
+[haskell]
+symbol = "❯λ "
+format = " hs [$symbol($version )]($style)"
+
+[java]
+symbol = "∪ "
+format = " java [${symbol}(${version} )]($style)"
+
+[julia]
+symbol = "◎ "
+format = " jl [$symbol($version )]($style)"
+
+[memory_usage]
+symbol = "▪▫▪ "
+format = " mem [${ram}( ${swap})]($style)"
+
+[nim]
+symbol = "▴▲▴ "
+format = " nim [$symbol($version )]($style)"
+
+[nix_shell]
+style = 'bold italic dimmed blue'
+symbol = '✶'
+format = '[$symbol nix⎪$state⎪]($style) [$name](italic dimmed white)'
+impure_msg = '[⌽](bold dimmed red)'
+pure_msg = '[⌾](bold dimmed green)'
+unknown_msg = '[◌](bold dimmed yellow)'
+
+[spack]
+symbol = "◇ "
+format = " spack [$symbol$environment]($style)"
