@@ -22,6 +22,7 @@ require('lazy').setup({
 
   -- Custom plugins
   require 'custom.plugins.ai',
+  require 'custom.plugins.copilot',
   require 'custom.plugins.blink-cmp',
   require 'custom.plugins.tmux-navigator',
   require 'custom.languages.typescript',

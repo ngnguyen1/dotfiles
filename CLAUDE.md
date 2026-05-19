@@ -124,6 +124,8 @@ core.plugins.git
 core.plugins.lualine
 core.plugins.which-key
 core.plugins.ibl
+custom.plugins.ai
+custom.plugins.copilot
 custom.plugins.blink-cmp
 ```
 
@@ -215,7 +217,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 - **Incremental selection** (`core/treesitter_incsel.lua`): `<leader>v` init (normal), `<CR>` expand / `<BS>` shrink (visual) — avoids normal-mode `<CR>` hijack.
 - Textobject **select** (lookahead): `af/if` function, `ac/ic` class, `aa/ia` parameter.
 - Textobject **move**: `]f/[f` function, `]O/[O` class (uppercase **O** avoids `]c` / `[c` diff motions).
-- Textobject **swap**: `<leader>a` next param, `<leader>A` prev param.
+- Textobject **swap**: `]a` next param, `[a` prev param.
 
 #### `autopairs.lua` — `windwp/nvim-autopairs`
 - Event: `InsertEnter`. `check_ts = true`.
@@ -285,7 +287,16 @@ Sections:
 
 #### `which-key.lua` — `folke/which-key.nvim`
 - Event: `VimEnter`. `delay = 0`.
-- Groups: `<leader>c` Code, `<leader>f` File, `<leader>t` Toggle, `<leader>g` Git, `<leader>gh` Git hunk, `<leader>gd` Git diff, `<leader>e` Explorer, `<leader>w` Window, `gr` LSP Actions.
+- Groups: `<leader>a` AI, `<leader>c` Code, `<leader>f` File, `<leader>t` Toggle, `<leader>g` Git, `<leader>gh` Git hunk, `<leader>gd` Git diff, `<leader>e` Explorer, `<leader>w` Window, `gr` LSP Actions.
+
+#### `copilot.lua` — `github/copilot.vim` (custom/)
+- Event: `InsertEnter`. Command: `Copilot`.
+- Starts disabled (`vim.g.copilot_enabled = false`) with normal-mode controls under `<leader>a`:
+  - `<leader>ae` enable, `<leader>ad` disable, `<leader>at` buffer toggle, `<leader>as` status, `<leader>ap` panel.
+- Tab accept is disabled (`copilot_no_tab_map = true`) to avoid conflicts with `blink.cmp`; accept is remapped to `<M-l>`.
+- Common insert-mode actions: `<M-w>` accept word, `<M-j>` accept line, `<M-]>`/`<M-[>` next/prev suggestion, `<C-]>` dismiss.
+- Filetypes run in allow-list mode (`copilot_filetypes['*'] = false`) and include popular fullstack defaults (TS/JS, Rust, Go, Python + web/config/shell).
+- Workspace folder list set via `vim.g.copilot_workspace_folders = { '~/workspace' }`.
 
 #### `ibl.lua` — `lukas-reineke/indent-blankline.nvim`
 - Event: `BufReadPost` / `BufNewFile`. Main module: `ibl`.

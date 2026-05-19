@@ -85,8 +85,8 @@ return {
         vim.keymap.set(m, '[O', function() move.goto_previous_start('@class.outer', 'textobjects') end, { desc = 'TS: prev class' })
       end
 
-      vim.keymap.set('n', '<leader>a', function() swap.swap_next '@parameter.inner' end, { desc = 'TS: swap param with next' })
-      vim.keymap.set('n', '<leader>A', function() swap.swap_previous '@parameter.inner' end, { desc = 'TS: swap param with prev' })
+      vim.keymap.set('n', ']a', function() swap.swap_next '@parameter.inner' end, { desc = 'TS: swap param with next' })
+      vim.keymap.set('n', '[a', function() swap.swap_previous '@parameter.inner' end, { desc = 'TS: swap param with prev' })
 
       require('core.treesitter_incsel').setup()
 

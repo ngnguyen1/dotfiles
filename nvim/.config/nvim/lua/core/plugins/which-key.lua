@@ -15,6 +15,7 @@ return {
       },
 
       spec = {
+        { '<leader>a', group = '[A]I' },
         { '<leader>c', group = '[C]ode', mode = { 'n', 'v' } },
         { '<leader>f', group = '[F]ile' },
         { '<leader>t', group = '[T]oggle' },

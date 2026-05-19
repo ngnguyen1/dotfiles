@@ -39,6 +39,8 @@ nvim/
                 │   ├── eslint.lua         # eslint LSP + Node version gate
                 │   └── typescript.lua     # vtsls, vue_ls, astro, web stack, conform fts
                 └── plugins/
+                    ├── ai.lua             # gen.nvim local Ollama workflows
+                    ├── copilot.lua        # github/copilot.vim keymaps + filetypes
                     └── blink-cmp.lua      # completion
 ```
 
@@ -115,6 +117,8 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `core.plugins.lualine`
 - `core.plugins.which-key`
 - `core.plugins.ibl`
+- `custom.plugins.ai`
+- `custom.plugins.copilot`
 - `custom.plugins.blink-cmp`
 - `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
 
@@ -182,7 +186,7 @@ Lazy options:
 - `lazy = false`, `build = ':TSUpdate'` (upstream README: do not lazy-load).
 - Dep: `nvim-treesitter-textobjects` on `branch = 'main'`.
 - **Main rewrite**: `setup { install_dir }` only; `install()` schedules baseline parsers; `FileType` autocmd runs `vim.treesitter.start()` + experimental TS `indentexpr` for listed filetypes.
-- Textobjects: explicit keymaps via `nvim-treesitter-textobjects` — select `af/if`, `ac/ic`, `aa/ia`; move `]f`/`[f`, **`]O`/`[O`** for class (not `]c`/`[c`); swap `<leader>a` / `<leader>A`.
+- Textobjects: explicit keymaps via `nvim-treesitter-textobjects` — select `af/if`, `ac/ic`, `aa/ia`; move `]f`/`[f`, **`]O`/`[O`** for class (not `]c`/`[c`); swap `]a` / `[a`.
 - Incremental selection: `core/treesitter_incsel.lua` — `<leader>v` (normal), `<CR>` / `<BS>` (visual).
 
 ### autopairs.lua — `windwp/nvim-autopairs`
@@ -225,7 +229,15 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 - Extensions: `nvim-tree`, `lazy`, `fugitive`, `quickfix`.
 
 ### which-key.lua — `folke/which-key.nvim`
-- Spec: groups for `<leader>c`, `<leader>f`, `<leader>t`, `<leader>g`, `<leader>gh`, `<leader>gd`, `<leader>e`, `<leader>w`, and `gr`.
+- Spec: groups for `<leader>a`, `<leader>c`, `<leader>f`, `<leader>t`, `<leader>g`, `<leader>gh`, `<leader>gd`, `<leader>e`, `<leader>w`, and `gr`.
+
+### copilot.lua — `github/copilot.vim` (custom/)
+- Lazy: `InsertEnter` and `:Copilot` command.
+- Starts disabled (`vim.g.copilot_enabled = false`) with explicit `<leader>ae`/`<leader>ad` controls.
+- Disables tab mapping (`copilot_no_tab_map = true`, `copilot_assume_mapped = true`) to avoid collisions with `blink.cmp`.
+- Filetypes allow-list mode via `copilot_filetypes['*'] = false`, then enables popular fullstack set (TS/JS, Rust, Go, Python, plus web/config/shell).
+- Workspace folders set to `~/workspace`.
+- Insert keymaps: `<M-l>` accept, `<M-w>` word, `<M-j>` line, `<M-]>`/`<M-[>` cycle, `<C-]>` dismiss, `<M-\\>` suggest.
 
 ### ibl.lua — `indent-blankline.nvim`
 - Lazy: `BufReadPost` / `BufNewFile`. Indent char `│`, scope guides enabled.

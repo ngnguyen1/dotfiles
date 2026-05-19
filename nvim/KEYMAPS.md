@@ -47,6 +47,24 @@
 
 > `:FormatDisable` / `:FormatEnable` toggle autoformat (conform.lua user commands).
 
+## AI (`<leader>a`) — `custom/plugins/ai.lua`, `custom/plugins/copilot.lua`
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>ac` | n/v | Gen.nvim custom prompt |
+| `<leader>ar` | v | Gen.nvim review selection |
+| `<leader>ae` | n | Copilot enable (global) |
+| `<leader>ad` | n | Copilot disable (global) |
+| `<leader>at` | n | Copilot toggle (current buffer) |
+| `<leader>as` | n | Copilot status |
+| `<leader>ap` | n | Copilot panel |
+| `<M-l>` | i | Copilot accept suggestion |
+| `<M-w>` | i | Copilot accept word |
+| `<M-j>` | i | Copilot accept line |
+| `<M-]>` / `<M-[>` | i | Copilot next / previous suggestion |
+| `<C-]>` | i | Copilot dismiss suggestion |
+| `<M-\\>` | i | Copilot request suggestion |
+
 ## File (`<leader>f`) — `core/plugins/telescope.lua`
 
 | Key | Action |
@@ -95,8 +113,8 @@
 | `aa` / `ia` | o/x | Outer / inner parameter |
 | `]f` / `[f` | n/o/x | Next / previous function |
 | `]O` / `[O` | n/o/x | Next / previous class |
-| `<leader>a` | n | Swap parameter with next |
-| `<leader>A` | n | Swap parameter with previous |
+| `]a` | n | Swap parameter with next |
+| `[a` | n | Swap parameter with previous |
 
 ## Toggle (`<leader>t`) — `core/lsp.lua`, `keymaps.lua`, `autocmds.lua`
 
