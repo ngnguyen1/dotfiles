@@ -428,12 +428,18 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 
 **Important:** Starship’s default path is `~/.config/starship.toml`; this repo stows to `~/.config/starship/starship.toml`. `STARSHIP_CONFIG` is set in `exports.zsh` so that file is used.
 
-- Preset: [Jetpack](https://starship.rs/presets/jetpack) (geometry/spaceship–style; uses the terminal palette; [JetBrains Mono](https://www.jetbrains.com/lp/mono/) recommended). Zsh supports the right prompt this preset uses.
-- `add_newline = false`. `command_timeout = 30000` (high — consider lowering if prompts feel slow).
-- **Left** `format`: `nix_shell` / `container` / `fill` / `git_metrics` (with newline), then `cmd_duration`, `hostname`, `localip`, `shlvl`, `shell`, `env_var`, `jobs`, `sudo`, `username`, `character` (`◎` / `○`, vim `■`).
-- **Right** `right_format`: `directory`, `${custom.giturl}`, VCS + `git_*`, language modules, cloud, `status`, `os`, `battery`, `time`.
-- `[custom.giturl]`: `git ls-remote --get-url`, Nerd-Font remote icon; `italic bright-blue` to match git styling.
-- Path substitutions under `[directory.substitutions]` (Documents, Downloads, `Developer`, …).
+- Preset: [Pure](https://starship.rs/presets/pure-preset/) — port of sindresorhus/[pure](https://github.com/sindresorhus/pure). Minimal two-line prompt, terminal-palette colors (no hardcoded hexes), no Nerd Font required.
+- `add_newline = true` (blank line above prompt, Pure-style). `command_timeout = 1000`.
+- **Line 1** `format`: `username hostname directory git_branch git_state git_status cmd_duration` then `line_break`.
+- **Line 2**: `python` (virtualenv only) + `character`.
+- `[character]`: `❯` purple on success, `❯` red on error, `❮` green in vi cmd mode.
+- `[directory]`: `blue` style, no substitutions, no truncation override (defaults).
+- `[git_branch]`: bright-black, format `[$branch]($style)` (no symbol).
+- `[git_status]`: cyan; dirty flag `*` (color 218) when any of conflicted/untracked/modified/staged/renamed/deleted; `$ahead_behind` arrows + `≡` stash count. Per-state symbols are blanked (zero-width) so only the single `*` shows.
+- `[git_state]`: bright-black, parenthesized rebase/merge/cherry-pick state with progress.
+- `[cmd_duration]`: yellow (shown after long commands; default threshold 2 s).
+- `[python]`: shows venv name only (no version), bright-black; auto-detect disabled (`detect_extensions/detect_files = []`).
+- No `right_format`, no language modules besides `python` venv, no time/battery/os modules (intentional — Pure stays minimal).
 
 ---
 
