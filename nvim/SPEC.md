@@ -42,7 +42,7 @@ nvim/
                     ├── ai.lua             # gen.nvim local Ollama workflows
                     ├── copilot.lua        # github/copilot.vim keymaps + filetypes
                     ├── blink-cmp.lua      # completion
-                    └── markdown-preview.lua # iamcco/markdown-preview.nvim
+                    └── render-markdown.lua # MeanderingProgrammer/render-markdown.nvim
 ```
 
 ## init.lua
@@ -121,7 +121,7 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `custom.plugins.ai`
 - `custom.plugins.copilot`
 - `custom.plugins.blink-cmp`
-- `custom.plugins.markdown-preview`
+- `custom.plugins.render-markdown`
 - `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
 
 (`custom/folding.lua` is loaded from `init.lua`, not as a lazy plugin.)
@@ -263,11 +263,11 @@ No external plugin — required from `init.lua` after `lazy-plugins`.
 - `fuzzy.implementation = 'prefer_rust'` — prefer native Rust matcher with Lua fallback; prebuilt binary auto-downloads on supported platforms.
 - `signature.enabled = true`.
 
-### markdown-preview.lua — `iamcco/markdown-preview.nvim` (custom/)
-- Lazy: `ft = 'markdown'`, cmds `MarkdownPreview` / `MarkdownPreviewToggle` / `MarkdownPreviewStop`.
-- Build: `vim.fn['mkdp#util#install']()` (downloads prebuilt server binary; avoids `yarn` / `npm` install path).
-- Keymaps (buffer-local, `ft = 'markdown'`): `<leader>mp` open, `<leader>ms` stop, `<leader>mt` toggle. Renders current buffer in default browser, syncs scroll/edits live.
-- `vim.g.mkdp_auto_close = 0` (preview survives buffer switch). `vim.g.mkdp_theme = 'dark'`.
+### render-markdown.lua — `MeanderingProgrammer/render-markdown.nvim` (custom/)
+- Lazy: `ft = 'markdown'`. Deps: `nvim-treesitter`, `nvim-web-devicons`.
+- Pure-lua, in-buffer renderer (no browser, no node, no build step).
+- `opts = {}` — defaults (headings, code blocks, checkboxes, tables).
+- Keymap (buffer-local, `ft = 'markdown'`): `<leader>mt` toggle (`:RenderMarkdown toggle`).
 
 ## .stylua.toml
 
