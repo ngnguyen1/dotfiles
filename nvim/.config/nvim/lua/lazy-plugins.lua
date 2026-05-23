@@ -25,6 +25,7 @@ require('lazy').setup({
   require 'custom.plugins.copilot',
   require 'custom.plugins.blink-cmp',
   require 'custom.plugins.tmux-navigator',
+  require 'custom.plugins.markdown-preview',
   require 'custom.languages.typescript',
 }, { ---@diagnostic disable-line: missing-fields
   -- disable auto update check

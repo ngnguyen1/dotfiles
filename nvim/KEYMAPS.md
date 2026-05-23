@@ -85,6 +85,16 @@
 | `<leader>er` | Refresh explorer |
 | `<leader>ec` | Collapse explorer |
 
+## Markdown (`<leader>m`) — `custom/plugins/markdown-preview.lua`
+
+Buffer-local (filetype `markdown`).
+
+| Key | Action |
+|-----|--------|
+| `<leader>mp` | Open browser preview (`:MarkdownPreview`) |
+| `<leader>ms` | Stop preview (`:MarkdownPreviewStop`) |
+| `<leader>mt` | Toggle preview (`:MarkdownPreviewToggle`) |
+
 ## LSP Go-to (`gr`) — `core/lsp.lua`
 
 | Key | Action |

@@ -41,7 +41,8 @@ nvim/
                 └── plugins/
                     ├── ai.lua             # gen.nvim local Ollama workflows
                     ├── copilot.lua        # github/copilot.vim keymaps + filetypes
-                    └── blink-cmp.lua      # completion
+                    ├── blink-cmp.lua      # completion
+                    └── markdown-preview.lua # iamcco/markdown-preview.nvim
 ```
 
 ## init.lua
@@ -120,6 +121,7 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `custom.plugins.ai`
 - `custom.plugins.copilot`
 - `custom.plugins.blink-cmp`
+- `custom.plugins.markdown-preview`
 - `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
 
 (`custom/folding.lua` is loaded from `init.lua`, not as a lazy plugin.)
@@ -229,7 +231,7 @@ Three plugins under one `<leader>g` namespace. Detailed keymap cheatsheet lives 
 - Extensions: `nvim-tree`, `lazy`, `fugitive`, `quickfix`.
 
 ### which-key.lua — `folke/which-key.nvim`
-- Spec: groups for `<leader>a`, `<leader>c`, `<leader>f`, `<leader>t`, `<leader>g`, `<leader>gh`, `<leader>gd`, `<leader>e`, `<leader>w`, and `gr`.
+- Spec: groups for `<leader>a`, `<leader>c`, `<leader>f`, `<leader>t`, `<leader>g`, `<leader>gh`, `<leader>gd`, `<leader>e`, `<leader>m`, `<leader>w`, and `gr`.
 
 ### copilot.lua — `github/copilot.vim` (custom/)
 - Lazy: `InsertEnter` and `:Copilot` command.
@@ -260,6 +262,12 @@ No external plugin — required from `init.lua` after `lazy-plugins`.
 - `snippets.preset = 'luasnip'`.
 - `fuzzy.implementation = 'prefer_rust'` — prefer native Rust matcher with Lua fallback; prebuilt binary auto-downloads on supported platforms.
 - `signature.enabled = true`.
+
+### markdown-preview.lua — `iamcco/markdown-preview.nvim` (custom/)
+- Lazy: `ft = 'markdown'`, cmds `MarkdownPreview` / `MarkdownPreviewToggle` / `MarkdownPreviewStop`.
+- Build: `vim.fn['mkdp#util#install']()` (downloads prebuilt server binary; avoids `yarn` / `npm` install path).
+- Keymaps (buffer-local, `ft = 'markdown'`): `<leader>mp` open, `<leader>ms` stop, `<leader>mt` toggle. Renders current buffer in default browser, syncs scroll/edits live.
+- `vim.g.mkdp_auto_close = 0` (preview survives buffer switch). `vim.g.mkdp_theme = 'dark'`.
 
 ## .stylua.toml
 
