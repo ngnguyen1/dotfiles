@@ -1,6 +1,6 @@
 # theme-reload
 
-Hot-reload **tmux** Catppuccin status (via `theme.conf`) and **Neovim** Catppuccin when macOS switches light/dark.
+Hot-reload **tmux** Catppuccin status (via `theme.conf`), **Neovim** Catppuccin, and **fzf** palette (`~/.config/fzf/active.opts`) when macOS switches light/dark.
 
 ## Layout (GNU Stow)
 
@@ -33,3 +33,4 @@ rm -f ~/Library/LaunchAgents/com.ngnguyen.theme-reload.plist
 
 - TMUX: `prefix + T` runs `reload.sh` (see `tmux/.config/tmux/tmux.conf`).
 - Neovim: `:ThemeReload` or `<leader>tT` (see `nvim/KEYMAPS.md`).
+- fzf: `FZF_DEFAULT_OPTS_FILE` points at `active.opts`; `reload.sh` swaps the symlink to `mocha.opts` or `latte.opts` (see `fzf/.config/fzf/`). fzf re-reads the file on each invocation — no shell restart.

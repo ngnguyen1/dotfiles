@@ -138,7 +138,8 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` | fzf source |
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
-| `FZF_DEFAULT_OPTS` | Catppuccin-Mocha colors plus layout flags | fzf UI |
+| `FZF_DEFAULT_OPTS` | Layout flags only (colors in `FZF_DEFAULT_OPTS_FILE`) | fzf UI |
+| `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → Catppuccin mocha/latte via symlink | fzf colors (hot-reloaded) |
 | `NVM_DIR` | `~/.nvm` | nvm versions/data root |
 
 PATH entries in tracked config:

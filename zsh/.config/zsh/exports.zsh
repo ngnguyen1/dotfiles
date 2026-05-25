@@ -23,9 +23,14 @@ export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --type d --hidden --strip-cwd-prefix --exclude .git'
-export FZF_DEFAULT_OPTS="--height=40% --border=rounded --margin=5% --layout=reverse --info=default --prompt='❯ ' --pointer='▶' --header=' ' --header-first \
---color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
---color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
---color=selected-bg:#45475a \
---multi"
+export FZF_DEFAULT_OPTS="--height=40% --border=rounded --margin=5% --layout=reverse --info=default --prompt='❯ ' --pointer='▶' --header=' ' --header-first --multi"
+export FZF_DEFAULT_OPTS_FILE="$HOME/.config/fzf/active.opts"
+
+# Initialize active.opts symlink if missing (first shell after install or after `stow fzf`)
+if [[ ! -L "$FZF_DEFAULT_OPTS_FILE" && ! -e "$FZF_DEFAULT_OPTS_FILE" ]]; then
+  if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+    ln -sfn "$HOME/.config/fzf/mocha.opts" "$FZF_DEFAULT_OPTS_FILE"
+  else
+    ln -sfn "$HOME/.config/fzf/latte.opts" "$FZF_DEFAULT_OPTS_FILE"
+  fi
+fi

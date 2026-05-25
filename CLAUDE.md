@@ -8,6 +8,8 @@ Personal development environment managed with [GNU Stow](https://www.gnu.org/sof
 dotfiles/
 ├── eza/
 │   └── .config/eza/theme.yml           # eza color theme
+├── fzf/
+│   └── .config/fzf/                    # mocha.opts / latte.opts (active.opts symlink at runtime)
 ├── kitty/
 │   └── .config/kitty/                  # GPU terminal config + kittens
 ├── nvim/
@@ -17,7 +19,7 @@ dotfiles/
 ├── starship/
 │   └── .config/starship/starship.toml  # cross-shell prompt
 ├── theme-reload/
-│   ├── README.md                       # macOS light/dark → tmux + nvim hot reload
+│   ├── README.md                       # macOS light/dark → tmux + nvim + fzf hot reload
 │   └── .config/theme-reload/           # reload.sh, bootstrap, Swift listener source
 ├── tmux/
 │   └── .config/tmux/                   # tmux.conf + theme.conf (Catppuccin)
@@ -367,7 +369,8 @@ eza plugin: `icons yes` (no `git-status` on default `ls` — use `lsg` / `llg` f
 |---|---|
 | `EZA_CONFIG_DIR` | `~/.config/eza` |
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` |
-| `FZF_DEFAULT_OPTS` | Catppuccin-Mocha palette + `--height=40% --border=rounded --margin=5% --reverse --multi` |
+| `FZF_DEFAULT_OPTS` | Layout flags only (`--height=40% --border=rounded --margin=5% --layout=reverse --multi`, …) |
+| `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → `mocha.opts` / `latte.opts` (symlink; hot-reloaded by `theme-reload`) |
 | `NVM_DIR` | `~/.nvm` |
 | `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` |
 | `GPG_TTY` | `$(tty)` when stdin is a TTY |

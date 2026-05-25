@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# Hot-reload tmux status theme + all local Neovim GUIs when macOS light/dark changes.
+# Hot-reload tmux status theme + all local Neovim GUIs + fzf palette when macOS light/dark changes.
 set -euo pipefail
 
 cfg_dir="${HOME}/.config"
+fzf_dir="${cfg_dir}/fzf"
+if [[ -d "$fzf_dir" ]]; then
+  if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+    ln -sfn "$fzf_dir/mocha.opts" "$fzf_dir/active.opts"
+  else
+    ln -sfn "$fzf_dir/latte.opts" "$fzf_dir/active.opts"
+  fi
+fi
 tmux_theme="${cfg_dir}/tmux/theme.conf"
 reload_cpu() {
   local f="${HOME}/.tmux/plugins/tmux-cpu/cpu.tmux"
