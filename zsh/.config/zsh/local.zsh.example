@@ -1,0 +1,9 @@
+# Copy to ~/.config/zsh/local.zsh (that path is gitignored) for machine-only secrets.
+#
+# WARNING: Never commit real values. Rotate anything previously leaked.
+
+# export CLOUDSWPASSWD='…'
+# export CM_QA_TOKEN='…'
+# export CM_STAGE_TOKEN='…'
+# export CM_PROD_TOKEN='…'
+# export PATH="$HOME/work/bin:$PATH"
