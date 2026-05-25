@@ -9,6 +9,7 @@ zsh/
 ├── .zshrc                         # minimal loader, stowed to ~/.zshrc
 └── .config/zsh/
     ├── exports.zsh                # PATH and environment
+    ├── fzf-theme.zsh              # macOS light/dark → fzf active.opts symlink (sourced from exports)
     ├── ssh-agent.zsh              # ssh-agent bootstrap and key load
     ├── history.zsh                # history settings and setopt flags
     ├── omz.zsh                    # Oh My Zsh plugins/theme config
@@ -139,7 +140,7 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
 | `FZF_DEFAULT_OPTS` | Layout flags only (colors in `FZF_DEFAULT_OPTS_FILE`) | fzf UI |
-| `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → Catppuccin mocha/latte via symlink | fzf colors (hot-reloaded) |
+| `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → Catppuccin mocha/latte via symlink | fzf colors (synced by `fzf-theme.zsh` + `theme-reload`) |
 | `NVM_DIR` | `~/.nvm` | nvm versions/data root |
 
 PATH entries in tracked config:

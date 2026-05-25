@@ -13,6 +13,7 @@ fi
 
 if command -v fzf >/dev/null; then
   source <(fzf --zsh)
+  (( $+functions[_fzf_wrap_key_bindings] )) && _fzf_wrap_key_bindings
 fi
 
 if command -v zoxide >/dev/null; then

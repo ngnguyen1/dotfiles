@@ -25,12 +25,5 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --type d --hidden --strip-cwd-prefix --exclude .git'
 export FZF_DEFAULT_OPTS="--height=40% --border=rounded --margin=5% --layout=reverse --info=default --prompt='❯ ' --pointer='▶' --header=' ' --header-first --multi"
 export FZF_DEFAULT_OPTS_FILE="$HOME/.config/fzf/active.opts"
-
-# Initialize active.opts symlink if missing (first shell after install or after `stow fzf`)
-if [[ ! -L "$FZF_DEFAULT_OPTS_FILE" && ! -e "$FZF_DEFAULT_OPTS_FILE" ]]; then
-  if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
-    ln -sfn "$HOME/.config/fzf/mocha.opts" "$FZF_DEFAULT_OPTS_FILE"
-  else
-    ln -sfn "$HOME/.config/fzf/latte.opts" "$FZF_DEFAULT_OPTS_FILE"
-  fi
-fi
+[[ -r "${ZSH_CONFIG_HOME:-$HOME/.config/zsh}/fzf-theme.zsh" ]] && \
+  source "${ZSH_CONFIG_HOME:-$HOME/.config/zsh}/fzf-theme.zsh"
