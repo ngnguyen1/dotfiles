@@ -96,16 +96,16 @@ function M.lualine()
     normal = {
       a = { fg = c.bg, bg = c.blue,    gui = "bold" },
       b = { fg = c.fg, bg = c.bg_panel },
-      c = { fg = c.fg, bg = c.bg },
+      c = { fg = c.fg, bg = c.bg_darker },
     },
     insert  = { a = { fg = c.bg, bg = c.green_vivid, gui = "bold" } },
     visual  = { a = { fg = c.bg, bg = c.magenta,     gui = "bold" } },
     replace = { a = { fg = c.bg, bg = c.error,       gui = "bold" } },
     command = { a = { fg = c.bg, bg = c.orange,      gui = "bold" } },
     inactive = {
-      a = { fg = c.fg_dim, bg = c.bg },
-      b = { fg = c.fg_dim, bg = c.bg },
-      c = { fg = c.fg_dim, bg = c.bg },
+      a = { fg = c.fg_dim, bg = c.bg_darker },
+      b = { fg = c.fg_dim, bg = c.bg_darker },
+      c = { fg = c.fg_dim, bg = c.bg_darker },
     },
   }
 end

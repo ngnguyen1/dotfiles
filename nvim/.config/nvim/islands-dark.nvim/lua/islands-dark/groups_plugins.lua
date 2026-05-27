@@ -6,7 +6,7 @@ local M = {}
 function M.get(c, opts)
   opts = opts or {}
   local transparent = opts.transparent or false
-  local bg_sidebar  = transparent and c.none or c.bg          -- sideBar.background
+  local bg_sidebar  = transparent and c.none or c.bg_darker   -- elevated sidebar (recessed bg)
   local bg_float    = transparent and c.none or c.bg_panel    -- editorWidget / suggest
   local bg_tabs     = c.bg_darker                              -- editorGroupHeader
 
@@ -83,7 +83,7 @@ function M.get(c, opts)
     NvimTreeImageFile         = { fg = c.magenta },
     NvimTreeExecFile          = { fg = c.green_vivid },
     NvimTreeIndentMarker      = { fg = c.border_dim },           -- tree.indentGuidesStroke
-    NvimTreeWinSeparator      = { fg = c.bg, bg = c.bg },
+    NvimTreeWinSeparator      = { fg = c.border, bg = c.bg },
     NvimTreeGitDirty          = { fg = c.blue },                 -- modifiedResource
     NvimTreeGitNew            = { fg = c.green_vivid },          -- untrackedResource
     NvimTreeGitDeleted        = { fg = c.error },
@@ -106,7 +106,7 @@ function M.get(c, opts)
     NeoTreeGitIgnored         = { fg = c.fg_muted },
     NeoTreeGitUntracked       = { fg = c.green_vivid },
     NeoTreeIndentMarker       = { fg = c.border_dim },
-    NeoTreeWinSeparator       = { fg = c.bg, bg = c.bg },
+    NeoTreeWinSeparator       = { fg = bg_sidebar, bg = bg_sidebar },
 
     -- ── gitsigns (editorGutter / minimapGutter colors) ───────────────────
     GitSignsAdd       = { fg = c.green_vivid },                  -- editorGutter.added

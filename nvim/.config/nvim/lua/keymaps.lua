@@ -13,10 +13,10 @@ map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev buffer' })
 
 --  See `:help wincmd` for a list of all window commands
-map('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-map('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-map('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-map('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+map('n', '<C-h>', '<C-w>h', { desc = 'Move focus to the left window' })
+map('n', '<C-l>', '<C-w>l', { desc = 'Move focus to the right window' })
+map('n', '<C-j>', '<C-w>j', { desc = 'Move focus to the lower window' })
+map('n', '<C-k>', '<C-w>k', { desc = 'Move focus to the upper window' })
 
 -- visual mode: move selection
 map('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
