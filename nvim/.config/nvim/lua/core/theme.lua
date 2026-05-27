@@ -1,6 +1,6 @@
 ---@class core.theme
 ---Detect macOS light/dark and apply the matching colorscheme:
----  Dark  → one-dark-islands (local theme under lua/one-dark-islands)
+---  Dark  → islands-dark (local plugin at islands-dark.nvim/)
 ---  Light → catppuccin latte
 
 local M = {}
@@ -21,13 +21,9 @@ function M.apply()
   vim.o.background = is_dark and 'dark' or 'light'
 
   if is_dark then
-    local ok, odi = pcall(require, 'one-dark-islands')
-    if ok then
-      odi.setup { transparent = false, italic_comments = true, italic_parameters = true }
-    end
-    vim.cmd.colorscheme 'one-dark-islands'
+    vim.cmd.colorscheme 'islands-dark'
     M.refresh_lualine()
-    return 'one-dark-islands'
+    return 'islands-dark'
   end
 
   local ok, catppuccin = pcall(require, 'catppuccin')
@@ -56,8 +52,8 @@ end
 ---Return the lualine theme matching current appearance.
 function M.lualine_theme()
   if M.is_dark() then
-    local ok, odi = pcall(require, 'one-dark-islands')
-    if ok then return odi.lualine() end
+    local ok, ids = pcall(require, 'islands-dark')
+    if ok then return ids.lualine() end
   end
   return 'auto'
 end
