@@ -6,6 +6,8 @@ Personal development environment managed with [GNU Stow](https://www.gnu.org/sof
 
 ```
 dotfiles/
+├── bat/
+│   └── .config/bat/config               # bat theme auto-switch (Catppuccin)
 ├── eza/
 │   └── .config/eza/theme.yml           # eza color theme
 ├── fzf/
@@ -457,6 +459,17 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 
 ---
 
+## Bat (`bat/`)
+
+`bat/.config/bat/config` → stows to `~/.config/bat/config`.
+
+- Uses `--theme=auto:system` so theme follows macOS appearance at runtime.
+- Dark mode theme: `Catppuccin Mocha`.
+- Light mode theme: `Catppuccin Latte`.
+- Requires `bat >= 0.26.0` for built-in Catppuccin themes.
+
+---
+
 ## Eza (`eza/`)
 
 `eza/.config/eza/theme.yml` → stows to `~/.config/eza/theme.yml`.
@@ -476,4 +489,5 @@ Requires `EZA_CONFIG_DIR=$HOME/.config/eza` exported in `.zshrc` (present).
 - **Keymaps**: grouped by namespace (`<leader>c` code, `<leader>f` file, `<leader>g` git, `<leader>e` explorer, `<leader>w` window, `<leader>t` toggle, `gr` LSP). Document additions in `nvim/KEYMAPS.md`.
 - **Spec docs**: `nvim/SPEC.md` is the canonical audit doc — update when adding/changing plugins or options.
 - **No auto-update**: `checker = { enabled = false }` in lazy opts. Update manually with `:Lazy update`.
+- **bat theming**: `bat/.config/bat/config` uses `--theme=auto:system` plus Catppuccin Mocha/Latte; no LaunchAgent/theme-reload wiring required.
 - **Stow**: every tool is its own stow package (directory at repo root). `stow */` links all. New configs go under `<pkg>/.config/<tool>/` or `<pkg>/.<dotfile>` to match the stow target.

@@ -72,13 +72,13 @@ function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
 		return "Catppuccin Macchiato" -- or Macchiato, Frappe, Latte
 	else
-		return "Catppuccin Latte"
+		return "Catppuccin Latte (Gogh)"
+		-- return "Github (base16)"
 	end
 end
 
 -- Add Custom Color Scheme: scheme_for_appearance(wezterm.gui.get_appearance())
 config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
--- config.color_scheme = "Catppuccin Macchiato"
 -- config.colors = {
 --     cursor_bg = "#9B96B5",
 --     cursor_fg = "#1a1a1e",
