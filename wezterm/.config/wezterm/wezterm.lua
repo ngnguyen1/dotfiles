@@ -70,7 +70,7 @@ config.keys = {
 -- function to change color scheme based on appearance
 function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
-		return "Catppuccin Macchiato" -- or Macchiato, Frappe, Latte
+		return "Islands Dark"
 	else
 		return "Catppuccin Latte (Gogh)"
 		-- return "Github (base16)"
