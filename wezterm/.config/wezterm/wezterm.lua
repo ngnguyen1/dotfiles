@@ -17,7 +17,6 @@ config.harfbuzz_features = { "calt=0" }
 config.max_fps = 120
 config.enable_kitty_graphics = true
 config.window_close_confirmation = "NeverPrompt"
--- config.window_background_opacity = 0.88
 config.macos_window_background_blur = 12
 config.audible_bell = "Disabled"
 
@@ -67,22 +66,21 @@ config.keys = {
 	},
 }
 
--- function to change color scheme based on appearance
-function scheme_for_appearance(appearance)
+local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
 		return "Islands Dark"
 	else
 		return "Catppuccin Latte (Gogh)"
-		-- return "Github (base16)"
 	end
 end
 
--- Add Custom Color Scheme: scheme_for_appearance(wezterm.gui.get_appearance())
-config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
--- config.colors = {
---     cursor_bg = "#9B96B5",
---     cursor_fg = "#1a1a1e",
---     cursor_border = "#9B96B5",
--- }
+wezterm.on("window-config-reloaded", function(window)
+	local overrides = window:get_config_overrides() or {}
+	local scheme = scheme_for_appearance(window:get_appearance())
+	if overrides.color_scheme ~= scheme then
+		overrides.color_scheme = scheme
+		window:set_config_overrides(overrides)
+	end
+end)
 
 return config
