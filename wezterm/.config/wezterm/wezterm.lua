@@ -19,6 +19,7 @@ config.enable_kitty_graphics = true
 config.window_close_confirmation = "NeverPrompt"
 config.macos_window_background_blur = 12
 config.audible_bell = "Disabled"
+config.enable_csi_u_key_encoding = true
 
 config.window_padding = {
 	left = 18,
