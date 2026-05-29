@@ -13,7 +13,7 @@ zsh/
     ├── ssh-agent.zsh              # ssh-agent bootstrap and key load
     ├── history.zsh                # history settings and setopt flags
     ├── omz.zsh                    # Oh My Zsh plugins/theme config
-    ├── langs.zsh                  # nvm lazy loader
+    ├── langs.zsh                  # fnm init (Node)
     ├── aliases.zsh                # aliases only
     ├── functions.zsh              # shell functions only
     ├── completions.zsh            # fzf, zoxide, vault completion
@@ -65,7 +65,7 @@ Rationale:
 | Starship | prompt | guarded `eval "$(starship init zsh)"` |
 | zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | binary from `~/.local/bin`; use `uv run ...` / `uvx ...` |
-| nvm | Node version manager | Homebrew `nvm.sh` lazy on first `nvm/node/npm/npx/yarn/pnpm` (`brew --prefix nvm` when available, then `/opt/homebrew/opt/nvm`, then `/usr/local/opt/nvm`; fallback to `$NVM_DIR/nvm.sh`) |
+| fnm | Node version manager | guarded `eval "$(fnm env --use-on-cd --shell zsh)"`; reads `.nvmrc` / `.node-version` |
 | fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
 | bat | `cat` replacement | alias only when `bat` exists |
 | eza | `ls` replacement | OMZ plugin |
@@ -141,7 +141,6 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `FZF_ALT_C_COMMAND` | `fd --type d --hidden --strip-cwd-prefix --exclude .git` | Alt-C dir picker |
 | `FZF_DEFAULT_OPTS` | Layout flags only (colors in `FZF_DEFAULT_OPTS_FILE`) | fzf UI |
 | `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → Catppuccin mocha/latte via symlink | fzf colors (synced by `fzf-theme.zsh` + `theme-reload`) |
-| `NVM_DIR` | `~/.nvm` | nvm versions/data root |
 
 PATH entries in tracked config:
 

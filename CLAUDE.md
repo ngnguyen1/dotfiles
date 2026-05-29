@@ -355,7 +355,7 @@ Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/`
 | Starship | prompt | `eval "$(starship init zsh)"` |
 | zoxide | smarter cd | `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
-| nvm | Node versions | lazy on first `nvm`/`node`/`npm`/… via `langs.zsh` |
+| fnm | Node versions | guarded `eval "$(fnm env --use-on-cd --shell zsh)"` in `langs.zsh`; reads `.nvmrc` / `.node-version` |
 | fzf | fuzzy finder | `source <(fzf --zsh)` |
 | zsh-autosuggestions / zsh-syntax-highlighting | Brew formulae | `plugins.zsh` sources share paths under `/opt/homebrew` or `/usr/local` (after fzf/zoxide; not OMZ custom plugins) |
 
@@ -373,7 +373,6 @@ eza plugin: `icons yes` (no `git-status` on default `ls` — use `lsg` / `llg` f
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` |
 | `FZF_DEFAULT_OPTS` | Layout flags only (`--height=40% --border=rounded --margin=5% --layout=reverse --multi`, …) |
 | `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → `mocha.opts` / `latte.opts` (symlink; hot-reloaded by `theme-reload`) |
-| `NVM_DIR` | `~/.nvm` |
 | `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` |
 | `GPG_TTY` | `$(tty)` when stdin is a TTY |
 | `GSDK` | `~/silabs/gsdk` (Silicon Labs SDK) |
