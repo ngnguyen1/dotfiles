@@ -35,7 +35,7 @@ function M.register(lsp)
         reason
           .. ('ESLint LSP disabled: requires Node >= 18 to avoid runtime errors like `structuredClone is not defined` (detected %s at %s).')
             :format(detected_node, detected_path)
-          .. ' Fix: launch Neovim with a newer Node in PATH (nvm/asdf/Volta), then restart.',
+          .. ' Fix: launch Neovim with a newer Node in PATH (fnm/asdf/Volta), then restart.',
         vim.log.levels.WARN,
         { title = 'LSP: eslint' }
       )
