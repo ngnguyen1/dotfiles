@@ -1,5 +1,10 @@
 *.log
+*.bak
+*.zip
 .DS_Store
+.codex
 zsh/.config/zsh/local.zsh
 zsh/.config/zsh/omz.local.zsh
 tmux/.config/tmux/plugins/
+# runtime symlink managed by theme-reload, not a tracked artifact
+fzf/.config/fzf/active.opts

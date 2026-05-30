@@ -1,13 +1,15 @@
 # Functions.
 
 git_clean_merged() {
+  git rev-parse --verify main >/dev/null 2>&1 || { echo "main branch not found"; return 1; }
   git checkout main &&
     git pull &&
-    git branch --merged main | grep -vE "^\*|main|stage|prod" | xargs -n 1 git branch -d
+    git branch --merged main | grep -vE "^\*|main|stage|prod" | xargs -r -n 1 git branch -d
 }
 
 killport() {
-  lsof -ti tcp:"$1" | xargs kill -9
+  [[ -z "$1" ]] && { echo "Usage: killport <port>"; return 1; }
+  lsof -ti "tcp:$1" | xargs -r kill -9
 }
 
 extract() {
@@ -32,7 +34,7 @@ extract() {
 }
 
 findin() {
-  rg -n -w "$1" .
+  rg -n -w -- "$1" .
 }
 
 vv() {

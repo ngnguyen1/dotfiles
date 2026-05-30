@@ -450,7 +450,7 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 - `[character]`: `❯` purple on success, `❯` red on error, `❮` green in vi cmd mode.
 - `[directory]`: `blue` style, no substitutions, no truncation override (defaults).
 - `[git_branch]`: bright-black, format `[$branch]($style)` (no symbol).
-- `[git_status]`: cyan; dirty flag `*` (color 218) when any of conflicted/untracked/modified/staged/renamed/deleted; `$ahead_behind` arrows + `≡` stash count. Per-state symbols are blanked (zero-width) so only the single `*` shows.
+- `[git_status]`: cyan; per-state symbols (color 218) — conflicted `=`, untracked `?`, modified `!`, staged `+`, renamed `»`, deleted `✘`; `$ahead_behind` arrows + `≡` stash count.
 - `[git_state]`: bright-black, parenthesized rebase/merge/cherry-pick state with progress.
 - `[cmd_duration]`: yellow (shown after long commands; default threshold 2 s).
 - `[python]`: shows venv name only (no version), bright-black; auto-detect disabled (`detect_extensions/detect_files = []`).
