@@ -26,7 +26,8 @@ def encode_key_mapping(window, key_mapping):
 def handle_result(args, result, target_window_id, boss):
     window = boss.window_id_map.get(target_window_id)
 
-    cmd = window.child.foreground_cmdline[0]
+    fg = window.child.foreground_cmdline if window else []
+    cmd = fg[0] if fg else ''
     if cmd == 'tmux':
         keymap = args[2]
         encoded = encode_key_mapping(window, keymap)

@@ -16,6 +16,5 @@ if command -v fzf >/dev/null; then
   (( $+functions[_fzf_wrap_key_bindings] )) && _fzf_wrap_key_bindings
 fi
 
-if command -v zoxide >/dev/null; then
-  eval "$(zoxide init zsh --cmd cd)"
-fi
+# zoxide init moved to prompt.zsh (must initialize last, after plugins/starship,
+# or zoxide's doctor warns about hook ordering).

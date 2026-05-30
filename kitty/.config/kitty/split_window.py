@@ -40,7 +40,8 @@ def handle_result(args, result, target_window_id, boss):
         return
 
     direction = args[1]
-    cmd = window.child.foreground_cmdline[0]
+    fg = window.child.foreground_cmdline
+    cmd = fg[0] if fg else ''
     if cmd == 'tmux':
         keymap = args[2]
         encoded = encode_key_mapping(window, keymap)
