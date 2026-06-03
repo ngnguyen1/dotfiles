@@ -359,7 +359,7 @@ Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/`
 | fzf | fuzzy finder | `source <(fzf --zsh)` |
 | zsh-autosuggestions / zsh-syntax-highlighting | Brew formulae | `plugins.zsh` sources share paths under `/opt/homebrew` or `/usr/local` (after fzf/zoxide; not OMZ custom plugins) |
 
-**OMZ plugins:** `git gh terraform brew rsync aws eza` (optional `s-plugin` etc. via ignored `omz.local.zsh`)
+**OMZ plugins:** `gh terraform brew rsync aws eza` (git removed — aliases live in `git/.config/git/config` as native `[alias]`) (optional `s-plugin` etc. via ignored `omz.local.zsh`)
 
 eza plugin: `icons yes` (no `git-status` on default `ls` — use `lsg` / `llg` for `eza --git`).
 

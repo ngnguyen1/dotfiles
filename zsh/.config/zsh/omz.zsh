@@ -11,7 +11,6 @@ zstyle ':omz:update' mode disabled
 zstyle ':omz:plugins:eza' 'icons' yes
 
 plugins=(
-  git
   gh
   terraform
   brew
