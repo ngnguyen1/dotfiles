@@ -10,6 +10,11 @@ Package `theme-reload/` stows to:
 - `~/.config/theme-reload/bootstrap.sh` — compile Swift listener + install LaunchAgent plist
 - `~/.config/theme-reload/listener.swift` — source for `theme-listener`
 - `~/.config/theme-reload/com.ngnguyen.theme-reload.plist.in` — template (`__HOME__` → expanded by bootstrap)
+- `~/.config/theme-reload/appearance` — runtime cache (`dark`/`light`) written by `reload.sh`; **gitignored**, not tracked
+
+## Appearance cache
+
+`reload.sh` resolves the macOS appearance once (via `defaults read -g AppleInterfaceStyle`) and writes `dark`/`light` to `~/.config/theme-reload/appearance`. Neovim's `core.theme.is_dark()` reads that file (no subprocess) on startup and on `:ThemeReload`, falling back to a one-shot `defaults` probe only when the file is absent (LaunchAgent not installed yet, or non-macOS). `bootstrap.sh` seeds the file at install time so the very first Neovim launch already has it.
 
 ## One-time setup
 

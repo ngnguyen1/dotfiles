@@ -15,4 +15,13 @@ sed "s|__HOME__|${HOME}|g" "${script_dir}/${label}.plist.in" > "${plist_dst}"
 launchctl bootout "gui/$(id -u)/${label}" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "${plist_dst}"
 
+# Seed the appearance cache so the first Neovim launch reads a file instead of
+# probing `defaults`. The listener keeps it fresh on subsequent changes.
+readonly appearance_file="${HOME}/.config/theme-reload/appearance"
+if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+  printf 'dark\n' >"${appearance_file}"
+else
+  printf 'light\n' >"${appearance_file}"
+fi
+
 echo "Installed ${listener_out} and ${plist_dst}. Service label: ${label}"

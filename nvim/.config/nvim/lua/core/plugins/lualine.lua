@@ -119,7 +119,6 @@ return {
               end
               return ' ' .. table.concat(names, ', ')
             end,
-            cond = function() return #vim.lsp.get_clients { bufnr = 0 } > 0 end,
           },
           -- Git diff hunks (reads from gitsigns if available)
           {
@@ -143,7 +142,7 @@ return {
           -- Only show encoding when it's NOT utf-8 (avoid clutter)
           {
             'encoding',
-            cond = function() return vim.opt.fileencoding:get() ~= 'utf-8' end,
+            cond = function() return vim.bo.fileencoding ~= '' and vim.bo.fileencoding ~= 'utf-8' end,
           },
           'filetype',
         },

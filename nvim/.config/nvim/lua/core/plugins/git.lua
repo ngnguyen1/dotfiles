@@ -71,7 +71,8 @@ return {
         map({ 'n', 'v' }, '<leader>ghr', ':Gitsigns reset_hunk<CR>', 'Reset hunk')
         map('n', '<leader>ghS', gs.stage_buffer, 'Stage buffer')
         map('n', '<leader>ghR', gs.reset_buffer, 'Reset buffer')
-        map('n', '<leader>ghu', gs.undo_stage_hunk, 'Undo stage hunk')
+        -- `stage_hunk` is a toggle in current gitsigns (undo_stage_hunk was removed).
+        map('n', '<leader>ghu', function() gs.stage_hunk() end, 'Unstage hunk (toggle)')
         map('n', '<leader>ghp', gs.preview_hunk_inline, 'Preview hunk inline')
 
         -- ── Blame ─────────────────────────────────────────────────────
@@ -178,7 +179,7 @@ return {
 -- │  <leader>ghr          Reset hunk  (also works in visual mode)         │
 -- │  <leader>ghS          Stage entire buffer                             │
 -- │  <leader>ghR          Reset entire buffer                             │
--- │  <leader>ghu          Undo last stage hunk                            │
+-- │  <leader>ghu          Unstage hunk (stage_hunk toggle)                │
 -- │  <leader>ghp          Preview hunk inline                             │
 -- │  <leader>gb           Toggle current line blame                       │
 -- │  <leader>gB           Full blame popup for current line               │

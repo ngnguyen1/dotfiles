@@ -87,6 +87,7 @@ function M.setup()
   vim.keymap.set('x', '<BS>', M.node_decremental, { desc = 'Tree-sitter: shrink selection' })
 
   vim.api.nvim_create_autocmd('BufLeave', {
+    group = vim.api.nvim_create_augroup('dotfiles_treesitter_incsel', { clear = true }),
     callback = function(ev) stacks[ev.buf] = nil end,
   })
 end

@@ -87,7 +87,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 - `InsertEnter` / `WinLeave`: hide `cursorline`; `InsertLeave` / `WinEnter`: restore it.
 - `FileType` ephemeral list (`fugitive`, `git`, `help`, `qf`, `lspinfo`, `man`, `toggleterm`, …): `buflisted = false`, `q` → close.
 - User commands `FormatDisable` / `FormatEnable` (and `FormatDisable!`) for conform autoformat opt-out (conform itself may load on first `BufWritePre`).
-- User command `ThemeReload` reapplies Catppuccin from macOS appearance (`lua/core/theme.lua`).
+- User command `ThemeReload` reapplies the colorscheme from macOS appearance (`lua/core/theme.lua`).
 
 ### `keymaps.lua`
 
@@ -96,7 +96,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 | `;` | n | Enter command line |
 | `<Esc>` | n | Clear search highlight |
 | `]b` / `[b` | n | Next / prev buffer |
-| `<C-h/j/k/l>` | n | Window focus |
+| `<C-h/j/k/l>` | n | Window / tmux pane focus (defined in `tmux-navigator.lua`, not here) |
 | `<C-d>` / `<C-u>` | n | Scroll centered |
 | `n` / `N` | n | Search result centered |
 | `J` | n | Join line, keep cursor |
@@ -108,7 +108,7 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 | `<leader>wv/wh/we/wx` | n | Split vertical/horizontal/equal/close |
 | `<leader>w+/-` | n | Window height +2/-2 |
 | `<leader>w>/<` | n | Window width +2/-2 |
-| `<leader>tT` | n | Reload Catppuccin from macOS appearance (`:ThemeReload`) |
+| `<leader>tT` | n | Reload colorscheme from macOS appearance (`:ThemeReload`) |
 
 ### `lazy-plugins.lua`
 
@@ -131,6 +131,8 @@ core.plugins.ibl
 custom.plugins.ai
 custom.plugins.copilot
 custom.plugins.blink-cmp
+custom.plugins.tmux-navigator
+custom.plugins.render-markdown
 custom.languages.typescript
 custom.languages.prisma
 ```
@@ -143,10 +145,11 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 
 ### Plugin reference
 
-#### `colorscheme.lua` — `catppuccin/nvim`
-- `priority = 1000`. Lazy name `catppuccin`. Loaded before everything.
-- `no_italic = true`. Integrations for treesitter, LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline.
-- Logic lives in `lua/core/theme.lua`: `detect()` reads `defaults read -g AppleInterfaceStyle`; `apply()` sets `background`, runs `catppuccin.setup`, and `:colorscheme catppuccin`. **Dark** → **mocha**; otherwise → **latte** (same rule as tmux `theme.conf`).
+#### `colorscheme.lua` — `islands-dark` (local) + `catppuccin/nvim`
+- Two colorschemes load eagerly (`lazy = false`, `priority = 1000`):
+  - **`islands-dark`** — local plugin at `nvim/.config/nvim/islands-dark.nvim/` (loaded via `dir`, lazy name `islands-dark`). `opts = { transparent = false, italic_comments = true }`.
+  - **`catppuccin`** (`catppuccin/nvim`) — its `config` calls `require('core.theme').apply()` to pick the active scheme.
+- Logic lives in `lua/core/theme.lua`: `is_dark()` reads the appearance cache file `~/.config/theme-reload/appearance` (`dark`/`light`, written by `theme-reload/reload.sh` — **no subprocess** on the startup path), falling back to a one-shot `vim.system { 'defaults', 'read', '-g', 'AppleInterfaceStyle' }` probe only when the file is absent. `apply()` sets `background` and selects the scheme. **Dark** → **`islands-dark`**; **light** → `catppuccin` **latte** (runs `catppuccin.setup` with `no_italic = true` + integrations for treesitter, LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline). `apply()` threads the resolved `is_dark` into `refresh_lualine()` so the statusline theme follows appearance without re-reading.
 - Live switch: `:ThemeReload` (user command in `autocmds.lua`), `<leader>tT`, or `~/.config/theme-reload/reload.sh` (iterates Neovim Unix sockets under `$TMPDIR`). After changing system appearance, the LaunchAgent in `theme-reload/` can run that script automatically (see `theme-reload/README.md`).
 
 #### `lsp.lua` + `core/lsp.lua` — `neovim/nvim-lspconfig`
@@ -220,7 +223,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 #### `treesitter.lua` — `nvim-treesitter/nvim-treesitter`
 - `lazy = false`, `build = ':TSUpdate'` (upstream: do not lazy-load this plugin).
 - Dep: `nvim-treesitter-textobjects` (`branch = 'main'`).
-- **Main-branch setup**: `require('nvim-treesitter').setup { install_dir = … }`; baseline parsers requested via `install()`; highlighting via `vim.treesitter.start()` + **FileType** autocmd; indent via `indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"`.
+- **Main-branch setup**: `require('nvim-treesitter').setup { install_dir = … }`; baseline parsers requested via `install()`; highlighting via `vim.treesitter.start()` + **FileType** autocmd (plus a one-time back-fill over already-loaded buffers in `config()`, so the file opened on the command line still gets highlighting even if its `FileType` fired before treesitter loaded); indent via `indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"`.
 - **Incremental selection** (`core/treesitter_incsel.lua`): `<leader>v` init (normal), `<CR>` expand / `<BS>` shrink (visual) — avoids normal-mode `<CR>` hijack.
 - Textobject **select** (lookahead): `af/if` function, `ac/ic` class, `aa/ia` parameter.
 - Textobject **move**: `]f/[f` function, `]O/[O` class (uppercase **O** avoids `]c` / `[c` diff motions).
@@ -236,7 +239,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 
 #### `nvim-tree.lua` — `nvim-tree/nvim-tree.lua`
 - Lazy on cmd + keys. Disables netrw (`vim.g.loaded_netrw = 1`).
-- `view.width = 30`, `renderer.group_empty = true`, `filters.dotfiles = false`.
+- `view.side = 'right'`, `view.width = 30`, `renderer.group_empty = true`, `filters.dotfiles = false`.
 
 | Key | Action |
 |---|---|
@@ -277,7 +280,7 @@ Three plugins under `<leader>g`.
 | `<leader>gdv` | Smart toggle (open if closed, close if open) |
 
 #### `lualine.lua` — `nvim-lualine/lualine.nvim`
-- Event: `VeryLazy`. `globalstatus = true`. `options.theme = 'catppuccin-nvim'` (from `catppuccin/nvim`; lualine has no builtin `catppuccin`). Powerline separators.
+- Event: `VeryLazy`. `globalstatus = true`. `options.theme = require('core.theme').lualine_theme()` — follows macOS appearance (islands-dark's lualine theme in dark, `'auto'` in light); re-applied by `core.theme.refresh_lualine()` on `:ThemeReload`. Powerline separators.
 - Init trick: empty statusline until loaded (no flicker).
 - Performance: `lualine_require.require = require` (bypass lualine's slow shim).
 - Disabled for: `dashboard alpha ministarter snacks_dashboard nvim-tree`.
@@ -288,13 +291,13 @@ Sections:
 - **C**: diagnostics + filetype icon + relative filename (modified `●` / readonly `` )
 - **X**: lazy.nvim pending updates + active LSP clients + git diff (from gitsigns) + encoding (non-utf-8 only) + filetype
 - **Y**: search count + progress + location
-- **Z**: clock (`os.date('%R')`)
+- **Z**: empty (clock component present but commented out).
 - Inactive: relative filename + location.
 - Extensions: `nvim-tree`, `lazy`, `fugitive`, `quickfix`.
 
 #### `which-key.lua` — `folke/which-key.nvim`
 - Event: `VimEnter`. `delay = 0`.
-- Groups: `<leader>a` AI, `<leader>c` Code, `<leader>f` File, `<leader>t` Toggle, `<leader>g` Git, `<leader>gh` Git hunk, `<leader>gd` Git diff, `<leader>e` Explorer, `<leader>w` Window, `gr` LSP Actions.
+- Groups: `<leader>a` AI, `<leader>c` Code, `<leader>f` File, `<leader>t` Toggle, `<leader>g` Git, `<leader>gh` Git hunk, `<leader>gd` Git diff, `<leader>e` Explorer, `<leader>m` Markdown, `<leader>w` Window, `gr` LSP Actions.
 
 #### `copilot.lua` — `github/copilot.vim` (custom/)
 - Event: `InsertEnter`. Command: `Copilot`.
@@ -327,6 +330,19 @@ Sections:
 - **Python override**: `FileType python` → `foldmethod=indent`.
 - Options: `foldlevel=99 foldlevelstart=99 foldnestmax=4 foldtext=''` `fillchars+=fold: `.
 - Fold commands are **native** (`za`, `zo`, `zr`, …); see `:h fold-commands` and `nvim/KEYMAPS.md`.
+
+#### `ai.lua` — `David-Kunz/gen.nvim` (custom/)
+- Local-LLM prompts via Ollama. `model = 'qwen2.5-coder:14b'`, `host = localhost`, `port = 11434`, `display_mode = 'float'`, `show_prompt`/`show_model = true`, `no_auto_close = true`.
+- Keymaps: `<leader>ar` (visual) → `:Gen Review_Code`; `<leader>ac` (n/v) → `:Gen` custom prompt.
+
+#### `tmux-navigator.lua` — `christoomey/vim-tmux-navigator` (custom/)
+- Event: `VeryLazy` (+ `cmd`/`keys`). Seamless focus movement between nvim splits and tmux panes; mirrors the tmux-side plugin (tpm).
+- Owns `<C-h/j/k/l>` (and `<C-\>` previous) in normal mode — its `keys` table is the single source of truth (the plain `<C-w>` maps were removed from `keymaps.lua`). Plugin's built-in maps disabled via `vim.g.tmux_navigator_no_mappings = 1`.
+- `vim.g.tmux_navigator_save_on_switch = 2` (write buffer on switch), `vim.g.tmux_navigator_preserve_zoom = 1`.
+
+#### `render-markdown.lua` — `MeanderingProgrammer/render-markdown.nvim` (custom/)
+- `ft = 'markdown'`. Deps: `nvim-treesitter`, `nvim-web-devicons`. Default opts.
+- Keymap: `<leader>mt` → `:RenderMarkdown toggle` (markdown buffers).
 
 ### `.stylua.toml`
 
