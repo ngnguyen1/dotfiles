@@ -90,14 +90,27 @@ return {
 
       require('core.treesitter_incsel').setup()
 
+      local function enable_ts(buf)
+        pcall(vim.treesitter.start, buf)
+        vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
+
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('dotfiles_treesitter', { clear = true }),
         pattern = ts_filetypes,
-        callback = function(ev)
-          pcall(vim.treesitter.start, ev.buf)
-          vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end,
+        callback = function(ev) enable_ts(ev.buf) end,
       })
+
+      -- The file opened on the command line can fire FileType before this
+      -- config() runs (treesitter is `lazy = false`, but load order isn't
+      -- guaranteed), so back-fill any already-loaded matching buffers.
+      local want_ft = {}
+      for _, ft in ipairs(ts_filetypes) do
+        want_ft[ft] = true
+      end
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) and want_ft[vim.bo[buf].filetype] then enable_ts(buf) end
+      end
     end,
   },
 }

@@ -223,7 +223,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 #### `treesitter.lua` — `nvim-treesitter/nvim-treesitter`
 - `lazy = false`, `build = ':TSUpdate'` (upstream: do not lazy-load this plugin).
 - Dep: `nvim-treesitter-textobjects` (`branch = 'main'`).
-- **Main-branch setup**: `require('nvim-treesitter').setup { install_dir = … }`; baseline parsers requested via `install()`; highlighting via `vim.treesitter.start()` + **FileType** autocmd; indent via `indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"`.
+- **Main-branch setup**: `require('nvim-treesitter').setup { install_dir = … }`; baseline parsers requested via `install()`; highlighting via `vim.treesitter.start()` + **FileType** autocmd (plus a one-time back-fill over already-loaded buffers in `config()`, so the file opened on the command line still gets highlighting even if its `FileType` fired before treesitter loaded); indent via `indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"`.
 - **Incremental selection** (`core/treesitter_incsel.lua`): `<leader>v` init (normal), `<CR>` expand / `<BS>` shrink (visual) — avoids normal-mode `<CR>` hijack.
 - Textobject **select** (lookahead): `af/if` function, `ac/ic` class, `aa/ia` parameter.
 - Textobject **move**: `]f/[f` function, `]O/[O` class (uppercase **O** avoids `]c` / `[c` diff motions).
