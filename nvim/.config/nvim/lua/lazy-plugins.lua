@@ -27,6 +27,7 @@ require('lazy').setup({
   require 'custom.plugins.tmux-navigator',
   require 'custom.plugins.render-markdown',
   require 'custom.languages.typescript',
+  require 'custom.languages.prisma',
 }, { ---@diagnostic disable-line: missing-fields
   -- disable auto update check
   checker = { enabled = false },
