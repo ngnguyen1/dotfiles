@@ -3,9 +3,22 @@
 set -euo pipefail
 
 cfg_dir="${HOME}/.config"
+
+# Resolve appearance once, then publish it as the single source of truth.
+# Consumers (Neovim's core.theme) read this file instead of each spawning
+# `defaults`, keeping the probe off the startup hot path.
+if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+  appearance="dark"
+else
+  appearance="light"
+fi
+appearance_file="${cfg_dir}/theme-reload/appearance"
+mkdir -p "$(dirname "$appearance_file")"
+printf '%s\n' "$appearance" >"$appearance_file"
+
 fzf_dir="${cfg_dir}/fzf"
 if [[ -d "$fzf_dir" ]]; then
-  if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
+  if [[ "$appearance" == "dark" ]]; then
     ln -sfn "$fzf_dir/mocha.opts" "$fzf_dir/active.opts"
   else
     ln -sfn "$fzf_dir/latte.opts" "$fzf_dir/active.opts"

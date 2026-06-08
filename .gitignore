@@ -8,3 +8,5 @@ zsh/.config/zsh/omz.local.zsh
 tmux/.config/tmux/plugins/
 # runtime symlink managed by theme-reload, not a tracked artifact
 fzf/.config/fzf/active.opts
+# runtime appearance cache written by theme-reload/reload.sh
+theme-reload/.config/theme-reload/appearance
