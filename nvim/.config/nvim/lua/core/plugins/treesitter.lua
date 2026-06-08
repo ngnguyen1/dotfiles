@@ -91,6 +91,7 @@ return {
       require('core.treesitter_incsel').setup()
 
       vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('dotfiles_treesitter', { clear = true }),
         pattern = ts_filetypes,
         callback = function(ev)
           pcall(vim.treesitter.start, ev.buf)

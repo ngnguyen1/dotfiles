@@ -12,11 +12,9 @@ map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev buffer' })
 
---  See `:help wincmd` for a list of all window commands
-map('n', '<C-h>', '<C-w>h', { desc = 'Move focus to the left window' })
-map('n', '<C-l>', '<C-w>l', { desc = 'Move focus to the right window' })
-map('n', '<C-j>', '<C-w>j', { desc = 'Move focus to the lower window' })
-map('n', '<C-k>', '<C-w>k', { desc = 'Move focus to the upper window' })
+-- NOTE: window focus <C-h/j/k/l> is owned by vim-tmux-navigator (see
+-- custom/plugins/tmux-navigator.lua); its `keys` table overrides plain
+-- <C-w> maps, so they are defined there as the single source of truth.
 
 -- visual mode: move selection
 map('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })

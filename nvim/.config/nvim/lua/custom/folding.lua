@@ -9,7 +9,10 @@ function M.setup()
   vim.opt.foldnestmax = 4 -- avoid excessive nesting in deep Lua tables / TSX
   vim.opt.fillchars:append('fold: ')
 
+  local group = vim.api.nvim_create_augroup('dotfiles_folding', { clear = true })
+
   vim.api.nvim_create_autocmd('LspAttach', {
+    group = group,
     callback = function(ev)
       local c = vim.lsp.get_client_by_id(ev.data.client_id)
       if c and c:supports_method('textDocument/foldingRange') then
@@ -19,6 +22,7 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd('LspNotify', {
+    group = group,
     callback = function(ev)
       if ev.data.method == 'textDocument/didOpen' then
         pcall(vim.lsp.foldclose, 'imports', vim.fn.bufwinid(ev.buf))
@@ -27,6 +31,7 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd('FileType', {
+    group = group,
     pattern = 'python',
     callback = function() vim.opt_local.foldmethod = 'indent' end,
   })
