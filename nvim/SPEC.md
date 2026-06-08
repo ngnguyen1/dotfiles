@@ -37,6 +37,7 @@ nvim/
                 ├── folding.lua            # treesitter/LSP fold options (from init.lua)
                 ├── languages/
                 │   ├── eslint.lua         # eslint LSP + Node version gate
+                │   ├── prisma.lua         # prismals + prisma/vim-prisma syntax
                 │   └── typescript.lua     # vtsls, vue_ls, astro, web stack, conform fts
                 └── plugins/
                     ├── ai.lua             # gen.nvim local Ollama workflows
@@ -123,6 +124,7 @@ Calls `require('lazy').setup({...}, opts)`. Specs loaded:
 - `custom.plugins.blink-cmp`
 - `custom.plugins.render-markdown`
 - `custom.languages.typescript` — extends `core.lsp.servers`, format-on-save filetypes, prettierd fts
+- `custom.languages.prisma` — `prismals` LSP + `prisma/vim-prisma` syntax, prisma format-on-save (LSP)
 
 (`custom/folding.lua` is loaded from `init.lua`, not as a lazy plugin.)
 
@@ -167,6 +169,11 @@ Lazy options:
 2. **Two clients on `.vue`**: `:LspInfo` with a `.vue` buffer open — expect **`vue_ls`** and **`vtsls`** both attached (hybrid depends on both).
 3. **Project deps**: open Neovim from the **project root** (`package.json`). The app should list **`typescript`** in `dependencies` / `devDependencies` so `node_modules/typescript` resolves (avoids server init errors around TS resolution).
 4. **Astro from TS**: in a `.ts` buffer, confirm `import "./Foo.astro"` resolves after Mason packages are present.
+
+### custom/languages/prisma.lua — Prisma toolchain
+- **`prismals`** (Mason: `prisma-language-server`): completion, diagnostics, and `textDocument/formatting` for `.prisma` schemas. Default filetypes (`prisma`) are kept — no override. Added to `core.lsp.servers`, so `mason-lspconfig.ensure_installed` installs it and `vim.lsp.enable` wires it.
+- **`prisma/vim-prisma`**: filetype detection, syntax highlighting, and indentation; lazy-loaded on `ft = 'prisma'` (lazy.nvim reads the plugin's `ftdetect`).
+- **Formatting**: no conform formatter for prisma; `prisma` is added to `vim.g.autoformat_filetypes`, and conform's `default_format_opts.lsp_format = 'fallback'` routes format-on-save through `prismals`.
 
 ### conform.lua — `stevearc/conform.nvim`
 - Lazy: `BufWritePre` (also loads via `cmd` / `<leader>cf` keys). Cmd `ConformInfo`.

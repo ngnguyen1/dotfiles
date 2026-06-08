@@ -131,6 +131,8 @@ core.plugins.ibl
 custom.plugins.ai
 custom.plugins.copilot
 custom.plugins.blink-cmp
+custom.languages.typescript
+custom.languages.prisma
 ```
 
 (`custom.folding` is not a lazy spec; it is `require`d from `init.lua` after `lazy-plugins`.)
@@ -157,6 +159,7 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 - `lua_ls` (merge in `core/lsp.lua`): formatting disabled (stylua handles it), LuaJIT runtime, detects `.luarc.json` to skip nvim-specific workspace setup.
 - JS/TS/Vue (see `custom/languages/typescript.lua`): `vtsls` includes `vue` filetype and registers `@vue/typescript-plugin` + `@astrojs/ts-plugin` (Mason paths under `vue-language-server` / `astro-language-server`); `vue_ls` (Mason: `vue-language-server`) works in hybrid mode with `vtsls` on the same buffer. Other extended servers: `astro`, `html`, `cssls`, `tailwindcss`, `eslint`.
 - ESLint guard: `custom/languages/eslint.lua` runs inside `core.lsp.setup()` (not during lazy-plugins require); probes Neovim runtime `node` and only registers `eslint` when Node major >= 18; otherwise notifies once with fix guidance.
+- Prisma (see `custom/languages/prisma.lua`): `prismals` (Mason: `prisma-language-server`) for completion + diagnostics + formatting; `prisma/vim-prisma` (lazy `ft = 'prisma'`) for syntax highlighting + indentation. `prisma` added to `vim.g.autoformat_filetypes`; formatting routes through `prismals` via conform's `lsp_format = 'fallback'` (no dedicated formatter).
 
 **Diagnostics config:**
 - `severity_sort = true`, `update_in_insert = false`.
@@ -193,7 +196,7 @@ Document highlight on `CursorHold`/`CursorHoldI`, cleared on `CursorMoved`/`LspD
 #### `conform.lua` — `stevearc/conform.nvim`
 - Event: `BufWritePre` (keys/cmd load plugin earlier if needed). Cmd: `ConformInfo`.
 - `<leader>cf` → `format({ async = true })` (n/v).
-- Auto-format on save: always `lua` + `python`; additional filetypes enabled via `vim.g.autoformat_filetypes` (extended by `custom/languages/typescript.lua` for vue, astro, html, css, json, …) — 500 ms timeout when enabled.
+- Auto-format on save: always `lua` + `python`; additional filetypes enabled via `vim.g.autoformat_filetypes` (extended by `custom/languages/typescript.lua` for vue, astro, html, css, json, …; `custom/languages/prisma.lua` for prisma — formatted via `prismals` LSP fallback) — 500 ms timeout when enabled.
 - Global opt-out: `vim.g.disable_autoformat`; buffer opt-out: `vim.b.disable_autoformat`.
 - User commands: `:FormatDisable` (global), `:FormatDisable!` (buffer), `:FormatEnable` — implemented in `autocmds.lua` so they exist before Conform lazy-loads.
 - `default_format_opts.lsp_format = 'fallback'`.
