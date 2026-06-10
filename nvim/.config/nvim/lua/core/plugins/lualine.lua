@@ -43,7 +43,7 @@ return {
 
     return {
       options = {
-        theme = require('core.theme').lualine_theme(),
+        theme = 'tokyonight',
         globalstatus = true, -- single statusline at the bottom
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },

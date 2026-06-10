@@ -75,9 +75,9 @@ function M.setup()
 
         vtsls_client:request('workspace/executeCommand', { command = command, arguments = args }, function(err, result)
           if err then
-            vim.schedule(function()
-              vim.notify(('vtsls `%s` failed: %s'):format(command, err.message or tostring(err)), vim.log.levels.ERROR, { title = 'LSP: vtsls' })
-            end)
+            vim.schedule(
+              function() vim.notify(('vtsls `%s` failed: %s'):format(command, err.message or tostring(err)), vim.log.levels.ERROR, { title = 'LSP: vtsls' }) end
+            )
             return
           end
 
@@ -87,29 +87,17 @@ function M.setup()
 
       if client and client.name == 'vtsls' then
         map('gD', function()
-          vtsls_execute(
-            'typescript.goToSourceDefinition',
-            function(vtsls_client)
-              local params = vim.lsp.util.make_position_params(0, vtsls_client.offset_encoding)
-              return { params.textDocument.uri, params.position }
-            end,
-            function(result, vtsls_client)
-              show_vtsls_locations('TS Source Definitions', result, vtsls_client, { reuse_win = true })
-            end
-          )
+          vtsls_execute('typescript.goToSourceDefinition', function(vtsls_client)
+            local params = vim.lsp.util.make_position_params(0, vtsls_client.offset_encoding)
+            return { params.textDocument.uri, params.position }
+          end, function(result, vtsls_client) show_vtsls_locations('TS Source Definitions', result, vtsls_client, { reuse_win = true }) end)
         end, 'Source definition (vtsls)')
 
         map('grf', function()
-          vtsls_execute(
-            'typescript.findAllFileReferences',
-            function()
-              local params = vim.lsp.util.make_text_document_params(event.buf)
-              return { params.uri }
-            end,
-            function(result, vtsls_client)
-              show_vtsls_locations('TS File References', result, vtsls_client)
-            end
-          )
+          vtsls_execute('typescript.findAllFileReferences', function()
+            local params = vim.lsp.util.make_text_document_params(event.buf)
+            return { params.uri }
+          end, function(result, vtsls_client) show_vtsls_locations('TS File References', result, vtsls_client) end)
         end, '[F]ile references (vtsls)')
       end
 

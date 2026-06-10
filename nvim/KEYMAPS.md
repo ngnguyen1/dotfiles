@@ -129,8 +129,6 @@ Buffer-local (filetype `markdown`).
 | Key | Action |
 |-----|--------|
 | `<leader>th` | Toggle inlay hints (LSP buffer-local) |
-| `<leader>tT` | Reload Catppuccin / `:ThemeReload` |
-| `:ThemeReload` | Reapply theme from `defaults read AppleInterfaceStyle` |
 
 ## Git (`<leader>g`) — `core/plugins/git.lua`
 

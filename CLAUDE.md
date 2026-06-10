@@ -21,7 +21,7 @@ dotfiles/
 ├── starship/
 │   └── .config/starship/starship.toml  # cross-shell prompt
 ├── theme-reload/
-│   ├── README.md                       # macOS light/dark → tmux + nvim + fzf hot reload
+│   ├── README.md                       # macOS light/dark → tmux + fzf hot reload
 │   └── .config/theme-reload/           # reload.sh, bootstrap, Swift listener source
 ├── tmux/
 │   └── .config/tmux/                   # tmux.conf + theme.conf (Catppuccin)
@@ -87,7 +87,6 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 - `InsertEnter` / `WinLeave`: hide `cursorline`; `InsertLeave` / `WinEnter`: restore it.
 - `FileType` ephemeral list (`fugitive`, `git`, `help`, `qf`, `lspinfo`, `man`, `toggleterm`, …): `buflisted = false`, `q` → close.
 - User commands `FormatDisable` / `FormatEnable` (and `FormatDisable!`) for conform autoformat opt-out (conform itself may load on first `BufWritePre`).
-- User command `ThemeReload` reapplies the colorscheme from macOS appearance (`lua/core/theme.lua`).
 
 ### `keymaps.lua`
 
@@ -108,7 +107,6 @@ require 'options' → 'autocmds' → 'keymaps' → 'lazy-bootstrap' → 'lazy-pl
 | `<leader>wv/wh/we/wx` | n | Split vertical/horizontal/equal/close |
 | `<leader>w+/-` | n | Window height +2/-2 |
 | `<leader>w>/<` | n | Window width +2/-2 |
-| `<leader>tT` | n | Reload colorscheme from macOS appearance (`:ThemeReload`) |
 
 ### `lazy-plugins.lua`
 
@@ -145,12 +143,8 @@ Lazy options: `checker.enabled = false`. Disabled built-ins: `gzip matchit match
 
 ### Plugin reference
 
-#### `colorscheme.lua` — `islands-dark` (local) + `catppuccin/nvim`
-- Two colorschemes load eagerly (`lazy = false`, `priority = 1000`):
-  - **`islands-dark`** — local plugin at `nvim/.config/nvim/islands-dark.nvim/` (loaded via `dir`, lazy name `islands-dark`). `opts = { transparent = false, italic_comments = true }`.
-  - **`catppuccin`** (`catppuccin/nvim`) — its `config` calls `require('core.theme').apply()` to pick the active scheme.
-- Logic lives in `lua/core/theme.lua`: `is_dark()` reads the appearance cache file `~/.config/theme-reload/appearance` (`dark`/`light`, written by `theme-reload/reload.sh` — **no subprocess** on the startup path), falling back to a one-shot `vim.system { 'defaults', 'read', '-g', 'AppleInterfaceStyle' }` probe only when the file is absent. `apply()` sets `background` and selects the scheme. **Dark** → **`islands-dark`**; **light** → `catppuccin` **latte** (runs `catppuccin.setup` with `no_italic = true` + integrations for treesitter, LSP, telescope, gitsigns, nvim-tree, which-key, indent-blankline). `apply()` threads the resolved `is_dark` into `refresh_lualine()` so the statusline theme follows appearance without re-reading.
-- Live switch: `:ThemeReload` (user command in `autocmds.lua`), `<leader>tT`, or `~/.config/theme-reload/reload.sh` (iterates Neovim Unix sockets under `$TMPDIR`). After changing system appearance, the LaunchAgent in `theme-reload/` can run that script automatically (see `theme-reload/README.md`).
+#### `colorscheme.lua` — `folke/tokyonight.nvim`
+- Loaded eagerly (`lazy = false`, `priority = 1000`). `style = 'night'`; `vim.cmd.colorscheme 'tokyonight-night'` on config. Non-italic comments. Single fixed dark theme — no macOS appearance switching.
 
 #### `lsp.lua` + `core/lsp.lua` — `neovim/nvim-lspconfig`
 - Event: `BufReadPre`, `BufNewFile`.
@@ -280,7 +274,7 @@ Three plugins under `<leader>g`.
 | `<leader>gdv` | Smart toggle (open if closed, close if open) |
 
 #### `lualine.lua` — `nvim-lualine/lualine.nvim`
-- Event: `VeryLazy`. `globalstatus = true`. `options.theme = require('core.theme').lualine_theme()` — follows macOS appearance (islands-dark's lualine theme in dark, `'auto'` in light); re-applied by `core.theme.refresh_lualine()` on `:ThemeReload`. Powerline separators.
+- Event: `VeryLazy`. `globalstatus = true`. `options.theme = 'tokyonight'` (built-in lualine theme matching Tokyonight Night). Powerline separators.
 - Init trick: empty statusline until loaded (no flicker).
 - Performance: `lualine_require.require = require` (bypass lualine's slow shim).
 - Disabled for: `dashboard alpha ministarter snacks_dashboard nvim-tree`.

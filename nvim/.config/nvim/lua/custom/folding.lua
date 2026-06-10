@@ -7,7 +7,7 @@ function M.setup()
   vim.opt.foldlevel = 99
   vim.opt.foldlevelstart = 99
   vim.opt.foldnestmax = 4 -- avoid excessive nesting in deep Lua tables / TSX
-  vim.opt.fillchars:append('fold: ')
+  vim.opt.fillchars:append 'fold: '
 
   local group = vim.api.nvim_create_augroup('dotfiles_folding', { clear = true })
 
@@ -15,18 +15,14 @@ function M.setup()
     group = group,
     callback = function(ev)
       local c = vim.lsp.get_client_by_id(ev.data.client_id)
-      if c and c:supports_method('textDocument/foldingRange') then
-        vim.wo[0][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
-      end
+      if c and c:supports_method 'textDocument/foldingRange' then vim.wo[0][0].foldexpr = 'v:lua.vim.lsp.foldexpr()' end
     end,
   })
 
   vim.api.nvim_create_autocmd('LspNotify', {
     group = group,
     callback = function(ev)
-      if ev.data.method == 'textDocument/didOpen' then
-        pcall(vim.lsp.foldclose, 'imports', vim.fn.bufwinid(ev.buf))
-      end
+      if ev.data.method == 'textDocument/didOpen' then pcall(vim.lsp.foldclose, 'imports', vim.fn.bufwinid(ev.buf)) end
     end,
   })
 

@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# Hot-reload tmux status theme + all local Neovim GUIs + fzf palette when macOS light/dark changes.
+# Hot-reload tmux status theme + fzf palette when macOS light/dark changes.
 set -euo pipefail
 
 cfg_dir="${HOME}/.config"
 
-# Resolve appearance once, then publish it as the single source of truth.
-# Consumers (Neovim's core.theme) read this file instead of each spawning
-# `defaults`, keeping the probe off the startup hot path.
+# Resolve appearance once, then publish it for other tooling that reads the cache file.
 if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
   appearance="dark"
 else
@@ -50,11 +48,3 @@ if tmux list-sessions >/dev/null 2>&1; then
   reload_cpu
   refresh_tmux_clients
 fi
-
-# headless `nvim --remote-expr` requires a Vim expression; luaeval returns a string.
-remote_expr='luaeval("return tostring(require([[core.theme]]).apply())")'
-tmp="${TMPDIR:-/tmp}"
-while IFS= read -r sock; do
-  [[ -z "$sock" ]] && continue
-  nvim --server "$sock" --remote-expr "$remote_expr" >/dev/null 2>&1 || true
-done < <(find "$tmp" -type s -path '*nvim*' 2>/dev/null)

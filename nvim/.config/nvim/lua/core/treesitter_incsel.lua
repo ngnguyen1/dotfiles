@@ -31,9 +31,7 @@ local function update_selection(buf, node)
   local r = { ts.get_node_range(node) }
   local start_row, start_col, end_row, end_col = get_vim_range(r, buf)
   local mode = api.nvim_get_mode()
-  if mode.mode ~= 'v' and mode.mode ~= 'V' and mode.mode ~= string.char(22) then
-    api.nvim_cmd({ cmd = 'normal', bang = true, args = { 'v' } }, {})
-  end
+  if mode.mode ~= 'v' and mode.mode ~= 'V' and mode.mode ~= string.char(22) then api.nvim_cmd({ cmd = 'normal', bang = true, args = { 'v' } }, {}) end
   api.nvim_win_set_cursor(0, { start_row, start_col - 1 })
   vim.cmd 'normal! o'
   api.nvim_win_set_cursor(0, { end_row, end_col - 1 })
@@ -42,13 +40,9 @@ end
 function M.init_selection()
   local buf = api.nvim_get_current_buf()
   local p = ts.get_parser(buf)
-  if p then
-    p:parse()
-  end
+  if p then p:parse() end
   local node = ts.get_node { bufnr = buf }
-  if not node then
-    return
-  end
+  if not node then return end
   stacks[buf] = { node }
   update_selection(buf, node)
 end
@@ -61,9 +55,7 @@ function M.node_incremental()
     return
   end
   local parent = stack[#stack]:parent()
-  if not parent then
-    return
-  end
+  if not parent then return end
   table.insert(stack, parent)
   update_selection(buf, parent)
 end
@@ -71,14 +63,10 @@ end
 function M.node_decremental()
   local buf = api.nvim_get_current_buf()
   local stack = stacks[buf]
-  if not stack or #stack < 2 then
-    return
-  end
+  if not stack or #stack < 2 then return end
   table.remove(stack)
   local node = stack[#stack]
-  if node then
-    update_selection(buf, node)
-  end
+  if node then update_selection(buf, node) end
 end
 
 function M.setup()

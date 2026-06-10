@@ -54,9 +54,7 @@ return {
       }
 
       --- Best-effort async install of baseline parsers (no :wait on startup).
-      vim.schedule(function()
-        pcall(require('nvim-treesitter').install, parsers)
-      end)
+      vim.schedule(function() pcall(require('nvim-treesitter').install, parsers) end)
 
       require('nvim-treesitter-textobjects').setup {
         select = { lookahead = true },

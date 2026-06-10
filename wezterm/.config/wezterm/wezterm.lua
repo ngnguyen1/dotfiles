@@ -69,9 +69,11 @@ config.keys = {
 
 local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
-		return "Islands Dark"
+		return "Ayu Dark (Gogh)"
+		-- return "Astrodark (Gogh)"
 	else
-		return "Catppuccin Latte (Gogh)"
+		-- return "Catppuccin Latte (Gogh)"
+		return "Github Light (Gogh)"
 	end
 end
 

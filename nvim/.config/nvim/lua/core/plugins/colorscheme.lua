@@ -2,28 +2,20 @@
 ---@type LazySpec
 return {
   {
-    -- Local dev path. To publish: replace with `'your-name/islands-dark.nvim'`
-    -- and delete the `dir` key.
-    dir = vim.fn.stdpath('config') .. '/islands-dark.nvim',
-    name = 'islands-dark',
+    'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
     opts = {
+      style = 'night',
       transparent = false,
-      italic_comments = true,
-      -- on_colors = function(c) end,
-      -- on_highlights = function(hl, c) end,
+      terminal_colors = true,
+      styles = {
+        comments = { italic = false },
+      },
     },
     config = function(_, opts)
-      require('islands-dark').setup(opts)
-    end,
-  },
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-    config = function()
-      require('core.theme').apply()
+      require('tokyonight').setup(opts)
+      vim.cmd.colorscheme 'tokyonight-night'
     end,
   },
 }

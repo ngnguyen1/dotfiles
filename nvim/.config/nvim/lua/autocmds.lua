@@ -6,9 +6,7 @@ local augroup = vim.api.nvim_create_augroup('dotfiles_autocmds', { clear = true 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup,
   desc = 'Highlight yanked text',
-  callback = function()
-    vim.hl.on_yank()
-  end,
+  callback = function() vim.hl.on_yank() end,
 })
 
 local skip_last_loc_ft = { gitcommit = true, gitrebase = true, xxd = true }
@@ -18,19 +16,13 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   desc = 'Restore last cursor position in buffer (`:h \'")',
   callback = function(args)
     local buf = args.buf
-    if skip_last_loc_ft[vim.bo[buf].filetype] then
-      return
-    end
+    if skip_last_loc_ft[vim.bo[buf].filetype] then return end
     vim.schedule(function()
-      if vim.api.nvim_get_current_buf() ~= buf then
-        return
-      end
+      if vim.api.nvim_get_current_buf() ~= buf then return end
       local mark = vim.api.nvim_buf_get_mark(buf, '"')
       local line, nlines = mark[1], vim.api.nvim_buf_line_count(buf)
       -- Line 1 is the default when ShaDa has no meaningful saved position.
-      if line < 2 or line > nlines then
-        return
-      end
+      if line < 2 or line > nlines then return end
       pcall(vim.api.nvim_win_set_cursor, 0, mark)
     end)
   end,
@@ -105,9 +97,5 @@ vim.api.nvim_create_user_command('FormatEnable', function()
   vim.b.disable_autoformat = false
   vim.g.disable_autoformat = false
 end, { desc = 'Re-enable autoformat-on-save' })
-
-vim.api.nvim_create_user_command('ThemeReload', function()
-  require('core.theme').apply()
-end, { desc = 'Reapply colorscheme from macOS appearance' })
 
 -- vim: ts=2 sts=2 sw=2 et
