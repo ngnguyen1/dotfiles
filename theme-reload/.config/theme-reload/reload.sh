@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hot-reload tmux status theme + fzf palette when macOS light/dark changes.
+# Hot-reload fzf palette and refresh tmux clients when macOS light/dark changes.
 set -euo pipefail
 
 cfg_dir="${HOME}/.config"
@@ -22,7 +22,7 @@ if [[ -d "$fzf_dir" ]]; then
     ln -sfn "$fzf_dir/latte.opts" "$fzf_dir/active.opts"
   fi
 fi
-tmux_theme="${cfg_dir}/tmux/theme.conf"
+
 reload_cpu() {
   local f="${HOME}/.tmux/plugins/tmux-cpu/cpu.tmux"
   if [[ ! -r "$f" ]]; then
@@ -42,9 +42,6 @@ refresh_tmux_clients() {
 }
 
 if tmux list-sessions >/dev/null 2>&1; then
-  if [[ -r "$tmux_theme" ]]; then
-    tmux source-file "$tmux_theme"
-  fi
   reload_cpu
   refresh_tmux_clients
 fi

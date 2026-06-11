@@ -1,6 +1,6 @@
 # theme-reload
 
-Hot-reload **tmux** Catppuccin status (via `theme.conf`) and **fzf** palette (`~/.config/fzf/active.opts`) when macOS switches light/dark.
+Hot-reload **fzf** palette (`~/.config/fzf/active.opts`) and refresh **tmux** status telemetry when macOS switches light/dark.
 
 ## Layout (GNU Stow)
 
@@ -12,9 +12,13 @@ Package `theme-reload/` stows to:
 - `~/.config/theme-reload/com.ngnguyen.theme-reload.plist.in` — template (`__HOME__` → expanded by bootstrap)
 - `~/.config/theme-reload/appearance` — runtime cache (`dark`/`light`) written by `reload.sh`; **gitignored**, not tracked
 
-## Appearance cache
+## What `reload.sh` does
 
-`reload.sh` resolves the macOS appearance once (via `defaults read -g AppleInterfaceStyle`) and writes `dark`/`light` to `~/.config/theme-reload/appearance`. `bootstrap.sh` seeds the file at install time. Neovim uses a fixed `tokyonight-night` colorscheme and is not reloaded by this package.
+1. Resolves macOS appearance (`defaults read -g AppleInterfaceStyle`) and writes `dark`/`light` to `~/.config/theme-reload/appearance`.
+2. Swaps the `~/.config/fzf/active.opts` symlink to `mocha.opts` (dark) or `latte.opts` (light).
+3. When a tmux server is running: re-runs `tmux-cpu` so CPU/RAM placeholders update, then refreshes all attached clients.
+
+Tmux status styling is fixed in `tmux.conf` (native palette, not appearance-switched). Neovim uses a fixed `tokyonight-night` colorscheme and is not reloaded by this package.
 
 ## One-time setup
 
@@ -36,5 +40,5 @@ rm -f ~/Library/LaunchAgents/com.ngnguyen.theme-reload.plist
 
 ## Related dotfiles
 
-- TMUX: `prefix + T` runs `reload.sh` (see `tmux/.config/tmux/tmux.conf`).
+- TMUX: `prefix + T` runs `reload.sh` (see `tmux/.config/tmux/tmux.conf`). `prefix + r` still reloads the full tmux config.
 - fzf: `FZF_DEFAULT_OPTS_FILE` points at `active.opts`; `reload.sh` swaps the symlink to `mocha.opts` or `latte.opts` (see `fzf/.config/fzf/`). Zsh also syncs via `zsh/.config/zsh/fzf-theme.zsh` (on startup, precmd when appearance changes, and before Ctrl-T / plain `fzf`) so fzf tracks the system theme even without the LaunchAgent.
