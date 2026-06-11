@@ -366,7 +366,7 @@ Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/`
 |---|---|---|
 | Oh My Zsh | plugin manager | `source $ZSH/oh-my-zsh.sh` |
 | Starship | prompt | `eval "$(starship init zsh)"` |
-| zoxide | smarter cd | `eval "$(zoxide init zsh --cmd cd)"` |
+| zoxide | smarter cd | `.zshrc` tail: `[[ -o interactive ]]` then `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
 | fnm | Node versions | guarded `eval "$(fnm env --use-on-cd --shell zsh)"` in `langs.zsh`; reads `.nvmrc` / `.node-version` |
 | fzf | fuzzy finder | `source <(fzf --zsh)` |

@@ -46,6 +46,7 @@ Stow targets:
 9. `plugins.zsh`
 10. `prompt.zsh`
 11. `local.zsh` if readable
+12. zoxide init in `.zshrc` (interactive shells only)
 
 Rationale:
 
@@ -55,7 +56,8 @@ Rationale:
 - Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` adds tool-specific hooks and re-runs `compinit -C -d "$ZSH_COMPDUMP"` after `vault` so completion state stays tied to the XDG cache dump (avoids broken `~/.zcompdump*` / `compdef` errors).
 - `plugins.zsh` loads after `completions.zsh` so `zsh-syntax-highlighting` wraps fzf/zoxide widgets; no `brew --prefix` subshell (prefix is `/opt/homebrew` or `/usr/local` with a directory probe).
 - Prompt loads after zsh plugins to avoid slow prompt work before shell config is ready.
-- Local machine config loads last so it can override tracked defaults.
+- Local machine config loads before zoxide so it can override tracked defaults.
+- zoxide initializes last in `.zshrc`, gated on `[[ -o interactive ]]`, so AI/tool subprocesses that source `~/.zshrc` non-interactively skip the doctor warning.
 
 ## Loaded frameworks / tools
 
@@ -63,7 +65,7 @@ Rationale:
 |---|---|---|
 | Oh My Zsh | plugin/theme manager | `source "$ZSH/oh-my-zsh.sh"` |
 | Starship | prompt | guarded `eval "$(starship init zsh)"` |
-| zoxide | smarter `cd` | guarded `eval "$(zoxide init zsh --cmd cd)"` |
+| zoxide | smarter `cd` | `.zshrc`: `[[ -o interactive ]]` then guarded `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | binary from `~/.local/bin`; use `uv run ...` / `uvx ...` |
 | fnm | Node version manager | guarded `eval "$(fnm env --use-on-cd --shell zsh)"`; reads `.nvmrc` / `.node-version` |
 | fzf | fuzzy finder | guarded `source <(fzf --zsh)` |
@@ -192,7 +194,7 @@ Secrets and machine-only values belong in ignored `~/.config/zsh/local.zsh`.
 - After `vault` bash completion (if installed), `completions.zsh` runs `compinit -C -d "$ZSH_COMPDUMP"` so the dump path stays under `${XDG_CACHE_HOME:-~/.cache}/zsh/` (avoids corrupt `~/.zcompdump*` from mixed completion init).
 - Vault completion loads only when `vault` is available.
 - fzf shell integration loads only when `fzf` is available.
-- zoxide shell integration loads only when `zoxide` is available.
+- zoxide shell integration loads in `.zshrc` after `local.zsh`, only in interactive shells when `zoxide` is available.
 - `plugins.zsh` loads after the above so syntax highlighting wraps those integrations.
 
 ## Local Overrides
