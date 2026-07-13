@@ -1,3 +1,3 @@
-# Prompt.
+# Powerlevel10k user config (theme loaded via OMZ in omz.zsh).
 
-command -v starship >/dev/null && eval "$(starship init zsh)"
+[[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"

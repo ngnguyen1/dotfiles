@@ -7,7 +7,7 @@ This is a GNU Stow-managed dotfiles tree. Each top-level directory is a stow pac
 - `zsh/` contains shell configuration: `zsh/.zshrc` and modules under `zsh/.config/zsh/` (see `zsh/SPEC.md`).
 - `kitty/` contains Kitty config, helper Python scripts, and terminal docs under `kitty/.config/kitty/`.
 - `nvim/` contains the Neovim Lua config under `nvim/.config/nvim/`, with modules in `lua/`.
-- `starship/` and `eza/` contain TOML/YAML tool configuration.
+- `powerlevel10k/` and `eza/` contain prompt and tool configuration.
 - `*/SPEC.md`, `nvim/KEYMAPS.md`, and `README.md` document expected behavior.
 
 There is no conventional `src/` or `tests/` tree; validate with formatting checks, config reloads, and smoke tests.

@@ -18,8 +18,8 @@ dotfiles/
 │   ├── KEYMAPS.md                      # keymap cheatsheet (canonical reference)
 │   ├── SPEC.md                         # full plugin/option audit
 │   └── .config/nvim/                   # Neovim config (see §Neovim)
-├── starship/
-│   └── .config/starship/starship.toml  # cross-shell prompt
+├── powerlevel10k/
+│   └── .p10k.zsh                        # Powerlevel10k user config (lean preset)
 ├── theme-reload/
 │   ├── README.md                       # macOS light/dark → tmux + fzf hot reload
 │   └── .config/theme-reload/           # reload.sh, bootstrap, Swift listener source
@@ -365,7 +365,7 @@ Entry: `zsh/.zshrc` → stows to `~/.zshrc`; loads modules from `~/.config/zsh/`
 | Tool | Role | How |
 |---|---|---|
 | Oh My Zsh | plugin manager | `source $ZSH/oh-my-zsh.sh` |
-| Starship | prompt | `eval "$(starship init zsh)"` |
+| Powerlevel10k | prompt | OMZ theme + instant prompt in `.zshrc`; `source ~/.p10k.zsh` in `prompt.zsh` |
 | zoxide | smarter cd | `.zshrc` tail: `[[ -o interactive ]]` then `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | `uv` / `uv run` / `uvx` from `~/.local/bin` |
 | fnm | Node versions | guarded `eval "$(fnm env --use-on-cd --shell zsh)"` in `langs.zsh`; reads `.nvmrc` / `.node-version` |
@@ -386,7 +386,6 @@ eza plugin: `icons yes` (no `git-status` on default `ls` — use `lsg` / `llg` f
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` |
 | `FZF_DEFAULT_OPTS` | Layout flags only (`--height=40% --border=rounded --margin=5% --layout=reverse --multi`, …) |
 | `FZF_DEFAULT_OPTS_FILE` | `~/.config/fzf/active.opts` → `mocha.opts` / `latte.opts` (symlink; hot-reloaded by `theme-reload`) |
-| `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` |
 | `GPG_TTY` | `$(tty)` when stdin is a TTY |
 | `GSDK` | `~/silabs/gsdk` (Silicon Labs SDK) |
 
@@ -450,24 +449,15 @@ Stows to `~/.config/kitty/`. macOS-only (`macos_*` keys).
 
 ---
 
-## Starship (`starship/`)
+## Powerlevel10k (`powerlevel10k/`)
 
-`starship/.config/starship/starship.toml` → stows to `~/.config/starship/starship.toml`.
+`powerlevel10k/.p10k.zsh` → stows to `~/.p10k.zsh`.
 
-**Important:** Starship’s default path is `~/.config/starship.toml`; this repo stows to `~/.config/starship/starship.toml`. `STARSHIP_CONFIG` is set in `exports.zsh` so that file is used.
-
-- Preset: [Pure](https://starship.rs/presets/pure-preset/) — port of sindresorhus/[pure](https://github.com/sindresorhus/pure). Minimal two-line prompt, terminal-palette colors (no hardcoded hexes), no Nerd Font required.
-- `add_newline = true` (blank line above prompt, Pure-style). `command_timeout = 1000`.
-- **Line 1** `format`: `username hostname directory git_branch git_state git_status cmd_duration` then `line_break`.
-- **Line 2**: `python` (virtualenv only) + `character`.
-- `[character]`: `❯` purple on success, `❯` red on error, `❮` green in vi cmd mode.
-- `[directory]`: `blue` style, no substitutions, no truncation override (defaults).
-- `[git_branch]`: bright-black, format `[$branch]($style)` (no symbol).
-- `[git_status]`: cyan; per-state symbols (color 218) — conflicted `=`, untracked `?`, modified `!`, staged `+`, renamed `»`, deleted `✘`; `$ahead_behind` arrows + `≡` stash count.
-- `[git_state]`: bright-black, parenthesized rebase/merge/cherry-pick state with progress.
-- `[cmd_duration]`: yellow (shown after long commands; default threshold 2 s).
-- `[python]`: shows venv name only (no version), bright-black; auto-detect disabled (`detect_extensions/detect_files = []`).
-- No `right_format`, no language modules besides `python` venv, no time/battery/os modules (intentional — Pure stays minimal).
+- Theme: [Powerlevel10k](https://github.com/romkatv/powerlevel10k) as OMZ custom theme (`ZSH_THEME="powerlevel10k/powerlevel10k"`). Clone to `$ZSH/custom/themes/powerlevel10k` (not stowed).
+- Instant prompt enabled at the top of `zsh/.zshrc`; user config sourced from `prompt.zsh` after OMZ.
+- Preset: **lean** wizard (nerdfont-v3, powerline, 1 line, sparse). Regenerate with `p10k configure`.
+- **Left**: `os_icon`, `dir`, `vcs`, `prompt_char`. **Right**: `status`, `command_execution_time`, `virtualenv`, `terraform`, `aws`, …
+- Requires Nerd Font (Kitty: `DankMono Nerd Font Mono`).
 
 ---
 

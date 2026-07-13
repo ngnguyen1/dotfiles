@@ -1,6 +1,6 @@
 # zsh/ - Spec
 
-Zsh configuration. Managed as a GNU Stow package. Built on Oh My Zsh, prompt by Starship.
+Zsh configuration. Managed as a GNU Stow package. Built on Oh My Zsh, prompt by Powerlevel10k.
 
 ## Layout
 
@@ -35,6 +35,7 @@ Stow targets:
 
 `.zshrc` loads files in this order:
 
+0. Powerlevel10k instant prompt (must stay first; no output above it)
 1. `exports.zsh`
 2. `ssh-agent.zsh`
 3. `history.zsh`
@@ -55,7 +56,7 @@ Rationale:
 - Oh My Zsh loads before aliases so user aliases override plugin aliases.
 - Oh My Zsh runs `compinit` and `bashcompinit`; `completions.zsh` adds tool-specific hooks and re-runs `compinit -C -d "$ZSH_COMPDUMP"` after `vault` so completion state stays tied to the XDG cache dump (avoids broken `~/.zcompdump*` / `compdef` errors).
 - `plugins.zsh` loads after `completions.zsh` so `zsh-syntax-highlighting` wraps fzf/zoxide widgets; no `brew --prefix` subshell (prefix is `/opt/homebrew` or `/usr/local` with a directory probe).
-- Prompt loads after zsh plugins to avoid slow prompt work before shell config is ready.
+- Prompt loads after zsh plugins: OMZ theme renders first, then `prompt.zsh` sources `~/.p10k.zsh`.
 - Local machine config loads before zoxide so it can override tracked defaults.
 - zoxide initializes last in `.zshrc`, gated on `[[ -o interactive ]]`, so AI/tool subprocesses that source `~/.zshrc` non-interactively skip the doctor warning.
 
@@ -64,7 +65,7 @@ Rationale:
 | Name | Role | Activation |
 |---|---|---|
 | Oh My Zsh | plugin/theme manager | `source "$ZSH/oh-my-zsh.sh"` |
-| Starship | prompt | guarded `eval "$(starship init zsh)"` |
+| Powerlevel10k | prompt | OMZ theme `powerlevel10k/powerlevel10k` + `source ~/.p10k.zsh` |
 | zoxide | smarter `cd` | `.zshrc`: `[[ -o interactive ]]` then guarded `eval "$(zoxide init zsh --cmd cd)"` |
 | uv | Python packaging and script runner | binary from `~/.local/bin`; use `uv run ...` / `uvx ...` |
 | fnm | Node version manager | guarded `eval "$(fnm env --use-on-cd --shell zsh)"`; reads `.nvmrc` / `.node-version` |
@@ -80,9 +81,10 @@ Rationale:
 
 ## Theme
 
-- `ZSH_THEME=""` disables OMZ themes.
-- Starship handles prompt in `prompt.zsh`.
-- Powerlevel10k is no longer configured in tracked files.
+- `ZSH_THEME="powerlevel10k/powerlevel10k"` in `omz.zsh`.
+- Instant prompt enabled at the top of `.zshrc` (see [Powerlevel10k instant prompt](https://github.com/romkatv/powerlevel10k#instant-prompt)).
+- User config in `~/.p10k.zsh` (stowed from [powerlevel10k/](../powerlevel10k/)); sourced from `prompt.zsh` after OMZ.
+- Theme repo must be cloned to `$ZSH/custom/themes/powerlevel10k` (see [powerlevel10k/SPEC.md](../powerlevel10k/SPEC.md)).
 
 ## Plugins (OMZ)
 
@@ -136,7 +138,6 @@ Options: `EXTENDED_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`, `HIST_FIND
 | `GSDK` | `~/silabs/gsdk` | Silicon Labs SDK |
 | `EZA_CONFIG_DIR` | `~/.config/eza` | eza config |
 | `TMUX_CONF` | `~/.config/tmux/tmux.conf` | tmux config path |
-| `STARSHIP_CONFIG` | `~/.config/starship/starship.toml` | Starship config (non-default path) |
 | `GPG_TTY` | `$(tty)` when stdin is a TTY | GPG signing |
 | `FZF_DEFAULT_COMMAND` | `fd --type f --strip-cwd-prefix --hidden --follow --exclude .git` | fzf source |
 | `FZF_CTRL_T_COMMAND` | same as default | Ctrl-T file picker |
